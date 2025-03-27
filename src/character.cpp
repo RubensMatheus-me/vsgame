@@ -4,5 +4,4 @@
 class Character : public Entity{
 	float hp;
 	float damage;
-
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "graphicElement.cpp"
+#include "GraphicElement.cpp"
 class Item : public GraphicElement {
 	public:
 		Item(float x, float y, SDL_Surface *image) : GraphicElement(x, y, image){}
