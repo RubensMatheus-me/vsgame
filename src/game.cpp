@@ -1,5 +1,5 @@
 #pragma once
-#include "renderWindow.h"
+#include "RenderWindow.h"
 #include <iostream>
 #include <SDL2/SDL.h>
 

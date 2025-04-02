@@ -1,5 +1,5 @@
-#include "template.h"
-#include "graphicElement.cpp"
+#include "Template.h"
+#include "GraphicElement.cpp"
 #include <SDL2/SDL.h>
 
 class Entity : public GraphicElement{

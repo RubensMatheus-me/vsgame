@@ -1,8 +1,9 @@
-#include "entity.cpp"
-#include "template.h"
+#include "Entity.cpp"
+#include "Template.h"
 
 class Character : public Entity{
 	float hp;
-	float damage;
+	float atkRate;
+	float moveSpeed;
 
 };
