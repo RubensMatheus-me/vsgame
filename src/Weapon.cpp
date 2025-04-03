@@ -1,8 +1,8 @@
-#include "Item.cpp"
+#include "Weapon.h"
 
-class Weapon : public Item {
-    float flatDamage;
-    float flatAtkSpeed;
-    float damageMultiplier;
-    int level;
-}
+Weapon::Weapon(float width, float height, SDL_Texture *image, const std::string& description,
+               float flatDamage, float flatAtkSpeed, float damageMultiplier,
+               float atkSpeedMultiplier, int level) : Item(width, height, image, description),
+      flatDamage(flatDamage), flatAtkSpeed(flatAtkSpeed),
+      damageMultiplier(damageMultiplier), atkSpeedMultiplier(atkSpeedMultiplier),
+      level(level) {}

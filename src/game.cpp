@@ -1,4 +1,3 @@
-#pragma once
 #include "RenderWindow.h"
 #include <iostream>
 #include <SDL2/SDL.h>

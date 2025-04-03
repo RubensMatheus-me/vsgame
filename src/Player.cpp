@@ -1,7 +1,5 @@
-#include "Character.cpp"
+#include "Player.h"
 
-class Player : public Character {
-    float xp;
-    int level;
-    float atkSpeed;
-}
+Player::Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
+     float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
+    : Character(width, height, image, pos, speed, hp, atkRate, movSpeed), xp(xp), level(level), atkSpeed(atkSpeed) {}

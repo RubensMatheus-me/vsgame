@@ -1,6 +1,4 @@
 #include "Item.h"
 
-Item::Item(float x, float y, SDL_Surface *image)
-	: GraphicElement(x, y, image){}
-
-void Item::render(SDL_Renderer *image){}
+Item::Item(float width, float height, SDL_Texture *image, const std::string& description)
+    : GraphicalElement(width, height, image), description(description) {}

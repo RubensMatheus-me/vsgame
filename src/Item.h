@@ -1,11 +1,14 @@
-#pragma once
-#include "GraphicElement.h"
+#include "GraphicalElement.h"
 #include <string>
 
-class Item : public GraphicElement {
-	std::string description;
+class Item : public GraphicalElement {
+    public:
+        Item(float width, float height, SDL_Texture *image, const std::string& description);
 
-	public:
-		Item(float x, float y, SDL_Surface *image);
-		void render(SDL_Renderer *image) override;
+        std::string getDescription() const { return this->description; }
+        void setDescription(const std::string& description) { this->description = description; }
+
+    
+    private:
+        std::string description;
 };

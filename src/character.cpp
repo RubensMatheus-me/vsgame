@@ -1,9 +1,5 @@
-#include "Entity.cpp"
-#include "Template.h"
+#include "Character.h"
 
-class Character : public Entity{
-	float hp;
-	float atkRate;
-	float moveSpeed;
-
-};
+Character::Character(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed, 
+                     float hp, float atkRate, float movSpeed)
+    : Entity(width, height, image, pos, speed), hp(hp), atkRate(atkRate), movSpeed(movSpeed) {}
