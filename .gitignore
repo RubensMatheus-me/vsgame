@@ -8,3 +8,6 @@ src/*.o
 
 ### Dll`s ###
 *.dll
+
+### Readme ###
+*.md

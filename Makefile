@@ -1,7 +1,7 @@
 TARGET = game
 
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Iinclude -I../my-lib/include
+CXXFLAGS = -std=c++23 -Wall -D_REENTRANT -Iinclude -I../my-lib/include -I/usr/include/SDL2
 LDFLAGS = -lSDL2 -lSDL2_image
 
 SRC = $(shell find src -type f -name "*.cpp") main.cpp
