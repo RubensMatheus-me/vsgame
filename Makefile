@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -std=c++23 -Wall -Iinclude -I../my-lib/include
 LDFLAGS = -lSDL2 -lSDL2_image
 
-SRC = $(shell find src -type f -name "*.cpp")
+SRC = $(shell find src -type f -name "*.cpp") main.cpp
 OBJ = $(SRC:.cpp=.o)
 
 all: $(TARGET)

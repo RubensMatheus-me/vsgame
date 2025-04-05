@@ -4,9 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/src/*",
-                "${workspaceFolder}"
+                "${workspaceFolder}/../my-lib/include/",
+                "${workspaceFolder}/../../libs/SDL2/x86_64-w64-mingw32/include",
+                "${workspaceFolder}/../../libs/SDL2_image/x86_64-w64-mingw32/include"
             ],
             "defines": [
                 "_DEBUG",
