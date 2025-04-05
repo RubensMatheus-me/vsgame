@@ -1,6 +1,4 @@
-#include "template.h"
 #include "Entity.h"
-#include <SDL2/SDL.h>
 
-Vector Entity::getPos() { return pos; }
-Vector Entity::getSpeed() { return speed; }
+Entity::Entity(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed)
+    : GraphicalElement(width, height, image), pos(pos), speed(speed) {}
