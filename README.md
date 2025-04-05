@@ -23,6 +23,7 @@ Este é um jogo simples feito com **C++** e **SDL2**, inspirado no estilo do jog
     ```bash
      make
 4. **Rode o jogo**:
+   **No terminal, execute o comando abaixo:**
    ```bash
    /game
 ## Instalação no Windows
@@ -36,5 +37,6 @@ Este é um jogo simples feito com **C++** e **SDL2**, inspirado no estilo do jog
    ```bash
    g++ -std=c++23 -Wall -Iinclude -I../my-lib/include -I/path/to/SDL2/include -I/path/to/SDL2_image/include src/*.cpp -o game -L/path/to/SDL2/lib -L/path/to/SDL2_image/lib -lSDL2 -lSDL2_image
 4. **Rode o jogo**:
+   **No terminal, execute o comando abaixo:**
    ```bash
    /game
