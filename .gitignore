@@ -4,6 +4,7 @@
 ### Compiled ###
 game
 src/*.o
+*.o
 
-### dll`s ###
+### Dll`s ###
 *.dll
