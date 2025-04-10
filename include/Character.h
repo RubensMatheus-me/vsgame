@@ -13,7 +13,7 @@ class Character : public Entity {
         void setAtkRate(float atkRate) { this->atkRate = atkRate; }
         void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
 
-    private:
+    protected:
         float hp;
         float atkRate;
         float movSpeed;

@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "Player.h"
 #include "iostream"
 
 class Game {
@@ -13,6 +14,8 @@ class Game {
 		void render();
 		void clean();
 
+		void loadResources();
+
 		bool running() {return isRunning;}
 		
 	private:
@@ -20,4 +23,6 @@ class Game {
         int updateCounter = 0;
         SDL_Window *window;
         SDL_Renderer *renderer;
+
+		Player* player = nullptr;
 };

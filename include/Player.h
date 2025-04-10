@@ -12,6 +12,9 @@ class Player : public Character {
         void setXp(float xp) { this->xp = xp; }
         void setLevel(int level) { this->level = level; }
         void setAtkSpeed(float atkSpeed) { this->atkSpeed = atkSpeed; }
+
+        void render(SDL_Renderer* renderer) override;
+        void update() override;
     
     private:
         float xp;
