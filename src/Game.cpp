@@ -1,31 +1,27 @@
 #include "Game.h"
 #include "iostream"
 #include "TextureManager.h"
+#include "Keyboard.h"
+
+std::unique_ptr<Player> player;
+std::unique_ptr<Keyboard> keyboard;
 
 Game::Game() {};
 Game::~Game() {};
 
 void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen) {
+	keyboard = std::make_unique<Keyboard>();
 	int flags = 0;
+	
 	if (fullscreen) {
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
-
-	if (SDL_INIT_EVERYTHING) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
-		if (window) {
-			std::cout << "Janela criada" << std::endl;
-		}
-		
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		if (renderer) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			std::cout << "Renderer criado" << std::endl;
-		}
-
+		
 		TextureManager::init(renderer);
 		isRunning = true;
-
 	} else {
 		isRunning = false;
 	}
@@ -59,14 +55,16 @@ void Game::clean() {
 void Game::render() {
 	SDL_RenderClear(renderer);
 
-	player->render(renderer);
+	if (player != nullptr) {
+        player->render(renderer);
+    }
 
 	SDL_RenderPresent(renderer);
 }
 
 void Game::update() {
 	updateCounter++;
-
+	keyboard->update(*player);
 	//std::cout << "update: " << updateCounter << std::endl;
 }
 
@@ -75,11 +73,11 @@ void Game::loadResources() {
 
 	SDL_Texture* tex = TextureManager::getTexture("stickman");
 
-	this->player = new Player(
+	player = std::make_unique<Player>(
 		64, 64,                     
 		tex,                        
 		Vector(100, 100),          
-		Vector(0, 0),               
+		Vector(0.5f, 0.5f),               
 		100, 1.0f, 2.0f,        
 		0, 1, 1.5f 
 	);

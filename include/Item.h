@@ -1,3 +1,4 @@
+#pragma once
 #include "GraphicalElement.h"
 #include <string>
 

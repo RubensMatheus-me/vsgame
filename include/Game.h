@@ -1,6 +1,9 @@
+#pragma once
 #include <SDL2/SDL.h>
 #include "Player.h"
 #include "iostream"
+#include <memory>
+#include "Keyboard.h"
 
 class Game {
 	public:
@@ -18,11 +21,13 @@ class Game {
 
 		bool running() {return isRunning;}
 		
+		std::unique_ptr<Player> player;
+		std::unique_ptr<Keyboard> keyboard;
+		
 	private:
         bool isRunning;
         int updateCounter = 0;
         SDL_Window *window;
         SDL_Renderer *renderer;
 
-		Player* player = nullptr;
 };

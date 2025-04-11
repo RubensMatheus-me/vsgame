@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "TextureManager.h"
+#include "Keyboard.h"
 
 Player::Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
      float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
@@ -23,4 +24,6 @@ void Player::render(SDL_Renderer* renderer) {
      TextureManager::draw(tex, srcRect, destRect);
 }
 
-void Player::update() {}
+void Player::update() {
+
+}
