@@ -25,7 +25,7 @@ Este é um jogo simples feito com **C++** e **SDL2**, inspirado no estilo do jog
 4. **Rode o jogo**:
    **No terminal, execute o comando abaixo:**
    ```bash
-   /game
+   ./game
 ## Instalação no Windows
 
 1. **Instale o MinGW e as bibliotecas SDL2 e SDL2_image.**
