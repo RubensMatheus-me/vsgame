@@ -39,4 +39,4 @@ Este é um jogo simples feito com **C++** e **SDL2**, inspirado no estilo do jog
 4. **Rode o jogo**:
    **No terminal, execute o comando abaixo:**
    ```bash
-   /game
+   ./game
