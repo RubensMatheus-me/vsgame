@@ -4,6 +4,9 @@
 #include "iostream"
 #include <memory>
 #include "Keyboard.h"
+#include "TickRate.h"
+
+//const float MAX_FPS = 60.0f;
 
 class Game {
 	public:
@@ -18,6 +21,7 @@ class Game {
 		void clean();
 
 		void loadResources();
+		void limitFPS(float targetFPS);
 
 		bool running() {return isRunning;}
 		
@@ -26,7 +30,6 @@ class Game {
 		
 	private:
         bool isRunning;
-        int updateCounter = 0;
         SDL_Window *window;
         SDL_Renderer *renderer;
 

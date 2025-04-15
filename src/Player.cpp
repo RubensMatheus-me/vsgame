@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "TextureManager.h"
 #include "Keyboard.h"
+#include "TickRate.h"
 
 Player::Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
      float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
@@ -25,5 +26,4 @@ void Player::render(SDL_Renderer* renderer) {
 }
 
 void Player::update() {
-
 }

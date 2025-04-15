@@ -15,7 +15,7 @@ class Keyboard {
 
         Keyboard(DIRECTION state, bool isMoviment);
 
-        void update(Player& player);
+        void update(Player& player, float deltaTime);
 
         bool getIsMoviment() const {return isMoviment;}
         void setIsMoviment(bool moviment) {this->isMoviment = moviment;}
