@@ -48,6 +48,8 @@ SDL_Texture *TextureManager::getTexture(std::string textureName) {
 void TextureManager::cleanTexture() {
     for (auto& t : textures) {
         SDL_DestroyTexture(t.second);
-        t.second = NULL;
+        t.second = nullptr;
     }
+	textures.clear();
+	std::cout << "texturas limpas e map vazio" << std::endl;
 }

@@ -1,5 +1,7 @@
 #pragma once
 #include "Character.h"
+#include <vector>
+#include <string>
 
 class Player : public Character {
     public:
@@ -14,6 +16,7 @@ class Player : public Character {
         void setLevel(int level) { this->level = level; }
         void setAtkSpeed(float atkSpeed) { this->atkSpeed = atkSpeed; }
 
+
         void render(SDL_Renderer* renderer) override;
         void update() override;
     
@@ -21,4 +24,7 @@ class Player : public Character {
         float xp;
         int level;
         float atkSpeed;
+		std::vector<std::string> classes;
+
+		Timer attackTimer;
 };

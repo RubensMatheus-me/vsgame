@@ -12,6 +12,9 @@ class Enemy : public Character {
         void setXpDrop(float xpDrop) { this->xpDrop = xpDrop; }
         void setSpawnWeight(int spawnWeight) { this->spawnWeight = spawnWeight; }
 
+		void render(SDL_Renderer* renderer) override;
+		void update() override;
+
     private:
         float xpDrop;
         int spawnWeight;

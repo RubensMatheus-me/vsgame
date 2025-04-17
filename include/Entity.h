@@ -13,6 +13,8 @@ class Entity : public GraphicalElement {
 		void setPosition(const Vector& newPos) { this->pos = newPos; }
 		void setSpeed(const Vector& newSpeed) { this->speed = newSpeed; }
 
+
+
 	private:
 		Vector pos;
 		Vector speed;
