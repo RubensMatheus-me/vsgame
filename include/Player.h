@@ -25,6 +25,4 @@ class Player : public Character {
         int level;
         float atkSpeed;
 		std::vector<std::string> classes;
-
-		Timer attackTimer;
 };

@@ -28,7 +28,7 @@ void Player::render(SDL_Renderer* renderer) {
      TextureManager::draw(tex, srcRect, destRect);
 }
 
-void Player::update(float deltaTime) {
+void Player::update() {
 
 }
 

@@ -14,6 +14,8 @@ class TextureManager {
         static void draw(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect);
         static void cleanTexture();
 
+        static SDL_Texture* renderText(std::string text, std::string fontPath, SDL_Color color, int fontSize);
+
     private:
         static SDL_Renderer *renderer;
         static std::map<std::string, SDL_Texture*> textures; 

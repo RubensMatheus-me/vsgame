@@ -1,5 +1,6 @@
 #include "TextureManager.h" 
 #include "Game.h"
+#include "SDL_ttf.h"
 
 
 SDL_Renderer* TextureManager::renderer = nullptr;
@@ -43,6 +44,22 @@ SDL_Texture *TextureManager::getTexture(std::string textureName) {
         return nullptr;
     }
     return textures[textureName];
+}
+
+SDL_Texture* TextureManager::renderText(const std::string text, const std::string fontPath, SDL_Color color, int fontSize) {
+    TTF_Font* font = TTF_OpenFont(fontPath.c_str(), fontSize);
+    if(!font) {
+        std::cout << "Erro ao carregar fonte:" << TTF_GetError() << std::endl;
+        return nullptr;
+    }
+
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+    
+    return texture;
 }
 
 void TextureManager::cleanTexture() {

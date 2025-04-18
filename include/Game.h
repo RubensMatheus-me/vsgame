@@ -26,8 +26,15 @@ class Game {
 		void limitFPS(float targetFPS);
 
 		void initializeEntities();
+		void updateFpsDisplay();
+		void updateClockDisplay();
 
 		bool getIsRunning() const {return this->isRunning;}
+		int getWidth() const {return this->width;}
+		int getHeight() const {return this->height;}
+		
+		void setWidth(const int newWidth) {this->width = newWidth;}
+		void setHeight(const int newHeight) {this->height = newHeight;}
 		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
 		
 		std::unique_ptr<Player> player;
@@ -35,9 +42,11 @@ class Game {
 		std::unique_ptr<Keyboard> keyboard;
 		
 	private:
+		int width;
+		int height;
         bool isRunning;
         SDL_Window *window;
         SDL_Renderer *renderer;
 
-		Timer attackTimer;
+		Timer timer;
 };

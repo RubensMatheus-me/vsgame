@@ -15,7 +15,10 @@ int main(int argc, const char* argv[]) {
         game->limitFPS(60.0f);
         
     }
+    
     game->clean();
+    delete game;
+    game = nullptr;
 
     return 0;
 }
