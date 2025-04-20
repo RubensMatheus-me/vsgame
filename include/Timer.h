@@ -10,7 +10,7 @@ class Timer {
 
 		void reset();
 
-		std::pair<std::string, std::string> clock() const;
+		std::string clock() const;
 
 		float getElapsedTime() const {return this->elapsedTime;}
 
