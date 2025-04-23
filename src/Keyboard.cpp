@@ -1,62 +1,50 @@
 #include "Keyboard.h"
 #include "SDL2/SDL.h"
+#include <iostream>
+#include <iomanip>
+#include <cmath>
 
-Keyboard::Keyboard() {};
-Keyboard::Keyboard(DIRECTION state, bool isMoviment) : state(NONE), isMoviment(false){};
-
+Keyboard::Keyboard() : state(NONE), isMoviment(false) {}
 
 void Keyboard::update(Player& player, float deltaTime) {
-    const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+    const Uint8* keys = SDL_GetKeyboardState(NULL);
     
-    if(currentKeyStates[SDL_SCANCODE_W]) {
-        state = UP;
-        isMoviment = true;
+    isMoviment = false;
+    Vector direction = {0, 0};
 
-    } else if(currentKeyStates[SDL_SCANCODE_S]) {
-        state = DOWN;
+    if (keys[SDL_SCANCODE_W]) {
+        direction.y -= 1;
         isMoviment = true;
-
-    } else if(currentKeyStates[SDL_SCANCODE_A]) {
-        state = LEFT;
-        isMoviment = true;
-
-    }else if(currentKeyStates[SDL_SCANCODE_D]) {
-        state = RIGHT;
-        isMoviment = true;
-
-    } else {
-        state = NONE;
-        isMoviment = false;
     }
-    
-    if(isMoviment) {
-        Vector currentPosition = player.getPosition();
-        Vector currentSpeed = player.getSpeed();
-        float moveSpeed = player.getMovSpeed();
+    if (keys[SDL_SCANCODE_S]) {
+        direction.y += 1;
+        isMoviment = true;
+    }
+    if (keys[SDL_SCANCODE_A]) {
+        direction.x -= 1;
+        isMoviment = true;
+    }
+    if (keys[SDL_SCANCODE_D]) {
+        direction.x += 1;
+        isMoviment = true;
+    }
 
-        switch (state) {
-            case UP:
-            currentPosition.y -= currentSpeed.y * moveSpeed * deltaTime;
-            break;
-
-            case DOWN:
-            currentPosition.y += currentSpeed.y * moveSpeed * deltaTime;
-            break;
-
-            break;
-            case LEFT:
-            currentPosition.x -= currentSpeed.x * moveSpeed * deltaTime;
-            break;
-
-            case RIGHT:
-            currentPosition.x += currentSpeed.x * moveSpeed * deltaTime;
-            break;
-
-            default:
-            break;
+    if (isMoviment) {
+        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+        if (length != 0) {
+            direction.x /= length;
+            direction.y /= length;
         }
-        player.setPosition(currentPosition);
 
-        //std::cout << "dt: " << deltaTime << ", pos: " << currentPosition.x << ", " << currentPosition.y << std::endl;
+        Vector position = player.getPosition();
+        float speed = player.getMovSpeed();
+
+        position.x += direction.x * speed * deltaTime;
+        position.y += direction.y * speed * deltaTime;
+
+        player.setPosition(position);
+
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "pos: " << position.x << ", " << position.y << std::endl;
     }
-};
+}

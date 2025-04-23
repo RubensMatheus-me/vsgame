@@ -7,11 +7,13 @@
 #include "SDL_ttf.h"
 
 const char* pathFont = "assets/fonts/dogica.ttf";
+int windowWidth, windowHeight;
 
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
+std::unique_ptr<CameraManager> camera;
 
 std::string lastFpsText;
 std::string lastTimeText;
@@ -23,6 +25,7 @@ Game::Game() : timer(1.0f){};
 Game::~Game() {};
 
 void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen) {
+
 	keyboard = std::make_unique<Keyboard>();
 	tickRate = std::make_unique<TickRate>();
 	tileManager = std::make_unique<TileManager>();
@@ -38,8 +41,10 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 			return;
 		}
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
+		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		
+		camera = std::make_unique<CameraManager>(windowWidth, windowHeight);
 		TextureManager::init(renderer);
 
 		loadResources();
@@ -83,17 +88,19 @@ void Game::clean() {
 void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
-	tileManager->renderMap(renderer);
-	int windowWidth = 0, windowHeight = 0;
+	Vector camOffset = camera->getOffSet();
+
+	tileManager->renderMap(renderer, camOffset);
+	
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
 	if (player != nullptr) {
-        player->render(renderer);
+        player->render(renderer, camOffset);
     }else {
         std::cout << "Player não está inicializado!" << std::endl;
     }
 
-	enemy->render(renderer);
+	enemy->render(renderer, camOffset);
 
 	if (fpsTexture == nullptr) {
 		std::cerr << "Falha ao criar textura de FPS!" << std::endl;
@@ -118,7 +125,9 @@ void Game::render() {
 }
 
 void Game::update() {
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	tickRate->update();
+	camera->follow(player->getPosition());
 
 	float dt = tickRate->getDeltaTime();
 	
@@ -160,6 +169,11 @@ void Game::limitFPS(float targetFPS) {
 }
 
 void Game::initializeEntities() {
+
+	float centerX = (windowWidth - 32) / 2;
+	float centerY = (windowHeight - 32) / 2;
+
+
 	SDL_Texture* tex = TextureManager::getTexture("stickman");
     if (tex == nullptr) {
         std::cerr << "Erro: textura 'stickman' não carregada corretamente!" << std::endl;
@@ -169,9 +183,9 @@ void Game::initializeEntities() {
     player = std::make_unique<Player>(
         32, 32,
         tex,
-        Vector(100.0f, 100.0f),
+        Vector(centerX, centerY),
         Vector(0.5f, 0.5f),
-        100, 1.0f, 300.0f,
+        100, 1.0f, 100.0f,
         0, 1, 1.5f
     );
 
@@ -203,7 +217,7 @@ void Game::updateFpsDisplay() {
 		
 		TTF_Font* font = TTF_OpenFont(pathFont, 10);
 		if(!font) {
-			std::cerr << TTF_GetError() << std::endl;\
+			std::cerr << TTF_GetError() << std::endl;
 			return;
 		}
 		
@@ -227,28 +241,29 @@ void Game::updateClockDisplay() {
 
 	if(timeText != lastTimeText) {
 		lastTimeText = timeText;
-	}
-	if(timeTexture != nullptr) {
-		SDL_DestroyTexture(timeTexture);
-		timeTexture = nullptr;
-	}
+	
+		if(timeTexture != nullptr) {
+			SDL_DestroyTexture(timeTexture);
+			timeTexture = nullptr;
+		}
 
-	TTF_Font* font = TTF_OpenFont(pathFont, 12);
-	if(!font) {
-		std::cerr << "erro: " << TTF_GetError() << std::endl;
-		return;
-	}
+		TTF_Font* font = TTF_OpenFont(pathFont, 12);
+		if(!font) {
+			std::cerr << "erro: " << TTF_GetError() << std::endl;
+			return;
+		}
 
-	int textW = 0, textH = 0;
+		int textW = 0, textH = 0;
 
-	if(TTF_SizeText(font, timeText.c_str(), &textW, &textH) != 0) {
-		std::cerr << TTF_GetError() << std::endl;
+		if(TTF_SizeText(font, timeText.c_str(), &textW, &textH) != 0) {
+			std::cerr << TTF_GetError() << std::endl;
+			TTF_CloseFont(font);
+			return;
+		}
+		timeTexture = TextureManager::renderText(timeText, pathFont, black, 12);
+		if (timeTexture == nullptr) {
+			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
+		}
 		TTF_CloseFont(font);
-		return;
 	}
-	timeTexture = TextureManager::renderText(timeText, pathFont, black, 12);
-	if (timeTexture == nullptr) {
-        std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
-    }
-	TTF_CloseFont(font);
 }

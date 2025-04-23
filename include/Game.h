@@ -8,6 +8,7 @@
 #include "TickRate.h"
 #include "Timer.h"
 #include "TileManager.h"
+#include "CameraManager.h"
 
 //const float MAX_FPS = 60.0f;
 
@@ -42,6 +43,7 @@ class Game {
 		std::unique_ptr<Enemy> enemy;
 		std::unique_ptr<Keyboard> keyboard;
 		std::unique_ptr<TileManager> tileManager;
+		std::unique_ptr<CameraManager> camera;
 		
 	private:
 		int width;

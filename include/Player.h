@@ -17,7 +17,7 @@ class Player : public Character {
         void setAtkSpeed(float atkSpeed) { this->atkSpeed = atkSpeed; }
 
 
-        void render(SDL_Renderer* renderer) override;
+        void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update() override;
     
     private:

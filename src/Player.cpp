@@ -10,7 +10,7 @@ Player::Player(float width, float height, SDL_Texture *image, const Vector& pos,
      float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
     : Character(width, height, image, pos, speed, hp, atkRate, movSpeed), xp(xp), level(level), atkSpeed(atkSpeed) {}
 
-void Player::render(SDL_Renderer* renderer) {
+void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
      SDL_Rect srcRect;
      srcRect.h = getHeight();
      srcRect.w = getWidth();
@@ -18,8 +18,8 @@ void Player::render(SDL_Renderer* renderer) {
      srcRect.y = 0;
 
      SDL_Rect destRect;
-     destRect.x = getPosition().x;
-     destRect.y = getPosition().y;
+     destRect.x = getPosition().x - cameraOffSet.x;
+     destRect.y = getPosition().y - cameraOffSet.y;
      destRect.h = getHeight();
      destRect.w = getWidth();
 

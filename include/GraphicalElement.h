@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include "Vector.h"
 
 class GraphicalElement {
 	public:
@@ -13,7 +14,7 @@ class GraphicalElement {
 
 		SDL_Texture* getSprite() const { return this->sprite; }
 
-		virtual void render(SDL_Renderer *renderer) = 0;
+		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
 		virtual void update() = 0;
 
 	private:

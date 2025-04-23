@@ -6,7 +6,7 @@ Enemy::Enemy(float width, float height, SDL_Texture *image, const Vector& pos, c
     : Character(width, height, image, pos, speed, hp, atkRate, movSpeed),
       xpDrop(xpDrop), spawnWeight(spawnWeight) {}
 
-void Enemy::render(SDL_Renderer* renderer) {
+void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
 	SDL_Rect srcRect;
      srcRect.h = getHeight();
      srcRect.w = getWidth();
@@ -14,8 +14,8 @@ void Enemy::render(SDL_Renderer* renderer) {
      srcRect.y = 0;
 
      SDL_Rect destRect;
-     destRect.x = getPosition().x;
-     destRect.y = getPosition().y;
+     destRect.x = getPosition().x - cameraOffSet.x;
+     destRect.y = getPosition().y - cameraOffSet.y;
      destRect.h = getHeight();
      destRect.w = getWidth();
 

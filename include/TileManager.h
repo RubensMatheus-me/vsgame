@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <SDL2/SDL.h>
+#include "Vector.h"
 
 
 class TileManager {
@@ -17,7 +18,7 @@ class TileManager {
     TileManager();
 
     bool loadMap(const std::string& tileMapPath, const std::string& tilePropertiesPath, SDL_Renderer* renderer);
-    void renderMap(SDL_Renderer* renderer);
+    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet);
 
     int getTileWidth() const { return tileWidth; }
     int getTileHeight() const { return tileHeight; }
