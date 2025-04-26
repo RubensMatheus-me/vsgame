@@ -38,6 +38,8 @@ class Game {
 		void setWidth(const int newWidth) {this->width = newWidth;}
 		void setHeight(const int newHeight) {this->height = newHeight;}
 		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
+
+		void spawnEnemy();
 		
 		std::unique_ptr<Player> player;
 		std::unique_ptr<Enemy> enemy;

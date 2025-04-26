@@ -11,6 +11,7 @@ int windowWidth, windowHeight;
 
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
+std::vector<std::unique_ptr<Enemy>> enemies;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<CameraManager> camera;
@@ -50,6 +51,9 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		loadResources();
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
 		initializeEntities();
+
+		spawnEnemy();
+
 
 		setIsRunning(true);
 	} else {
@@ -100,7 +104,9 @@ void Game::render() {
         std::cout << "Player não está inicializado!" << std::endl;
     }
 
-	enemy->render(renderer, camOffset);
+	for (auto& e : enemies) {
+		e->render(renderer, camOffset);
+	}
 
 	if (fpsTexture == nullptr) {
 		std::cerr << "Falha ao criar textura de FPS!" << std::endl;
@@ -131,10 +137,17 @@ void Game::update() {
 
 	float dt = tickRate->getDeltaTime();
 	
-	player->update();
+	player->update(dt);
 	keyboard->update(*player, dt);
 
 	timer.update(dt);
+
+	for (auto& e : enemies) {
+		Vector toPlayer = player->getPosition() - e->getPosition();
+		toPlayer.normalize();
+		e->setSpeed(toPlayer * e->getMovSpeed());
+		e->update(dt);
+	}
 
 	updateFpsDisplay();
 	updateClockDisplay();
@@ -189,16 +202,6 @@ void Game::initializeEntities() {
         0, 1, 1.5f
     );
 
-	SDL_Texture* enemySlime = TextureManager::getTexture("slime");
-
-	enemy = std::make_unique<Enemy>(
-        32, 32,
-        enemySlime,
-        Vector(500.0f, 500.0f),   
-        Vector(0.0f, 0.0f),       
-        100, 1.0f, 10.0f,                     
-		10.0f, 1                         
-    );
 }
 
 void Game::updateFpsDisplay() {
@@ -266,4 +269,47 @@ void Game::updateClockDisplay() {
 		}
 		TTF_CloseFont(font);
 	}
+}
+
+void Game::spawnEnemy() {
+	int spawnMargin = 100;
+	int side = rand() % 4;
+	float x = 0, y = 0;
+
+	switch(side) {
+		case 0:
+			x = rand() %(windowWidth + 200) - 100;
+			y = - spawnMargin;
+			break;
+		case 1:
+			x = rand() % (windowWidth + 200) - 100;
+			y = windowHeight + spawnMargin;
+			break;
+		case 2:
+			x = -spawnMargin;
+			y = rand() % (windowHeight + 200) - 100;
+			break;
+		case 3:
+			x = windowWidth + spawnMargin;
+			y = rand() % (windowHeight + 200) - 100;
+			break;
+	}
+
+	SDL_Texture* enemyTexture = TextureManager::getTexture("slime");
+
+	if (TextureManager::getTexture("slime") == nullptr) {
+		std::cerr << "Erro ao carregar textura slime!" << std::endl;
+	}
+
+	auto newEnemy = std::make_unique<Enemy>(
+        32, 32,
+        enemyTexture,
+        Vector(x, y),
+        Vector(0.5f, 0.5f),
+        100, 1.0f, 50.0f,
+        10.0f, 1
+    );
+
+	newEnemy->setTarget(player.get());
+	enemies.emplace_back(std::move(newEnemy));
 }

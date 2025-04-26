@@ -25,4 +25,13 @@ void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
 
 }
 
-void Enemy::update(){}
+void Enemy::update(float deltaTime){
+
+     if(target) {
+          Vector direction = target->getPosition() - getPosition();
+          direction.normalize();
+
+          Vector velocity = direction * getMovSpeed() * deltaTime;
+          setPosition(getPosition() + velocity);
+     }
+}

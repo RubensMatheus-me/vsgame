@@ -28,7 +28,7 @@ void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
      TextureManager::draw(tex, srcRect, destRect);
 }
 
-void Player::update() {
+void Player::update(float deltaTime) {
 
 }
 

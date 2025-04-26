@@ -15,7 +15,7 @@ class GraphicalElement {
 		SDL_Texture* getSprite() const { return this->sprite; }
 
 		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
-		virtual void update() = 0;
+		virtual void update(float deltaTime) = 0;
 
 	private:
 		float width;
