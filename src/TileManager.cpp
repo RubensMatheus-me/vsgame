@@ -1,6 +1,7 @@
 #include "TileManager.h"
 #include "TextureManager.h"
 #include "Vector.h" 
+#include "Game.h"
 
 TileManager::TileManager() {}
 
@@ -49,7 +50,7 @@ bool  TileManager::loadMap(const std::string& tileMapPath, const std::string& ti
     return true;
 }
 
-void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet) {
+void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect& playerCollider) {
     for (int row = 0; row < mapHeight; ++row) {
         for (int col = 0; col < mapWidth; ++col) {
             int index = row * mapWidth + col;
@@ -57,8 +58,15 @@ void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet) 
 
             if (tileId == 0 || tileMap.find(tileId) == tileMap.end()) continue;
 
+
             int x = col * tileWidth - cameraOffSet.x;
             int y = row * tileHeight - cameraOffSet.y;
+
+            SDL_Rect tileRect = {x, y, tileWidth, tileHeight};
+
+            if(!tileMap[tileId].walkable && SDL_HasIntersection(&playerCollider, &tileRect)) {
+                std::cout << "Colidiu com o tile (" << col << ", " << row << ") do tipo: " << tileMap[tileId].terrainType << std::endl;
+            }
 
             SDL_Rect dest = {x, y, tileWidth, tileHeight};
             SDL_Rect src = {0, 0, tileWidth, tileHeight};
@@ -66,6 +74,11 @@ void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet) 
             TextureManager::draw(tileMap[tileId].image, src, dest);
 
             //std::cout << "Tile ID: " << tileId << " at (" << col << ", " << row << ")" << std::endl;
+
+            if(!tileMap[tileId].walkable && Game::getDebugMode() == true) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                SDL_RenderDrawRect(renderer, &tileRect);
+            }
         }
     }
 }

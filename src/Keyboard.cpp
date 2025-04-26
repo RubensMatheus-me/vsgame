@@ -44,7 +44,7 @@ void Keyboard::update(Player& player, float deltaTime) {
 
         player.setPosition(position);
 
-        std::cout << std::fixed << std::setprecision(2);
-        std::cout << "pos: " << position.x << ", " << position.y << std::endl;
+        //std::cout << std::fixed << std::setprecision(2);
+        //std::cout << "pos: " << position.x << ", " << position.y << std::endl;
     }
 }

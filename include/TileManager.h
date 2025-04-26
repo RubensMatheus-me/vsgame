@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -18,7 +20,7 @@ class TileManager {
     TileManager();
 
     bool loadMap(const std::string& tileMapPath, const std::string& tilePropertiesPath, SDL_Renderer* renderer);
-    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet);
+    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect& playerCollider);
 
     int getTileWidth() const { return tileWidth; }
     int getTileHeight() const { return tileHeight; }

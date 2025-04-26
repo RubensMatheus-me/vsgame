@@ -5,7 +5,6 @@
 #include "Timer.h"
 
 
-
 Player::Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
      float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
     : Character(width, height, image, pos, speed, hp, atkRate, movSpeed), xp(xp), level(level), atkSpeed(atkSpeed) {}
@@ -28,7 +27,16 @@ void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
      TextureManager::draw(tex, srcRect, destRect);
 }
 
+SDL_Rect Player::getCollider() const {
+     SDL_Rect rect;
+     rect.x = getPosition().x;
+     rect.y = getPosition().y;
+     rect.h = getHeight();
+     rect.w = getWidth();
+
+     return rect;
+}
+
 void Player::update(float deltaTime) {
 
 }
-

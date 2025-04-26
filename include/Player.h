@@ -19,6 +19,7 @@ class Player : public Character {
 
         void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update(float deltaTime) override;
+        SDL_Rect getCollider() const override;
     
     private:
         float xp;

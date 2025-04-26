@@ -16,6 +16,7 @@ class GraphicalElement {
 
 		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
 		virtual void update(float deltaTime) = 0;
+		virtual SDL_Rect getCollider() const = 0;
 
 	private:
 		float width;

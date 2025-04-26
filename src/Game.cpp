@@ -3,15 +3,20 @@
 #include "TextureManager.h"
 #include "Keyboard.h"
 #include "TickRate.h"
+#include "CollisionManager.h"
 #include "Enemy.h"
 #include "SDL_ttf.h"
 
 const char* pathFont = "assets/fonts/dogica.ttf";
 int windowWidth, windowHeight;
 
+bool Game::debugMode = false;
+
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
 std::vector<std::unique_ptr<Enemy>> enemies;
+std::vector<GraphicalElement*> allElements;
+std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<CameraManager> camera;
@@ -29,6 +34,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
 	keyboard = std::make_unique<Keyboard>();
 	tickRate = std::make_unique<TickRate>();
+	collision = std::make_unique<CollisionManager>();
 	tileManager = std::make_unique<TileManager>();
 
 	int flags = 0;
@@ -56,6 +62,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
 
 		setIsRunning(true);
+
 	} else {
 		setIsRunning(false);
 	}
@@ -94,7 +101,7 @@ void Game::render() {
 	SDL_RenderClear(renderer);
 	Vector camOffset = camera->getOffSet();
 
-	tileManager->renderMap(renderer, camOffset);
+	tileManager->renderMap(renderer, camOffset, player->getCollider());
 	
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
@@ -126,6 +133,9 @@ void Game::render() {
         SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
     }
 
+	if(!getDebugMode() == false){
+		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
+	}
 
 	SDL_RenderPresent(renderer);
 }
@@ -141,6 +151,12 @@ void Game::update() {
 	keyboard->update(*player, dt);
 
 	timer.update(dt);
+
+	if(!allElements.empty()) {
+		CollisionManager::handleCollisions(allElements);
+	}else {
+		std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
+	}
 
 	for (auto& e : enemies) {
 		Vector toPlayer = player->getPosition() - e->getPosition();
@@ -201,6 +217,8 @@ void Game::initializeEntities() {
         100, 1.0f, 100.0f,
         0, 1, 1.5f
     );
+
+	allElements.push_back(player.get());
 
 }
 
@@ -309,7 +327,10 @@ void Game::spawnEnemy() {
         100, 1.0f, 50.0f,
         10.0f, 1
     );
-
 	newEnemy->setTarget(player.get());
+
+	Enemy* rawEnemyPtr = newEnemy.get();
 	enemies.emplace_back(std::move(newEnemy));
+
+	allElements.push_back(rawEnemyPtr);
 }
