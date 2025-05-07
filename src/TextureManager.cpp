@@ -44,6 +44,8 @@ SDL_Texture *TextureManager::getTexture(std::string textureName) {
         return nullptr;
     }
     return textures[textureName];
+
+    
 }
 
 SDL_Texture* TextureManager::renderText(const std::string text, const std::string fontPath, SDL_Color color, int fontSize) {

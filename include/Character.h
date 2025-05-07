@@ -3,8 +3,8 @@
 
 class Character : public Entity {
     public:
-        Character(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
-        float hp, float atkRate, float movSpeed);
+        Character(float width, float height, const Vector& pos, const Vector& speed,
+        float hp, float atkRate, float movSpeed, SpriteAnimation* spriteAnimation);
 
         float getHp() const { return this->hp; }
         float getAtkRate() const { return this->atkRate; }

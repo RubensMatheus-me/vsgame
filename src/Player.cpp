@@ -3,28 +3,18 @@
 #include "Keyboard.h"
 #include "TickRate.h"
 #include "Timer.h"
+#include "SpriteAnimation.h"
 
-
-Player::Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
-     float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed)
-    : Character(width, height, image, pos, speed, hp, atkRate, movSpeed), xp(xp), level(level), atkSpeed(atkSpeed) {}
+Player::Player(float width, float height, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
+     float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed, bool isMoving, Vector& direction)
+    : Character(width, height, pos, speed, hp, atkRate, movSpeed, spriteAnimation), xp(xp), level(level), atkSpeed(atkSpeed), isMoving(isMoving), direction(direction),
+    facingRight(true) {}
 
 void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
-     SDL_Rect srcRect;
-     srcRect.h = getHeight();
-     srcRect.w = getWidth();
-     srcRect.x = 0;
-     srcRect.y = 0;
+     float drawX = getPosition().x - cameraOffSet.x;
+     float drawY = getPosition().y - cameraOffSet.y;
 
-     SDL_Rect destRect;
-     destRect.x = getPosition().x - cameraOffSet.x;
-     destRect.y = getPosition().y - cameraOffSet.y;
-     destRect.h = getHeight();
-     destRect.w = getWidth();
-
-     SDL_Texture* tex = TextureManager::getTexture("stickman");
-
-     TextureManager::draw(tex, srcRect, destRect);
+     spriteAnimation->render(renderer, drawX, drawY);
 }
 
 SDL_Rect Player::getCollider() const {
@@ -38,5 +28,20 @@ SDL_Rect Player::getCollider() const {
 }
 
 void Player::update(float deltaTime) {
-
+     if (isMoving) {
+          if (direction.x > 0) {
+            spriteAnimation->play("walk-right");
+              facingRight = true;
+          } else if (direction.x < 0) {
+            spriteAnimation->play("walk-left");
+              facingRight = false;
+          } else {
+            spriteAnimation->play(facingRight ? "walk-right" : "walk-left");
+          }
+      } else {
+        spriteAnimation->play(facingRight ? "idle-right" : "idle-left");
+      }
+      
+      spriteAnimation->update(deltaTime);
 }
+

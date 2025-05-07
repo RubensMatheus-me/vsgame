@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "Enemy.h"
 #include "SDL_ttf.h"
+#include "SpriteAnimation.h"
 
 const char* pathFont = "assets/fonts/dogica.ttf";
 int windowWidth, windowHeight;
@@ -20,6 +21,8 @@ std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<CameraManager> camera;
+std::unique_ptr<SpriteAnimation> playerAnimation;
+
 
 std::string lastFpsText;
 std::string lastTimeText;
@@ -36,6 +39,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	tickRate = std::make_unique<TickRate>();
 	collision = std::make_unique<CollisionManager>();
 	tileManager = std::make_unique<TileManager>();
+	playerAnimation = std::make_unique<SpriteAnimation>();
 
 	int flags = 0;
 	
@@ -56,10 +60,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 
 		loadResources();
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
+		
 		initializeEntities();
-
-		spawnEnemy();
-
 
 		setIsRunning(true);
 
@@ -133,7 +135,7 @@ void Game::render() {
         SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
     }
 
-	if(!getDebugMode() == false){
+	if(getDebugMode()){
 		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
 	}
 
@@ -143,14 +145,15 @@ void Game::render() {
 void Game::update() {
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	tickRate->update();
-	camera->follow(player->getPosition());
-
 	float dt = tickRate->getDeltaTime();
-	
-	player->update(dt);
-	keyboard->update(*player, dt);
 
 	timer.update(dt);
+
+	if (player) {
+		camera->follow(player->getPosition());
+		keyboard->update(*player, dt);
+		player->update(dt);
+	}
 
 	if(!allElements.empty()) {
 		CollisionManager::handleCollisions(allElements);
@@ -171,8 +174,13 @@ void Game::update() {
 
 void Game::loadResources() {
 
-	//enemies, player
-	TextureManager::loadTexture("assets/sprites/classes/Stickman.png", "stickman");
+	//player
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-left.png", "warrior-idle-left");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "warrior-idle-right");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "warrior-walk-right");
+
+	//enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
 
 	//tiles
@@ -199,27 +207,34 @@ void Game::limitFPS(float targetFPS) {
 
 void Game::initializeEntities() {
 
-	float centerX = (windowWidth - 32) / 2;
-	float centerY = (windowHeight - 32) / 2;
+	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4);
+	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4);
+	playerAnimation->addAnimation("idle-right", "warrior-idle-right", 0, 0, 34, 32, 6);
+	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6);
+	playerAnimation->play("idle-right");
 
+	Vector centerPos((windowWidth - 32) / 2, (windowHeight - 32) / 2);
+	Vector zero(0, 0);
 
-	SDL_Texture* tex = TextureManager::getTexture("stickman");
-    if (tex == nullptr) {
-        std::cerr << "Erro: textura 'stickman' não carregada corretamente!" << std::endl;
-        return;
-    }
-
-    player = std::make_unique<Player>(
-        32, 32,
-        tex,
-        Vector(centerX, centerY),
-        Vector(0.5f, 0.5f),
-        100, 1.0f, 100.0f,
-        0, 1, 1.5f
+	player = std::make_unique<Player>(
+		32, 32,
+		playerAnimation.get(),     
+		centerPos,             
+		Vector(0.5f, 0.5f),    
+		100,                  
+		1.0f,                  
+		100.0f,                
+		0,                     
+		1,                     
+		1.5f,                  
+		false,                 
+		zero                   
     );
 
+	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
-
+		
+	spawnEnemy();
 }
 
 void Game::updateFpsDisplay() {
@@ -290,47 +305,38 @@ void Game::updateClockDisplay() {
 }
 
 void Game::spawnEnemy() {
+
 	int spawnMargin = 100;
 	int side = rand() % 4;
 	float x = 0, y = 0;
 
 	switch(side) {
-		case 0:
-			x = rand() %(windowWidth + 200) - 100;
-			y = - spawnMargin;
-			break;
-		case 1:
-			x = rand() % (windowWidth + 200) - 100;
-			y = windowHeight + spawnMargin;
-			break;
-		case 2:
-			x = -spawnMargin;
-			y = rand() % (windowHeight + 200) - 100;
-			break;
-		case 3:
-			x = windowWidth + spawnMargin;
-			y = rand() % (windowHeight + 200) - 100;
-			break;
+		case 0: x = rand() %(windowWidth + 200) - 100; y = -spawnMargin; break;
+        case 1: x = rand() % (windowWidth + 200) - 100; y = windowHeight + spawnMargin; break;
+        case 2: x = -spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
+        case 3: x = windowWidth + spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
 	}
 
-	SDL_Texture* enemyTexture = TextureManager::getTexture("slime");
+	auto slimeAnim = std::make_unique<SpriteAnimation>();
+	slimeAnim->addAnimation("idle", "slime", 0, 0, 32, 32, 1);
+	slimeAnim->play("idle");
 
-	if (TextureManager::getTexture("slime") == nullptr) {
-		std::cerr << "Erro ao carregar textura slime!" << std::endl;
-	}
+	auto slime = std::make_unique<Enemy>(
+		32, 32,                        
+		nullptr,                        
+		std::move(slimeAnim),           
+		Vector(x, y),                 
+		Vector(0, 0),                 
+		10,                             
+		1.0f,                           
+		50.0f,                          
+		5.0f,                           
+		1      
+	);
+	slime->setTarget(player.get());
 
-	auto newEnemy = std::make_unique<Enemy>(
-        32, 32,
-        enemyTexture,
-        Vector(x, y),
-        Vector(0.5f, 0.5f),
-        100, 1.0f, 50.0f,
-        10.0f, 1
-    );
-	newEnemy->setTarget(player.get());
-
-	Enemy* rawEnemyPtr = newEnemy.get();
-	enemies.emplace_back(std::move(newEnemy));
+	Enemy* rawEnemyPtr = slime.get();
+	enemies.emplace_back(std::move(slime));
 
 	allElements.push_back(rawEnemyPtr);
 }

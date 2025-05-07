@@ -5,7 +5,7 @@
 
 class Entity : public GraphicalElement {
 	public:
-		Entity(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed);
+		Entity(float width, float height, const Vector& pos, const Vector& speed, SpriteAnimation* spriteAnimation);
 
 		Vector getPosition() const { return this->pos; }
 		Vector getSpeed() const { return this->speed; }

@@ -1,10 +1,12 @@
 #pragma once
+#include <memory>
 #include "Character.h"
 #include "Player.h"
+#include "SpriteAnimation.h"
 
 class Enemy : public Character {
     public:
-        Enemy(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
+        Enemy(float width, float height, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
         float hp, float atkRate, float movSpeed, float xpDrop, int spawnWeight);
 
         void setTarget(const Player* newTarget) {this->target = newTarget;}
@@ -20,6 +22,8 @@ class Enemy : public Character {
         SDL_Rect getCollider() const override;
 
     private:
+        SpriteAnimation *spriteAnimation;
+        std::unique_ptr<SpriteAnimation> animation;
         const Player* target;
         float xpDrop;
         int spawnWeight;

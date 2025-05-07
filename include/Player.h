@@ -1,12 +1,14 @@
 #pragma once
 #include "Character.h"
+#include "SpriteAnimation.h"
 #include <vector>
 #include <string>
 
 class Player : public Character {
     public:
-        Player(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
-        float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed);
+    Player(float width, float height, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
+        float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed,
+        bool isMoving, Vector& direction);
     
         float getXp() const { return this->xp; }
         int getLevel() const { return this->level; }
@@ -15,15 +17,20 @@ class Player : public Character {
         void setXp(float xp) { this->xp = xp; }
         void setLevel(int level) { this->level = level; }
         void setAtkSpeed(float atkSpeed) { this->atkSpeed = atkSpeed; }
-
+        void setIsMoving(bool moving) { this->isMoving = moving; }
+        void setDirection(const Vector& dir) { this->direction = dir; }
+        void setAnimations(SpriteAnimation* anim) {this->spriteAnimation = anim;}
 
         void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update(float deltaTime) override;
         SDL_Rect getCollider() const override;
     
     private:
+        SpriteAnimation* spriteAnimation;
+        bool facingRight;
+        bool isMoving;
+        Vector direction;
         float xp;
         int level;
         float atkSpeed;
-		std::vector<std::string> classes;
 };

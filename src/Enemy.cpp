@@ -1,27 +1,18 @@
 #include "Enemy.h"
 #include "TextureManager.h"
+#include "SpriteAnimation.h"
 
-Enemy::Enemy(float width, float height, SDL_Texture *image, const Vector& pos, const Vector& speed,
-             float hp, float atkRate, float movSpeed, float xpDrop, int spawnWeight)
-    : Character(width, height, image, pos, speed, hp, atkRate, movSpeed),
-      xpDrop(xpDrop), spawnWeight(spawnWeight) {}
+Enemy::Enemy(float width, float height, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
+     float hp, float atkRate, float movSpeed, float xpDrop, int spawnWeight)
+     : Character(width, height, pos, speed, hp, atkRate, movSpeed, spriteAnimation), animation(std::move(anim)),
+     xpDrop(xpDrop), spawnWeight(spawnWeight) {}
 
 void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
-	SDL_Rect srcRect;
-     srcRect.h = getHeight();
-     srcRect.w = getWidth();
-     srcRect.x = 0;
-     srcRect.y = 0;
+     
+     float drawX = getPosition().x - cameraOffSet.x;
+     float drawY = getPosition().y - cameraOffSet.y;
 
-     SDL_Rect destRect;
-     destRect.x = getPosition().x - cameraOffSet.x;
-     destRect.y = getPosition().y - cameraOffSet.y;
-     destRect.h = getHeight();
-     destRect.w = getWidth();
-
-	 SDL_Texture* tex = TextureManager::getTexture("slime");
-
-     TextureManager::draw(tex, srcRect, destRect);
+     animation->render(renderer, drawX, drawY);
 
 }
 
@@ -36,12 +27,14 @@ SDL_Rect Enemy::getCollider() const {
 }
 
 void Enemy::update(float deltaTime){
-
      if(target) {
           Vector direction = target->getPosition() - getPosition();
           direction.normalize();
 
           Vector velocity = direction * getMovSpeed() * deltaTime;
           setPosition(getPosition() + velocity);
+     } 
+     if(animation) {
+          animation->update(deltaTime);
      }
 }

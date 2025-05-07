@@ -1,9 +1,10 @@
 #pragma once
 #include "Item.h"
+#include "SpriteAnimation.h"
 
 class Weapon : public Item {
     public:
-        Weapon(float width, float height, SDL_Texture *image, const std::string& description,
+        Weapon(float width, float height, SpriteAnimation *spriteAnimation, const std::string& description,
             float flatDamage, float flatAtkSpeed, float damageMultiplier,
             float atkSpeedMultiplier, int level);
 

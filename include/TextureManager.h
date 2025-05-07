@@ -10,6 +10,7 @@ class TextureManager {
         static void init(SDL_Renderer* ren);
         static void loadTexture(const char* filename, std::string textureName);
         static SDL_Texture* getTexture(std::string textureName);
+        static SDL_Renderer* getRenderer() {return renderer;}
 
         static void draw(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect);
         static void cleanTexture();

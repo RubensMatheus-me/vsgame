@@ -1,10 +1,11 @@
 #pragma once
-#include <SDL2/SDL.h>
+#include <SDL2/SDL.h>		
 #include "Vector.h"
+#include "SpriteAnimation.h"
 
 class GraphicalElement {
 	public:
-		GraphicalElement(float width, float height, SDL_Texture *image);
+		GraphicalElement(float width, float height, SpriteAnimation* spriteAnimation);
 
 		float getWidth() const { return this->width; }
 		float getHeight() const { return this->height; }
@@ -12,7 +13,7 @@ class GraphicalElement {
 		void setWidth(float width) { this->width = width; }
 		void setHeight(float height) { this->height = height; }
 
-		SDL_Texture* getSprite() const { return this->sprite; }
+		const SpriteAnimation* getSprite() const { return this->spriteAnimation; }
 
 		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
 		virtual void update(float deltaTime) = 0;
@@ -21,5 +22,5 @@ class GraphicalElement {
 	private:
 		float width;
 		float height;
-		SDL_Texture* sprite;
+		SpriteAnimation* spriteAnimation;
 };
