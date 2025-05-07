@@ -11,7 +11,7 @@
 const char* pathFont = "assets/fonts/dogica.ttf";
 int windowWidth, windowHeight;
 
-bool Game::debugMode = false;
+bool Game::debugMode = true;
 
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
@@ -228,7 +228,8 @@ void Game::initializeEntities() {
 		1,                     
 		1.5f,                  
 		false,                 
-		zero                   
+		zero,
+		0.0f, 1.0f                   
     );
 
 	player->setAnimations(playerAnimation.get());
