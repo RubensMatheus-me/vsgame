@@ -157,6 +157,7 @@ void Game::update() {
 
 	if(!allElements.empty()) {
 		CollisionManager::handleCollisions(allElements);
+	
 	}else {
 		std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
 	}

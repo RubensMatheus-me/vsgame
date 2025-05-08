@@ -20,10 +20,15 @@ class TileManager {
     TileManager();
 
     bool loadMap(const std::string& tileMapPath, const std::string& tilePropertiesPath, SDL_Renderer* renderer);
-    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect& playerCollider);
+    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect playerCollider);
 
     int getTileWidth() const { return tileWidth; }
     int getTileHeight() const { return tileHeight; }
+	std::map<int, Tile> getTileMap() const { return tileMap;}
+	std::vector<int> getTileData() const {return tileData;}
+
+	int getMapWidth() const {return mapWidth;}
+	int getMapHeight() const {return mapHeight;}
 
     private:
         int mapWidth, mapHeight;

@@ -12,7 +12,7 @@
       },
       "3": {
         "image": "mudTile.png",
-        "walkable": true,
+        "walkable": false,
         "terrainType": "mud"
       },
       "4": {

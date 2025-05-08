@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include "Vector.h" 
 #include "Game.h"
+#include "Player.h"
 
 TileManager::TileManager() {}
 
@@ -50,14 +51,13 @@ bool  TileManager::loadMap(const std::string& tileMapPath, const std::string& ti
     return true;
 }
 
-void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect& playerCollider) {
+void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const SDL_Rect playerCollider) {
     for (int row = 0; row < mapHeight; ++row) {
         for (int col = 0; col < mapWidth; ++col) {
             int index = row * mapWidth + col;
             int tileId = tileData[index];
 
             if (tileId == 0 || tileMap.find(tileId) == tileMap.end()) continue;
-
 
             int x = col * tileWidth - cameraOffSet.x;
             int y = row * tileHeight - cameraOffSet.y;
