@@ -1,24 +1,24 @@
 {
     "tiles": {
       "1": {
-        "image": "grassTile.png",
+        "image": "simpleTile.png",
         "walkable": true,
         "terrainType": "grass"
       },
       "2": {
-        "image": "grassTile2.png",
+        "image": "grama.png",
         "walkable": true,
         "terrainType": "grass"
       },
       "3": {
-        "image": "mudTile.png",
+        "image": "lama.png",
         "walkable": true,
-        "terrainType": "mud"
+        "terrainType": "grass/mud"
       },
       "4": {
-        "image": "sandTile.png",
+        "image": "pedra.png",
         "walkable": true,
-        "terrainType": "sand"
+        "terrainType": "grass/rock"
       }
     }
   }

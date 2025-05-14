@@ -4,10 +4,11 @@
 #include "TickRate.h"
 #include "Timer.h"
 #include "SpriteAnimation.h"
+#include "Rect.h"
 
-Player::Player(float width, float height, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
+Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
      float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed, bool isMoving, Vector& direction, float damageCooldown, float invulnerabilityTime)
-    : Character(width, height, pos, speed, hp, atkRate, movSpeed, spriteAnimation),
+    : Character(size, pos, speed, hp, atkRate, movSpeed, spriteAnimation),
     xp(xp),
     level(level),
     atkSpeed(atkSpeed),
@@ -18,20 +19,14 @@ Player::Player(float width, float height, SpriteAnimation* spriteAnimation, cons
     invulnerabilityTime(invulnerabilityTime){}
 
 void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
-     float drawX = getPosition().x - cameraOffSet.x;
-     float drawY = getPosition().y - cameraOffSet.y;
+  float drawX = getPosition().x - cameraOffSet.x;
+  float drawY = getPosition().y - cameraOffSet.y;
 
-     spriteAnimation->render(renderer, drawX, drawY);
+  spriteAnimation->render(renderer, drawX, drawY);
 }
 
-SDL_Rect Player::getCollider() const {
-     SDL_Rect rect;
-     rect.x = getPosition().x;
-     rect.y = getPosition().y;
-     rect.h = getHeight();
-     rect.w = getWidth();
-
-     return rect;
+Rect Player::getCollider() const {
+  return Rect(getPosition().x, getPosition().y, 50.0f, 50.0f);
 }
 
 void Player::update(float deltaTime) {

@@ -6,7 +6,7 @@
 
 class Enemy : public Character {
     public:
-        Enemy(float width, float height, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
+        Enemy(const Vector& size, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
         float hp, float atkRate, float movSpeed, float xpDrop, int spawnWeight);
 
         void setTarget(const Player* newTarget) {this->target = newTarget;}
@@ -19,7 +19,8 @@ class Enemy : public Character {
 
 		void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update(float deltaTime) override;
-        SDL_Rect getCollider() const override;
+        
+        Rect getCollider() const override;
 
     private:
         SpriteAnimation *spriteAnimation;

@@ -4,7 +4,7 @@
 
 class Weapon : public Item {
     public:
-        Weapon(float width, float height, SpriteAnimation *spriteAnimation, const std::string& description,
+        Weapon(const Vector& size, SpriteAnimation *spriteAnimation, const std::string& description,
             float flatDamage, float flatAtkSpeed, float damageMultiplier,
             float atkSpeedMultiplier, int level);
 

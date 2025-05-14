@@ -2,9 +2,9 @@
 #include "TextureManager.h"
 #include "SpriteAnimation.h"
 
-Enemy::Enemy(float width, float height, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
+Enemy::Enemy(const Vector& size, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
      float hp, float atkRate, float movSpeed, float xpDrop, int spawnWeight)
-     : Character(width, height, pos, speed, hp, atkRate, movSpeed, spriteAnimation), animation(std::move(anim)),
+     : Character(size, pos, speed, hp, atkRate, movSpeed, spriteAnimation), animation(std::move(anim)),
      xpDrop(xpDrop), spawnWeight(spawnWeight) {}
 
 void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
@@ -16,14 +16,8 @@ void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
 
 }
 
-SDL_Rect Enemy::getCollider() const {
-     SDL_Rect rect;
-     rect.x = getPosition().x;
-     rect.y = getPosition().y;
-     rect.h = getHeight();
-     rect.w = getWidth();
-
-     return rect;
+Rect Enemy::getCollider() const {
+     return Rect(getPosition().x, getPosition().y, 50.0f, 50.0f);
 }
 
 void Enemy::update(float deltaTime){

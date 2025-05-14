@@ -6,7 +6,7 @@
 
 class Player : public Character {
     public:
-    Player(float width, float height, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
+    Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
         float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed,
         bool isMoving, Vector& direction, float damageCooldown, float invulnerabilityTime);
     
@@ -26,7 +26,7 @@ class Player : public Character {
 
         void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update(float deltaTime) override;
-        SDL_Rect getCollider() const override;
+        Rect getCollider() const override;
     
     private:
         SpriteAnimation* spriteAnimation;

@@ -135,10 +135,11 @@ void Game::render() {
         SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
     }
 
+	/*
 	if(getDebugMode()){
 		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
 	}
-
+	*/
 	SDL_RenderPresent(renderer);
 }
 
@@ -213,11 +214,13 @@ void Game::initializeEntities() {
 	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6);
 	playerAnimation->play("idle-right");
 
-	Vector centerPos((windowWidth - 32) / 2, (windowHeight - 32) / 2);
+	int mapCenterX = tileManager->getMapWidthInPixels() / 2;
+	int mapCenterY = tileManager->getMapHeightInPixels() / 2;
+	Vector centerPos(mapCenterX, mapCenterY);
 	Vector zero(0, 0);
 
 	player = std::make_unique<Player>(
-		32, 32,
+		Vector(32, 32),
 		playerAnimation.get(),     
 		centerPos,             
 		Vector(0.5f, 0.5f),    
@@ -323,7 +326,7 @@ void Game::spawnEnemy() {
 	slimeAnim->play("idle");
 
 	auto slime = std::make_unique<Enemy>(
-		32, 32,                        
+		Vector(32, 32),                        
 		nullptr,                        
 		std::move(slimeAnim),           
 		Vector(x, y),                 
