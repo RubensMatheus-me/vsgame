@@ -1,12 +1,9 @@
 #pragma once
+#include "Vector.h"
 
 struct Rect {
-    float x;
-    float y;
-    float w;
-    float h;
-
-    Rect(float x, float y, float w, float h);
+    Vector pos;
+	Vector size;
 
     bool intersects(const Rect& other) const;
 };

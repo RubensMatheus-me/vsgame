@@ -17,7 +17,7 @@ void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
 }
 
 Rect Enemy::getCollider() const {
-     return Rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
+    return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
 }
 
 void Enemy::update(float deltaTime){

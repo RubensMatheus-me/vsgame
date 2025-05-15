@@ -19,8 +19,6 @@ void CollisionManager::handleCollisions(const std::vector<GraphicalElement*>& el
 
             Rect rectA = entityA->getCollider();
             Rect rectB = entityB->getCollider();
-            std::cout << "Rect A: (" << rectA.x << ", " << rectA.y << ", " << rectA.w << ", " << rectA.h << ")\n";
-            std::cout << "Rect B: (" << rectB.x << ", " << rectB.y << ", " << rectB.w << ", " << rectB.h << ")\n";
 
             if (rectA.intersects(rectB)) {
                 std::cout << "Colisão detectada!" << std::endl;

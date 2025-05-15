@@ -26,7 +26,7 @@ void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
 }
 
 Rect Player::getCollider() const {
-  return Rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
+  return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
 }
 
 void Player::update(float deltaTime) {

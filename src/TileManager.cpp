@@ -61,7 +61,7 @@ void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, 
             float x = static_cast<float>(col * tileWidth) - cameraOffSet.x;
             float y = static_cast<float>(row * tileHeight) - cameraOffSet.y;
 
-            Rect tileRect(x, y, static_cast<float>(tileWidth), static_cast<float>(tileHeight));
+            Rect tileRect({x, y}, {static_cast<float>(tileWidth), static_cast<float>(tileHeight)});
 
             if (!tileMap[tileId].walkable && playerCollider.intersects(tileRect)) {
                 std::cout << "Colidiu com o tile (" << col << ", " << row << ") do tipo: " 
