@@ -7,6 +7,9 @@
 #include "Enemy.h"
 #include "SDL_ttf.h"
 #include "SpriteAnimation.h"
+#include "Config.h"
+
+using namespace Config;
 
 const char* pathFont = "assets/fonts/dogica.ttf";
 int windowWidth, windowHeight;
@@ -220,19 +223,20 @@ void Game::initializeEntities() {
 	Vector zero(0, 0);
 
 	player = std::make_unique<Player>(
-		Vector(32, 32),
-		playerAnimation.get(),     
-		centerPos,             
-		Vector(0.5f, 0.5f),    
-		100,                  
-		1.0f,                  
-		100.0f,                
-		0,                     
-		1,                     
-		1.5f,                  
-		false,                 
-		zero,
-		0.0f, 1.0f                   
+		Config::PLAYER_SIZE,
+		playerAnimation.get(),
+		centerPos,
+		Config::PLAYER_SPEED,
+		Config::PLAYER_HP,
+		Config::PLAYER_ATTACK_RATE,
+		Config::PLAYER_MOV_SPEED,
+		Config::PLAYER_INITIAL_XP,
+		Config::PLAYER_INITIAL_LEVEL,
+		Config::PLAYER_ATTACK_SPEED,
+		Config::PLAYER_IS_MOVING,
+		Config::PLAYER_INITIAL_DIRECTION,
+		Config::PLAYER_DAMAGE_COOLDOWN,
+		Config::PLAYER_INVULNERABILITY_TIME                   
     );
 
 	player->setAnimations(playerAnimation.get());
@@ -326,16 +330,16 @@ void Game::spawnEnemy() {
 	slimeAnim->play("idle");
 
 	auto slime = std::make_unique<Enemy>(
-		Vector(32, 32),                        
-		nullptr,                        
-		std::move(slimeAnim),           
-		Vector(x, y),                 
-		Vector(0, 0),                 
-		10,                             
-		1.0f,                           
-		50.0f,                          
-		5.0f,                           
-		1      
+		Config::ENEMY_SIZE,
+		nullptr,
+		std::move(slimeAnim),
+		Vector(x, y),
+		Config::ENEMY_SPEED,
+		Config::ENEMY_HP,
+		Config::ENEMY_ATTACK_RATE,
+		Config::ENEMY_MOV_SPEED,
+		Config::ENEMY_XP_DROP,
+		Config::ENEMY_SPAWN_WEIGHT  
 	);
 	slime->setTarget(player.get());
 

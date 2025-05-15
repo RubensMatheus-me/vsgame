@@ -8,7 +8,7 @@ class Player : public Character {
     public:
     Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
         float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed,
-        bool isMoving, Vector& direction, float damageCooldown, float invulnerabilityTime);
+        bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime);
     
         float getXp() const { return this->xp; }
         int getLevel() const { return this->level; }
