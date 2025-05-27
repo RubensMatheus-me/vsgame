@@ -5,12 +5,14 @@
 #include "Timer.h"
 #include "SpriteAnimation.h"
 #include "Rect.h"
+#include "Config.h"
 
 Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
-     float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed, bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime)
+     float hp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed, bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime)
     : Character(size, pos, speed, hp, atkRate, movSpeed, spriteAnimation),
     xp(xp),
     level(level),
+    xpNextLevel(xpNextLevel),
     atkSpeed(atkSpeed),
     isMoving(isMoving),
     direction(direction),
@@ -50,5 +52,10 @@ void Player::update(float deltaTime) {
       }
       
       spriteAnimation->update(deltaTime);
+  if(xp > xpNextLevel) {
+      level = level +1;
+      xpNextLevel = xpNextLevel * Config::NEXT_LEVEL_EXPERIENCE_RATE;
+      xp = 0.0f;
+  }
 }
 

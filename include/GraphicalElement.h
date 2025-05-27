@@ -9,7 +9,7 @@ class GraphicalElement {
 
 		Vector getSize() const { return this->size; }
 
-		const SpriteAnimation* getSprite() const { return this->spriteAnimation; }
+		SpriteAnimation* getSprite() { return this->spriteAnimation; }
 
 		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
 		virtual void update(float deltaTime) = 0;

@@ -1,0 +1,14 @@
+[
+  {
+    "description": "Double HP",
+    "hpMultiplier": 2.0
+  },
+  {
+    "description": "50% More Damage",
+    "damageMultiplier": 1.5
+  },
+  {
+    "description": "Speed Boost",
+    "movSpeedMultiplier": 1.5
+  }
+]

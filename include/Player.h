@@ -7,7 +7,7 @@
 class Player : public Character {
     public:
     Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
-        float hp, float atkRate, float movSpeed, float xp, int level, float atkSpeed,
+        float hp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
         bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime);
     
         float getXp() const { return this->xp; }
@@ -15,6 +15,9 @@ class Player : public Character {
         float getAtkSpeed() const { return this->atkSpeed; }
         float getDamageCooldown() const { return this->damageCooldown; }
         float getInvunerabilityTime() const { return this->invulnerabilityTime; }
+        float getHp() const { return this->hp; }
+        float getMovSpeed() const { return this->movSpeed; }
+        float getXpNextLevel() const { return this->xpNextLevel; }
     
         void setXp(float xp) { this->xp = xp; }
         void setLevel(int level) { this->level = level; }
@@ -23,6 +26,9 @@ class Player : public Character {
         void setDirection(const Vector& dir) { this->direction = dir; }
         void setAnimations(SpriteAnimation* anim) {this->spriteAnimation = anim;}
         void setDamageCooldown(float damageCooldown) { this->damageCooldown = damageCooldown; }
+        void setHp(float hp) { this->hp = hp; }
+        void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
+    
 
         void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
         void update(float deltaTime) override;
@@ -37,5 +43,6 @@ class Player : public Character {
         float invulnerabilityTime;
         float xp;
         int level;
+        float xpNextLevel;
         float atkSpeed;
 };

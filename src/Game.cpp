@@ -5,9 +5,11 @@
 #include "TickRate.h"
 #include "CollisionManager.h"
 #include "Enemy.h"
+#include "Upgrade.h"
 #include "SDL_ttf.h"
 #include "SpriteAnimation.h"
 #include "Config.h"
+#include "LevelUpMenu.h"
 
 using namespace Config;
 
@@ -25,12 +27,14 @@ std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<CameraManager> camera;
 std::unique_ptr<SpriteAnimation> playerAnimation;
-
+std::unique_ptr<LevelUpMenu> levelUpMenu;
 
 std::string lastFpsText;
 std::string lastTimeText;
+std::string lastXpText;
 SDL_Texture* fpsTexture = nullptr;
 SDL_Texture* timeTexture = nullptr;
+SDL_Texture* xpTexture = nullptr;
 
 
 Game::Game() : timer(1.0f){};
@@ -43,6 +47,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	collision = std::make_unique<CollisionManager>();
 	tileManager = std::make_unique<TileManager>();
 	playerAnimation = std::make_unique<SpriteAnimation>();
+	levelUpMenu = std::make_unique<LevelUpMenu>();
 
 	int flags = 0;
 	
@@ -93,7 +98,7 @@ void Game::clean() {
 
 	SDL_DestroyTexture(fpsTexture);
     SDL_DestroyTexture(timeTexture);
-
+    SDL_DestroyTexture(xpTexture);
 
 	TTF_Quit();
 	SDL_Quit();
@@ -138,6 +143,13 @@ void Game::render() {
         SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
     }
 
+	if (xpTexture != nullptr) {
+		int textW = 0, textH = 0;
+        SDL_QueryTexture(xpTexture, nullptr, nullptr, &textW, &textH);
+        SDL_Rect xpRect = {10, 25, textW, textH};
+        SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
+	}
+
 	/*
 	if(getDebugMode()){
 		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
@@ -152,6 +164,13 @@ void Game::update() {
 	float dt = tickRate->getDeltaTime();
 
 	timer.update(dt);
+
+	if (player->getLevel() > levelUpMenu->lastUpgradedLevel) {
+		TTF_Font* font = TTF_OpenFont(pathFont, 10);
+		LevelUpMenu::show(renderer, font, *player, "assets/data/upgrades.json", windowWidth, windowHeight);
+		TTF_CloseFont(font);
+		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel +1;
+	}
 
 	if (player) {
 		camera->follow(player->getPosition());
@@ -174,6 +193,7 @@ void Game::update() {
 
 	updateFpsDisplay();
 	updateClockDisplay();
+	updateXp();
 }
 
 void Game::loadResources() {
@@ -232,6 +252,7 @@ void Game::initializeEntities() {
 		Config::PLAYER_MOV_SPEED,
 		Config::PLAYER_INITIAL_XP,
 		Config::PLAYER_INITIAL_LEVEL,
+		Config::INITIAL_NEXT_LEVEL_EXPERIENCE,
 		Config::PLAYER_ATTACK_SPEED,
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
@@ -306,6 +327,38 @@ void Game::updateClockDisplay() {
 		}
 		timeTexture = TextureManager::renderText(timeText, pathFont, black, 12);
 		if (timeTexture == nullptr) {
+			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
+		}
+		TTF_CloseFont(font);
+	}
+}
+
+void Game::updateXp() {
+	std::string xpText = "LEVEL: " + std::to_string(player->getLevel()) + " XP:" + std::to_string(static_cast<int>(player->getXp())) + " / " + std::to_string(static_cast<int>(player->getXpNextLevel()));
+	if(xpText != lastXpText) {
+		SDL_Color black = {0, 0, 0, 255};
+		lastXpText = xpText;
+	
+		if(xpTexture != nullptr) {
+			SDL_DestroyTexture(xpTexture);
+			xpTexture = nullptr;
+		}
+
+		TTF_Font* font = TTF_OpenFont(pathFont, 12);
+		if(!font) {
+			std::cerr << "erro: " << TTF_GetError() << std::endl;
+			return;
+		}
+
+		int textW = 0, textH = 0;
+
+		if(TTF_SizeText(font, xpText.c_str(), &textW, &textH) != 0) {
+			std::cerr << TTF_GetError() << std::endl;
+			TTF_CloseFont(font);
+			return;
+		}
+		xpTexture = TextureManager::renderText(xpText, pathFont, black, 12);
+		if (xpTexture == nullptr) {
 			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
 		}
 		TTF_CloseFont(font);

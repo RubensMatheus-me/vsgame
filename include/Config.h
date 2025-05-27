@@ -17,6 +17,8 @@ namespace Config {
     inline const Vector PLAYER_INITIAL_DIRECTION(0, 0);
     inline constexpr float PLAYER_DAMAGE_COOLDOWN = 0.0f;
     inline constexpr float PLAYER_INVULNERABILITY_TIME = 1.0f;
+    inline constexpr float INITIAL_NEXT_LEVEL_EXPERIENCE = 100.0f;
+    inline constexpr float NEXT_LEVEL_EXPERIENCE_RATE = 2.0f;
 
     // Enemy base stats
     inline const Vector ENEMY_SIZE(32, 32);

@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "Player.h"
 #include "Enemy.h"
 #include "iostream"
@@ -30,6 +31,7 @@ class Game {
 		void initializeEntities();
 		void updateFpsDisplay();
 		void updateClockDisplay();
+		void updateXp();
 
 		bool getIsRunning() const {return this->isRunning;}
 		int getWidth() const {return this->width;}
@@ -56,7 +58,6 @@ class Game {
 		static bool debugMode;
         SDL_Window *window;
         SDL_Renderer *renderer;
-		
 
 		Timer timer;
 };
