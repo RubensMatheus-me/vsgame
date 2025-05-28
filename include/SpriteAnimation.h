@@ -9,6 +9,7 @@
 class SpriteAnimation {
     public:
         SpriteAnimation();
+        SpriteAnimation(const SpriteAnimation& other);
 
         void addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames);
         void play(const std::string& animationName);

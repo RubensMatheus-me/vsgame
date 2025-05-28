@@ -3,7 +3,6 @@
 #include "Vector.h"
 namespace Config {
 
-
 	//Player base stats
 	inline const Vector PLAYER_SIZE(32, 32);
     inline const Vector PLAYER_SPEED(0.5f, 0.5f);

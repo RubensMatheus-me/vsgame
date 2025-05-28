@@ -16,8 +16,10 @@ class Entity : public GraphicalElement {
 
 		virtual Rect getCollider() const = 0;
 
-
+		virtual void setAlive(bool val) { alive = val; }
+    	virtual bool isAlive() const { return alive; }
 	private:
+		bool alive;
 		Vector pos;
 		Vector speed;
 };

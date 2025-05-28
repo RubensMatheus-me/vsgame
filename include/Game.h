@@ -6,10 +6,12 @@
 #include "iostream"
 #include <memory>
 #include "Keyboard.h"
+#include "Projectile.h"
 #include "TickRate.h"
 #include "Timer.h"
 #include "TileManager.h"
 #include "CameraManager.h"
+#include "LevelUpMenu.h"
 
 //const float MAX_FPS = 60.0f;
 
@@ -42,6 +44,8 @@ class Game {
 		void setHeight(const int newHeight) {this->height = newHeight;}
 		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
 		static void setDebugMode(const bool newDebugMode) {debugMode = newDebugMode;}
+		void shootProjectile();
+		void removeDeadEntities();
 
 		void spawnEnemy();
 		
@@ -58,6 +62,5 @@ class Game {
 		static bool debugMode;
         SDL_Window *window;
         SDL_Renderer *renderer;
-
 		Timer timer;
 };
