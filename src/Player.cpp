@@ -23,6 +23,7 @@ void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
   float drawY = getPosition().y - cameraOffSet.y;
 
   spriteAnimation->render(renderer, drawX, drawY);
+
 }
 
 Rect Player::getCollider() const {
@@ -30,6 +31,9 @@ Rect Player::getCollider() const {
 }
 
 void Player::update(float deltaTime) {
+  if (attackCooldown > 0) {
+            attackCooldown -= deltaTime;
+  }
   if (damageCooldown > 0.0f) {
     damageCooldown -= deltaTime;
     

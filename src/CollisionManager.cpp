@@ -8,7 +8,6 @@
 bool CollisionManager::checkCollision(const Rect& a, const Rect& b) {
     return a.intersects(b);
 }
-
 void CollisionManager::handleCollisions(const std::vector<GraphicalElement*>& elements) {
     for (size_t i = 0; i < elements.size(); ++i) {
         for (size_t j = i + 1; j < elements.size(); ++j) {
@@ -21,7 +20,6 @@ void CollisionManager::handleCollisions(const std::vector<GraphicalElement*>& el
             Rect rectB = entityB->getCollider();
 
             if (rectA.intersects(rectB)) {
-                std::cout << "Colisão detectada!" << std::endl;
                 Player* player = dynamic_cast<Player*>(entityA);
                 Entity* other = entityB;
 
@@ -30,23 +28,36 @@ void CollisionManager::handleCollisions(const std::vector<GraphicalElement*>& el
                     other = entityA;
                 }
 
-                if (player) {
-                    if (player->getDamageCooldown() <= 0.0f) {
-                        if (Game::getDebugMode()) {
-                            std::cout << "Dano causado ao jogador.\n";
-                        }
-                        player->setDamageCooldown(player->getInvunerabilityTime());
-                    } else {
-                        if (Game::getDebugMode()) {
-                            std::cout << "Colidiu, mas jogador está invulnerável.\n";
-                        }
-                    }
+                Projectile* projectile = dynamic_cast<Projectile*>(entityA);
+                Entity* target = entityB;
+                if (!projectile) {
+                    projectile = dynamic_cast<Projectile*>(entityB);
+                    target = entityA;
                 }
 
-                if (Game::getDebugMode()) {
-                    std::cout << "Colidiu com o inimigo.\n";
+                if (projectile && projectile->getOwner() == target) {
+                    continue; 
+                }
+
+                Enemy* enemy = dynamic_cast<Enemy*>(entityA);
+                if (!enemy) enemy = dynamic_cast<Enemy*>(entityB);
+                if (projectile && enemy) {
+                    projectile->setAlive(false);
+                    enemy->setAlive(false);
+                    if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
+                    continue;
+                }
+
+                if (player) {
+                    if (player->getDamageCooldown() <= 0.0f) {
+                        player->setDamageCooldown(player->getInvunerabilityTime());
+                        if (Game::getDebugMode()) std::cout << "Dano ao jogador.\n";
+                    } else {
+                        if (Game::getDebugMode()) std::cout << "Jogador invulnerável.\n";
+                    }
                 }
             }
+
         }
     }
 }
