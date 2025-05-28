@@ -1,42 +1,53 @@
 #include "LevelUpMenu.h"
 #include <fstream>
+#include <random>
 #include "Vector.h"
 #include "SpriteAnimation.h"
+#include "TextureManager.h"
 
-void LevelUpMenu::show(SDL_Renderer* renderer, TTF_Font* font, Player& player, const std::string& upgradesJsonPath, int screenWidth, int screenHeight) {
-    std::vector<Upgrade*> upgrades = loadUpgradesFromJson(upgradesJsonPath);
-    int selectedIndex = showUpgradeSelection(renderer, font, upgrades, screenWidth, screenHeight);
-
-    if (selectedIndex != -1) {
-        applyUpgradeToPlayer(player, *upgrades[selectedIndex]);
-    }
-
-    for (auto* u : upgrades) delete u;
-}
-
-std::vector<Upgrade*> LevelUpMenu::loadUpgradesFromJson(const std::string& path) {
+void LevelUpMenu::init(const std::string& jsonPath) {
     using json = nlohmann::json;
-    std::ifstream file(path);
+    std::ifstream file(jsonPath);
+    if (!file.is_open()) return;
 
     json jsonData;
     file >> jsonData;
 
-    std::vector<Upgrade*> upgrades;
-
     for (auto& entry : jsonData) {
-        std::string desc = entry["description"];
+        std::string name = entry.value("name", "");
+        std::string desc = entry.value("description", "");
         float hpMult = entry.value("hpMultiplier", 1.0f);
         float dmgMult = entry.value("damageMultiplier", 1.0f);
         float movMult = entry.value("movSpeedMultiplier", 1.0f);
-
+        
         SpriteAnimation* anim = new SpriteAnimation();
         anim->addAnimation("idle", "slime", 0, 0, 32, 32, 1);
         anim->play("idle");
-
-        upgrades.push_back(new Upgrade({64, 64}, anim, desc, hpMult, dmgMult, movMult));
+        allUpgrades.push_back(new Upgrade({64, 64}, anim, name, desc, hpMult, dmgMult, movMult));
     }
+}
 
-    return upgrades;
+std::vector<Upgrade*> LevelUpMenu::pickRandomUpgrades(int count) {
+    std::vector<Upgrade*> picked;
+    std::vector<int> indices(allUpgrades.size());
+    std::iota(indices.begin(), indices.end(), 0);
+    std::shuffle(indices.begin(), indices.end(), std::mt19937{std::random_device{}()});
+
+    for (int i = 0; i < count && i < indices.size(); ++i) {
+        picked.push_back(allUpgrades[indices[i]]);
+    }
+  
+    return picked;
+}
+
+void LevelUpMenu::show(SDL_Renderer* renderer, TTF_Font* font, Player& player, int screenWidth, int screenHeight) {
+    std::vector<Upgrade*> upgrades = pickRandomUpgrades(3);
+
+    if (upgrades.empty()) return;
+    int selectedIndex = showUpgradeSelection(renderer, font, upgrades, screenWidth, screenHeight);
+    if (selectedIndex != -1) {
+        applyUpgradeToPlayer(player, *upgrades[selectedIndex]);
+    }
 }
 
 void LevelUpMenu::applyUpgradeToPlayer(Player& player, const Upgrade& upgrade) {
@@ -50,15 +61,16 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, co
     int selected = 0;
     SDL_Event e;
 
-    const int itemHeight = 100;
-    const int spriteWidth = 64;
-    const int spriteHeight = 64;
-    const int spacing = 20;
+    SDL_Texture* menuTexture = TextureManager::getTexture("upgradeMenu");
+    const int menuWidth = 407;
+    const int menuHeight = 520;
+    const int upgradeBoxHeight = (menuHeight / 5);
+    const int upgradeAreaY = menuWidth / 3;
 
-    int totalListHeight = upgrades.size() * itemHeight;
-    int startY = (screenHeight - totalListHeight) / 2;
-    const int totalItemWidth = spriteWidth + spacing + 300;
-    const int startX = (screenWidth - totalItemWidth) / 2;
+    int menuX = (screenWidth - menuWidth) / 2;
+    int menuY = (screenHeight - menuHeight) / 2;
+
+    const int itemCount = std::min<int>(3, upgrades.size());
 
     while (running) {
         while (SDL_PollEvent(&e)) {
@@ -66,39 +78,37 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, co
 
             if (e.type == SDL_KEYDOWN) {
                 switch (e.key.keysym.sym) {
-                    case SDLK_UP:
-                        selected = (selected + upgrades.size() - 1) % upgrades.size();
-                        break;
-                    case SDLK_DOWN:
-                        selected = (selected + 1) % upgrades.size();
-                        break;
-                    case SDLK_RETURN:
-                        return selected;
+                    case SDLK_UP: selected = (selected + itemCount - 1) % itemCount; break;
+                    case SDLK_DOWN: selected = (selected + 1) % itemCount; break;
+                    case SDLK_RETURN: return selected;
                 }
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        for (size_t i = 0; i < upgrades.size(); ++i) {
-            int y = startY + static_cast<int>(i) * itemHeight;
+        SDL_Rect menuRect = {menuX, menuY, menuWidth, menuHeight};
+        SDL_RenderCopy(renderer, menuTexture, nullptr, &menuRect);
 
-            Vector menuOffset(startX, static_cast<float>(y + (itemHeight - spriteHeight) / 2));
-            upgrades[i]->render(renderer, menuOffset);
+        for (int i = 0; i < itemCount; ++i) {
+            int boxY = upgradeAreaY + i * upgradeBoxHeight;
 
-            SDL_Color color = (i == selected) ? SDL_Color{255, 255, 0} : SDL_Color{255, 255, 255};
-            const std::string& text = upgrades[i]->getDescription();
+            std::cout << upgrades[i]->getName() << std::endl;
 
-            SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+            upgrades[i]->render(renderer, Vector((float)(menuX + 20), (float)(boxY + 10)));
+
+            std::string text = upgrades[i]->getDescription();
+
+            SDL_Color color = {255, 255, 255}; 
+
+            if (i == selected) {
+                color = {255, 255, 0}; 
+            }
+
+            SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 340);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-            SDL_Rect dst = {
-                startX + spriteWidth + spacing,
-                y + (itemHeight - surface->h) / 2,
-                surface->w,
-                surface->h
-            };
+            SDL_Rect dst = {menuX + 80, boxY + 10, surface->w, surface->h};
             SDL_RenderCopy(renderer, texture, nullptr, &dst);
 
             SDL_FreeSurface(surface);

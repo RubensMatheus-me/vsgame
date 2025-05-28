@@ -10,12 +10,13 @@
 
 class LevelUpMenu {
 public:
-    static void show(SDL_Renderer* renderer, TTF_Font* font, Player& player, const std::string& upgradesJsonPath, int screenWidth, int screenHeight);
+    void init(const std::string& jsonPath);
+    void show(SDL_Renderer* renderer, TTF_Font* font, Player& player, int screenWidth, int screenHeight);
     int lastUpgradedLevel = 1;
-
 private:
-    
-    static std::vector<Upgrade*> loadUpgradesFromJson(const std::string& path);
-    static void applyUpgradeToPlayer(Player& player, const Upgrade& upgrade);
-    static int showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, const std::vector<Upgrade*>& upgrades, int screenWidth, int screenHeight);
+    std::vector<Upgrade*> allUpgrades;
+
+    std::vector<Upgrade*> pickRandomUpgrades(int count);
+    int showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, const std::vector<Upgrade*>& upgrades, int screenWidth, int screenHeight);
+    void applyUpgradeToPlayer(Player& player, const Upgrade& upgrade);
 };

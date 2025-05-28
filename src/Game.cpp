@@ -65,6 +65,7 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		camera = std::make_unique<CameraManager>(windowWidth, windowHeight);
 		TextureManager::init(renderer);
+		levelUpMenu->init("assets/data/upgrades.json");
 
 		loadResources();
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
@@ -167,7 +168,7 @@ void Game::update() {
 
 	if (player->getLevel() > levelUpMenu->lastUpgradedLevel) {
 		TTF_Font* font = TTF_OpenFont(pathFont, 10);
-		LevelUpMenu::show(renderer, font, *player, "assets/data/upgrades.json", windowWidth, windowHeight);
+		levelUpMenu->show(renderer, font, *player, windowWidth, windowHeight);
 		TTF_CloseFont(font);
 		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel +1;
 	}
@@ -212,6 +213,10 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/tiles/grassTile2.png", "grassTile2");
 	TextureManager::loadTexture("assets/sprites/tiles/mudTile.png", "mudTile");
 	TextureManager::loadTexture("assets/sprites/tiles/sandTile.png", "sandTile");
+
+	//GUI
+	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
+
 }
 
 void Game::limitFPS(float targetFPS) {
