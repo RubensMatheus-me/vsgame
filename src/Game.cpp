@@ -13,6 +13,7 @@
 #include "AxeProjectile.h"
 #include "Timer.h"
 #include <time.h>
+#include "GUIRenderer.h"
 
 using namespace Config;
 
@@ -66,9 +67,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		}
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+		
 		CameraManager::getCameraManager()->init(windowWidth, windowHeight);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
+
 		TextureManager::init(renderer);
 		levelUpMenu->init("assets/data/upgrades.json");
 		loadResources();
@@ -154,10 +157,12 @@ void Game::render() {
         SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
 	}
 
+	GUIRenderer::renderPlayerHpBar(renderer, player.get());
+	GUIRenderer::renderXpBar(renderer, player.get());
+
 	for (auto& proj : projectiles) {
 		proj->render(renderer);
 	}
-
 	/*
 	if(getDebugMode()){
 		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
@@ -281,6 +286,7 @@ void Game::initializeEntities() {
 		playerAnimation.get(),
 		centerPos,
 		Config::PLAYER_SPEED,
+		Config::PLAYER_HP,
 		Config::PLAYER_HP,
 		Config::PLAYER_ATTACK_RATE,
 		Config::PLAYER_MOV_SPEED,
@@ -428,10 +434,12 @@ void Game::spawnEnemy() {
 		Vector(x, y),
 		Config::ENEMY_SPEED,
 		Config::ENEMY_HP,
+		Config::ENEMY_HP,
 		Config::ENEMY_ATTACK_RATE,
 		Config::ENEMY_MOV_SPEED,
 		Config::ENEMY_XP_DROP,
-		Config::ENEMY_SPAWN_WEIGHT  
+		Config::ENEMY_SPAWN_WEIGHT,
+		Config::ENEMY_BASE_ATK 
 	);
 	slime->setTarget(player.get());
 

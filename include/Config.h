@@ -28,4 +28,5 @@ namespace Config {
     inline constexpr float ENEMY_MOV_SPEED = 50.0f;
     inline constexpr float ENEMY_XP_DROP = 5.0f;
     inline constexpr int ENEMY_SPAWN_WEIGHT = 1;
+    inline constexpr int ENEMY_BASE_ATK = 10.0f;
 }

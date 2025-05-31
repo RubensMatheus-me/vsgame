@@ -19,6 +19,7 @@ void CollisionManager::handlePlayerCollisions(Player* player, std::vector<std::u
         if(playerRect.intersects(enemyRect)) {
             if (player->getDamageCooldown() <= 0.0f) {
                 player->setDamageCooldown(player->getInvunerabilityTime());
+                player->setCurrentHp(player->getCurrentHp()-enemy->getBaseAtk());
                 if (Game::getDebugMode()) std::cout << "Dano ao jogador.\n";
             } else {
                 if (Game::getDebugMode()) std::cout << "Jogador invulnerável.\n";
