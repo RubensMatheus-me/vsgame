@@ -454,7 +454,7 @@ void Game::shootProjectile() {
 	anim->play("default");
 
 	auto p = std::make_unique<AxeProjectile>(
-		playerPos,
+		playerPos + 10.0f,
 		direction,
 		150.0f,
 		10.0f,
