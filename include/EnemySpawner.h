@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <string>
 #include <nlohmann/json.hpp>
+#include "Player.h"
+#include "Enemy.h"
 
 class EnemySpawner {
 public:
