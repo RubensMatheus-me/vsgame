@@ -40,8 +40,6 @@ SDL_Texture* fpsTexture = nullptr;
 SDL_Texture* timeTexture = nullptr;
 SDL_Texture* xpTexture = nullptr;
 
-//2sec 1 - 0.5sec / 2 0.5sec / 3 0.5sec / 4 0.5sec / 5 0.5sec
-
 Game::Game() : timerEvents(2.0f), gameTime(1.0f){}; 
 Game::~Game() {};
 
@@ -193,11 +191,17 @@ void Game::update() {
         player->update(dt);
     }
 
-    if (!allElements.empty()) {
-        CollisionManager::handleCollisions(allElements);
-    } else {
-        std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
-    }
+    // if (!allElements.empty()) {
+    //     CollisionManager::handleCollisions(allElements);
+    // } else {
+    //     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
+    // }
+	if(!enemies.empty()) {
+		CollisionManager::handlePlayerCollisions(player.get(), enemies);
+	}
+	if(!enemies.empty() && !projectiles.empty()) {
+		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	}
 
     for (auto& e : enemies) {
         Vector toPlayer = player->getPosition() - e->getPosition();

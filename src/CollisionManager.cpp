@@ -8,59 +8,45 @@
 bool CollisionManager::checkCollision(const Rect& a, const Rect& b) {
     return a.intersects(b);
 }
-void CollisionManager::handleCollisions(const std::vector<GraphicalElement*>& elements) {
-    for (size_t i = 0; i < elements.size(); ++i) {
-        for (size_t j = i + 1; j < elements.size(); ++j) {
-            Entity* entityA = dynamic_cast<Entity*>(elements[i]);
-            Entity* entityB = dynamic_cast<Entity*>(elements[j]);
 
-            if (!entityA || !entityB) continue;
+void CollisionManager::handlePlayerCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
+    Rect playerRect = player->getCollider();
+    
+    for(size_t i = 0; i < enemies.size();i++) {
+        Enemy* enemy = enemies[i].get(); 
+        Rect enemyRect = enemy->getCollider();
 
-            Rect rectA = entityA->getCollider();
-            Rect rectB = entityB->getCollider();
-
-            if (rectA.intersects(rectB)) {
-                Player* player = dynamic_cast<Player*>(entityA);
-                Entity* other = entityB;
-
-                if (!player) {
-                    player = dynamic_cast<Player*>(entityB);
-                    other = entityA;
-                }
-
-                Projectile* projectile = dynamic_cast<Projectile*>(entityA);
-                Entity* target = entityB;
-                if (!projectile) {
-                    projectile = dynamic_cast<Projectile*>(entityB);
-                    target = entityA;
-                }
-
-                if (projectile && projectile->getOwner() == target) {
-                    continue; 
-                }
-
-                Enemy* enemy = dynamic_cast<Enemy*>(entityA);
-                if (!enemy) enemy = dynamic_cast<Enemy*>(entityB);
-                if (projectile && enemy) {
-                    projectile->setAlive(false);
-                    enemy->setAlive(false);
-                    if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
-                    continue;
-                }
-
-                if (player) {
-                    if (player->getDamageCooldown() <= 0.0f) {
-                        player->setDamageCooldown(player->getInvunerabilityTime());
-                        if (Game::getDebugMode()) std::cout << "Dano ao jogador.\n";
-                    } else {
-                        if (Game::getDebugMode()) std::cout << "Jogador invulnerável.\n";
-                    }
-                }
+        if(playerRect.intersects(enemyRect)) {
+            if (player->getDamageCooldown() <= 0.0f) {
+                player->setDamageCooldown(player->getInvunerabilityTime());
+                if (Game::getDebugMode()) std::cout << "Dano ao jogador.\n";
+            } else {
+                if (Game::getDebugMode()) std::cout << "Jogador invulnerável.\n";
             }
-
         }
     }
 }
+
+void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles) {
+    for (size_t i = 0; i < projectiles.size(); ++i) {
+        Projectile* projectile = projectiles[i].get();
+        Rect projectileRect = projectile->getCollider();
+        for (size_t j = 0; j < enemies.size(); ++j) {
+            Enemy* enemy = enemies[j].get();
+            Rect enemyRect = enemy->getCollider();
+
+            if(projectileRect.intersects(enemyRect)) {
+                projectile->setAlive(false);
+                enemy->setAlive(false);
+                player->setXp(player->getXp()+enemy->getXpDrop());
+                
+                if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
+            }
+        }
+
+    }
+}
+
 /*
 void CollisionManager::debugDrawColliders(SDL_Renderer* renderer, const std::vector<GraphicalElement*>& elements, const Vector& cameraOffset) {
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);

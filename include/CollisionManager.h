@@ -3,6 +3,7 @@
 #include <vector>
 #include "Player.h"
 #include "Enemy.h"
+#include "Projectile.h"
 #include "Rect.h"
 #include <vector>
 
@@ -10,6 +11,9 @@ class CollisionManager {
     public:
         static bool checkCollision(const Rect& a, const Rect& b);
 
+        static void handlePlayerCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies);
+        static void handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>>  &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles);
+        
         static void handleCollisions(const std::vector<GraphicalElement*> &elements);
 
         void debugDrawColliders(SDL_Renderer* renderer, const std::vector<GraphicalElement*> &elements, const Vector& cameraOffset);
