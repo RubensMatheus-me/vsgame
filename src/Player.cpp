@@ -29,6 +29,9 @@ Rect Player::getCollider() const {
 }
 
 void Player::update(float deltaTime) {
+  if (attackCooldown > 0) {
+            attackCooldown -= deltaTime;
+  }
   if (damageCooldown > 0.0f) {
     damageCooldown -= deltaTime;
     

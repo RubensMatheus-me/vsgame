@@ -20,9 +20,12 @@ class Enemy : public Character {
 		void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         
-        Rect getCollider() const;
+        Rect getCollider() const override;
+        void setAlive(bool val) { alive = val; }
+	    bool isAlive() const { return alive; }
 
     private:
+        bool alive = true;
         SpriteAnimation *spriteAnimation;
         std::unique_ptr<SpriteAnimation> animation;
         const Player* target;

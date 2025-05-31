@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "SpriteAnimation.h"
+#include "Weapon.h"
 #include <vector>
 #include <string>
 
@@ -34,6 +35,10 @@ class Player : public Character {
         void update(float deltaTime) override;
         Rect getCollider() const override;
     
+        bool canAttack() const { return attackCooldown <= 0;}
+        void resetAttackCooldown() {attackCooldown = attackRate;}
+        Weapon* getWeapon() { return weapon; }
+        
     private:
         SpriteAnimation* spriteAnimation;
         bool facingRight;
@@ -45,4 +50,7 @@ class Player : public Character {
         int level;
         float xpNextLevel;
         float atkSpeed;
+        float attackCooldown = 0.0f;  
+        float attackRate;            
+        Weapon* weapon;    
 };

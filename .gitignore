@@ -1,6 +1,7 @@
 ### VS Code ###
 .vscode/
 .vscode/c_cpp_properties.json
+/vscode
 
 ### Compiled ###
 game

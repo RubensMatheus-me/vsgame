@@ -8,8 +8,11 @@ class Item : public GraphicalElement {
 
         std::string getDescription() const { return this->description; }
         void setDescription(const std::string& description) { this->description = description; }
+        SpriteAnimation* getSpriteAnimation() const;
 
     
     private:
         std::string description;
+    protected:
+        SpriteAnimation* spriteAnimation;
 };

@@ -5,6 +5,15 @@
 
 SpriteAnimation::SpriteAnimation() : currentFrame(0), frameTime(100.0f), elapsedTime(0.1f){}
 
+SpriteAnimation::SpriteAnimation(const SpriteAnimation& other)
+    : textureName(other.textureName),
+      animations(other.animations),
+      currentAnimation(other.currentAnimation),
+      currentFrame(other.currentFrame),
+      frameTime(other.frameTime),
+      elapsedTime(other.elapsedTime)
+{}
+
 void SpriteAnimation::addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames) {
     std::vector<SDL_Rect> frames;
     
