@@ -20,11 +20,8 @@ Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vecto
     damageCooldown(damageCooldown),
     invulnerabilityTime(invulnerabilityTime){}
 
-void Player::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
-  float drawX = getPosition().x - cameraOffSet.x;
-  float drawY = getPosition().y - cameraOffSet.y;
-
-  spriteAnimation->render(renderer, drawX, drawY);
+void Player::render(SDL_Renderer* renderer) {
+  spriteAnimation->render(renderer,  getPosition().x, getPosition().y);
 }
 
 Rect Player::getCollider() const {

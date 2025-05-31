@@ -30,7 +30,7 @@ class Player : public Character {
         void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
     
 
-        void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
+        void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         Rect getCollider() const override;
     

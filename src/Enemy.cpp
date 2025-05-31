@@ -7,12 +7,8 @@ Enemy::Enemy(const Vector& size, SpriteAnimation* spriteAnimation, std::unique_p
      : Character(size, pos, speed, hp, atkRate, movSpeed, spriteAnimation), animation(std::move(anim)),
      xpDrop(xpDrop), spawnWeight(spawnWeight) {}
 
-void Enemy::render(SDL_Renderer* renderer, const Vector& cameraOffSet) {
-     
-     float drawX = getPosition().x - cameraOffSet.x;
-     float drawY = getPosition().y - cameraOffSet.y;
-
-     animation->render(renderer, drawX, drawY);
+void Enemy::render(SDL_Renderer* renderer) {
+     animation->render(renderer, getPosition().x, getPosition().y);
 
 }
 

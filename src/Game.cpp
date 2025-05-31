@@ -25,7 +25,6 @@ std::vector<GraphicalElement*> allElements;
 std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
-std::unique_ptr<CameraManager> camera;
 std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
 
@@ -61,12 +60,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		}
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+		CameraManager::getCameraManager()->init(windowWidth, windowHeight);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		camera = std::make_unique<CameraManager>(windowWidth, windowHeight);
 		TextureManager::init(renderer);
 		levelUpMenu->init("assets/data/upgrades.json");
-
 		loadResources();
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
 		
@@ -110,20 +108,19 @@ void Game::clean() {
 void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
-	Vector camOffset = camera->getOffSet();
 
-	tileManager->renderMap(renderer, camOffset, player->getCollider());
+	tileManager->renderMap(renderer, player->getCollider());
 	
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
 	if (player != nullptr) {
-        player->render(renderer, camOffset);
+        player->render(renderer);
     }else {
         std::cout << "Player não está inicializado!" << std::endl;
     }
 
 	for (auto& e : enemies) {
-		e->render(renderer, camOffset);
+		e->render(renderer);
 	}
 
 	if (fpsTexture == nullptr) {
@@ -174,7 +171,7 @@ void Game::update() {
 	}
 
 	if (player) {
-		camera->follow(player->getPosition());
+		CameraManager::getCameraManager()->follow(player->getPosition());
 		keyboard->update(*player, dt);
 		player->update(dt);
 	}

@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include "Vector.h" 
 #include "Game.h"
+#include "CameraManager.h"
 
 TileManager::TileManager() {}
 
@@ -50,7 +51,9 @@ bool  TileManager::loadMap(const std::string& tileMapPath, const std::string& ti
     return true;
 }
 
-void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const Rect& playerCollider) {
+void TileManager::renderMap(SDL_Renderer* renderer, const Rect& playerCollider) {
+    Vector cameraOffSet = CameraManager::getCameraManager()->getOffSet();
+
     for (int row = 0; row < mapHeight; ++row) {
         for (int col = 0; col < mapWidth; ++col) {
             int index = row * mapWidth + col;
@@ -58,8 +61,16 @@ void TileManager::renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, 
 
             if (tileId == 0 || tileMap.find(tileId) == tileMap.end()) continue;
 
-            float x = static_cast<float>(col * tileWidth) - cameraOffSet.x;
-            float y = static_cast<float>(row * tileHeight) - cameraOffSet.y;
+            float x = static_cast<float>(col * tileWidth);
+            float y = static_cast<float>(row * tileHeight);
+            if(x+100 < cameraOffSet.x || x > cameraOffSet.x+CameraManager::getCameraManager()->getScreenWidth()) {
+                continue; 
+            }
+            if(y+100 < cameraOffSet.y || y > cameraOffSet.y+CameraManager::getCameraManager()->getScreenHeight()) {
+                continue;
+            }
+            x = x - cameraOffSet.x;
+            y = y - cameraOffSet.y;
 
             Rect tileRect({x, y}, {static_cast<float>(tileWidth), static_cast<float>(tileHeight)});
 

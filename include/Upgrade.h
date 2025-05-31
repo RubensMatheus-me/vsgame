@@ -14,8 +14,8 @@ class Upgrade : public Item {
         void setHpMultiplier(float hpMultiplier) { this->hpMultiplier = hpMultiplier; }
         void setDamageMultiplier(float damageMultiplier) { this->damageMultiplier = damageMultiplier; }
         void setMovSpeedMultiplier(float movSpeedMultiplier) { this->movSpeedMultiplier = movSpeedMultiplier; }
-
-        void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
+        void render(SDL_Renderer* renderer, const Vector& cameraOffSet);
+        void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         
     private:

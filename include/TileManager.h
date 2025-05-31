@@ -21,7 +21,7 @@ class TileManager {
     TileManager();
 
     bool loadMap(const std::string& tileMapPath, const std::string& tilePropertiesPath, SDL_Renderer* renderer);
-    void renderMap(SDL_Renderer* renderer, const Vector& cameraOffSet, const Rect& playerCollider);
+    void renderMap(SDL_Renderer* renderer, const Rect& playerCollider);
 
     int getMapWidthInPixels() const {return mapWidth * tileWidth;}
     int getMapHeightInPixels() const {return mapHeight * tileHeight;}

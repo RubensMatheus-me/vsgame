@@ -11,7 +11,7 @@ class GraphicalElement {
 
 		SpriteAnimation* getSprite() { return this->spriteAnimation; }
 
-		virtual void render(SDL_Renderer *renderer, const Vector& cameraOffSet) = 0;
+		virtual void render(SDL_Renderer *renderer) = 0;
 		virtual void update(float deltaTime) = 0;
 
 	private:

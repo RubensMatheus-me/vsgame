@@ -17,10 +17,10 @@ class Enemy : public Character {
         void setXpDrop(float xpDrop) { this->xpDrop = xpDrop; }
         void setSpawnWeight(int spawnWeight) { this->spawnWeight = spawnWeight; }
 
-		void render(SDL_Renderer* renderer, const Vector& cameraOffSet) override;
+		void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         
-        Rect getCollider() const override;
+        Rect getCollider() const;
 
     private:
         SpriteAnimation *spriteAnimation;

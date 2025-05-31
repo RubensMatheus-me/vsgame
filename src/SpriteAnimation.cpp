@@ -1,5 +1,7 @@
 #include "SpriteAnimation.h"
 #include "TextureManager.h"
+#include "Vector.h"
+#include "CameraManager.h"
 
 SpriteAnimation::SpriteAnimation() : currentFrame(0), frameTime(100.0f), elapsedTime(0.1f){}
 
@@ -34,6 +36,9 @@ void SpriteAnimation::update(float deltaTime) {
 }
 
 void SpriteAnimation::render(SDL_Renderer* renderer, int x, int y, bool flip) {
+    Vector cameraOffSet = CameraManager::getCameraManager()->getOffSet();
+    float drawX = x - cameraOffSet.x;
+    float drawY = y - cameraOffSet.y;
     if (currentAnimation.empty() || animations.find(currentAnimation) == animations.end()) return;
 
     const AnimationData& anim = animations[currentAnimation];
@@ -41,7 +46,7 @@ void SpriteAnimation::render(SDL_Renderer* renderer, int x, int y, bool flip) {
     if(!texture) return;
 
     SDL_Rect srcRect = anim.frames[currentFrame];
-    SDL_Rect destRect = {x, y, srcRect.w, srcRect.h};
+    SDL_Rect destRect = {drawX, drawY, srcRect.w, srcRect.h};
     SDL_RendererFlip flipFlag = flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
     SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);

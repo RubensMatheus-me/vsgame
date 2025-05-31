@@ -13,6 +13,14 @@ void Upgrade::render(SDL_Renderer* renderer, const Vector& menuoffset) {
     
 }
 
+void Upgrade::render(SDL_Renderer* renderer) {
+
+    if (getSprite()) {
+        getSprite()->render(renderer,  1,  1);
+    }
+    
+}
+
 void Upgrade::update(float deltaTime) {
     if (getSprite()) {
         getSprite()->update(deltaTime); 
