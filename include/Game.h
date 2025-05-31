@@ -61,5 +61,6 @@ class Game {
 		static bool debugMode;
         SDL_Window *window;
         SDL_Renderer *renderer;
-		Timer timer;
+		Timer timerEvents;
+		Timer gameTime;
 };

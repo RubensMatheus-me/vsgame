@@ -11,6 +11,8 @@
 #include "Config.h"
 #include "LevelUpMenu.h"
 #include "AxeProjectile.h"
+#include "Timer.h"
+#include <time.h>
 
 using namespace Config;
 
@@ -38,8 +40,9 @@ SDL_Texture* fpsTexture = nullptr;
 SDL_Texture* timeTexture = nullptr;
 SDL_Texture* xpTexture = nullptr;
 
+//2sec 1 - 0.5sec / 2 0.5sec / 3 0.5sec / 4 0.5sec / 5 0.5sec
 
-Game::Game() : timer(2.0f){};
+Game::Game() : timerEvents(2.0f), gameTime(1.0f){}; 
 Game::~Game() {};
 
 void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen) {
@@ -52,6 +55,8 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	levelUpMenu = std::make_unique<LevelUpMenu>();
 
 	int flags = 0;
+
+
 	
 	if (fullscreen) {
 		flags = SDL_WINDOW_FULLSCREEN;
@@ -168,7 +173,8 @@ void Game::update() {
     tickRate->update();
     float dt = tickRate->getDeltaTime();
 
-    timer.update(dt);
+    timerEvents.update(dt);
+	gameTime.update(dt);
 
 	if (player->getLevel() > levelUpMenu->lastUpgradedLevel) {
 		TTF_Font* font = TTF_OpenFont(pathFont, 10);
@@ -177,9 +183,9 @@ void Game::update() {
 		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel +1;
 	}
 
-    if (timer.hasElapsed()) {
+    if (timerEvents.hasElapsed()) {
         shootProjectile();
-        timer.reset();
+        timerEvents.reset();
     }
     if (player) {
         CameraManager::getCameraManager()->follow(player->getPosition());
@@ -287,8 +293,12 @@ void Game::initializeEntities() {
 
 	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
-		
-	spawnEnemy();
+	int count = 10;
+	for (size_t i = 0; i < count; i++)
+	{
+		spawnEnemy();
+	}
+	
 }
 
 void Game::updateFpsDisplay() {
@@ -325,7 +335,7 @@ void Game::updateFpsDisplay() {
 }
 
 void Game::updateClockDisplay() {
-	std::string timeText = timer.clock();
+	std::string timeText = gameTime.clock();
 
 	SDL_Color black = {0, 0, 0, 255};
 
