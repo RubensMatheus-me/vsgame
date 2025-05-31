@@ -1,0 +1,12 @@
+{
+  "id": "skeleton",
+  "size": 32,
+  "speed": 0,
+  "hp": 20,
+  "attackRate": 1.0,
+  "moveSpeed": 60.0,
+  "xpDrop": 15,
+  "spawnWeight": 2,
+  "baseAtk": 5,
+  "sprite": "skeleton"
+}

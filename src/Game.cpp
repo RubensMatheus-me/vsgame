@@ -14,6 +14,7 @@
 #include "Timer.h"
 #include <time.h>
 #include "GUIRenderer.h"
+#include "EnemySpawner.h"
 
 using namespace Config;
 
@@ -33,6 +34,7 @@ std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
 std::vector<std::unique_ptr<Projectile>> projectiles;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
+std::unique_ptr<EnemySpawner> enemySpawner;
 
 std::string lastFpsText;
 std::string lastTimeText;
@@ -52,7 +54,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	tileManager = std::make_unique<TileManager>();
 	playerAnimation = std::make_unique<SpriteAnimation>();
 	levelUpMenu = std::make_unique<LevelUpMenu>();
-
 	int flags = 0;
 
 
@@ -73,8 +74,11 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
 		TextureManager::init(renderer);
-		levelUpMenu->init("assets/data/upgrades.json");
 		loadResources();
+		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, windowWidth, windowHeight);
+		enemySpawner->loadAllEnemiesFromFolder("assets/data/enemies");
+		levelUpMenu->init("assets/data/upgrades.json");
+
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
 		
 		initializeEntities();
@@ -208,6 +212,7 @@ void Game::update() {
 		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	}
 
+	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
     for (auto& e : enemies) {
         Vector toPlayer = player->getPosition() - e->getPosition();
         toPlayer.normalize();
@@ -219,7 +224,6 @@ void Game::update() {
         proj->update(dt);
     }
 
-	
 	removeDeadEntities();
 
     updateFpsDisplay();
@@ -238,7 +242,7 @@ void Game::loadResources() {
 
 	//enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
-
+	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
 	//tiles
 	TextureManager::loadTexture("assets/sprites/tiles/grassTile.png", "grassTile");
 	TextureManager::loadTexture("assets/sprites/tiles/grassTile2.png", "grassTile2");
@@ -303,12 +307,6 @@ void Game::initializeEntities() {
 
 	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
-	int count = 10;
-	for (size_t i = 0; i < count; i++)
-	{
-		spawnEnemy();
-	}
-	
 }
 
 void Game::updateFpsDisplay() {

@@ -1,0 +1,12 @@
+{
+  "id": "slime",
+  "size": 32,
+  "speed": 0,
+  "hp": 20,
+  "attackRate": 1.0,
+  "moveSpeed": 50.0,
+  "xpDrop": 5,
+  "spawnWeight": 5,
+  "baseAtk": 3,
+  "sprite": "slime"
+}

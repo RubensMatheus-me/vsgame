@@ -29,4 +29,7 @@ namespace Config {
     inline constexpr float ENEMY_XP_DROP = 5.0f;
     inline constexpr int ENEMY_SPAWN_WEIGHT = 1;
     inline constexpr int ENEMY_BASE_ATK = 10.0f;
+    //Enemy spawner
+    inline constexpr int MAX_ENEMIES = 100;
+    inline constexpr int SPAWN_INTERVAL = 1;
 }
