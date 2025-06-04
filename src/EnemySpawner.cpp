@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <cstdlib>
+#include "CameraManager.h"
 
 namespace fs = std::filesystem;
 
@@ -48,16 +49,33 @@ void EnemySpawner::spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>
     std::cout << "spawnEnemy"<< std::endl;
     std::string chosenId = weightedEnemyPool[rand() % weightedEnemyPool.size()];
     const nlohmann::json enemyConfig = enemyTypes[chosenId].config;
+	
+	CameraManager* camera = CameraManager::getCameraManager();
+	Vector cameraOffset = camera->getOffSet();
+	int offsetX = static_cast<int>(cameraOffset.x);
+	int offsetY = static_cast<int>(cameraOffset.y);
 
-    int spawnMargin = 100;
     int side = rand() % 4;
     float x = 0, y = 0;
+	int margin = 100;
 
     switch(side) {
-        case 0: x = rand() % (windowWidth + 200) - 100; y = -spawnMargin; break;
-        case 1: x = rand() % (windowWidth + 200) - 100; y = windowHeight + spawnMargin; break;
-        case 2: x = -spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
-        case 3: x = windowWidth + spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
+        case 0:
+			x = windowWidth + offsetX + (margin % rand());
+			y = windowHeight + offsetY + (margin % rand());
+			break;
+        case 1:
+			x = windowWidth + offsetX + (margin % rand());
+			y = offsetY - (margin % rand());
+			break;
+        case 2:
+			x = offsetX - (margin % rand());
+			y = windowHeight + offsetY + (margin % rand());
+			break;
+        case 3:
+			x = offsetX - (margin % rand());
+			y = offsetY - (margin % rand());
+			break;
     }
 
     auto anim = std::make_unique<SpriteAnimation>();
