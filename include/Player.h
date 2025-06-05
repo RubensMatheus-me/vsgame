@@ -2,8 +2,10 @@
 #include "Character.h"
 #include "SpriteAnimation.h"
 #include "Weapon.h"
+#include "Upgrade.h"
 #include <vector>
 #include <string>
+#include <iostream>
 
 class Player : public Character {
     public:
@@ -18,6 +20,7 @@ class Player : public Character {
         float getInvunerabilityTime() const { return this->invulnerabilityTime; }
         float getMovSpeed() const { return this->movSpeed; }
         float getXpNextLevel() const { return this->xpNextLevel; }
+		std::vector<std::unique_ptr<Upgrade>>& getUpgrades() { return this->upgrades; }
     
         void setXp(float xp) { this->xp = xp; }
         void setLevel(int level) { this->level = level; }
@@ -28,7 +31,6 @@ class Player : public Character {
         void setDamageCooldown(float damageCooldown) { this->damageCooldown = damageCooldown; }
         void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
     
-
         void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         Rect getCollider() const override;
@@ -50,5 +52,7 @@ class Player : public Character {
         float atkSpeed;
         float attackCooldown = 0.0f;  
         float attackRate;            
-        Weapon* weapon;    
+        Weapon* weapon;
+		std::vector<std::unique_ptr<Upgrade>> upgrades;
+
 };

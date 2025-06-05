@@ -8,7 +8,8 @@
 #include "Config.h"
 
 Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
-     float hp,  float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed, bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime)
+     float hp,  float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
+	 bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime)
     : Character(size, pos, speed, hp, currentHp, atkRate, movSpeed, spriteAnimation),
     xp(xp),
     level(level),

@@ -66,3 +66,13 @@ void GUIRenderer::renderPlayerHpBar(SDL_Renderer* renderer, Player* player) {
     SDL_SetRenderDrawColor(renderer, fillColor.r, fillColor.g, fillColor.b, fillColor.a);
     SDL_RenderFillRect(renderer, &filledRect);
 }
+
+void GUIRenderer::renderItems(SDL_Renderer* renderer, Player* player) {
+	std::vector<std::unique_ptr<Upgrade>>& upgrades = player->getUpgrades();
+	Vector cameraOffset = CameraManager::getCameraManager()->getOffSet();
+	for (int i = 0; i < upgrades.size(); i++) {
+		float x = 5.0f + (i * 32.0f) + (5.0f*i);
+		float y = 60.0f;    
+		upgrades[i]->render(renderer, Vector(cameraOffset.x+x, cameraOffset.y+y));
+	}
+}

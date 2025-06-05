@@ -21,7 +21,7 @@ void LevelUpMenu::init(const std::string& jsonPath) {
         float movMult = entry.value("movSpeedMultiplier", 1.0f);
         
         SpriteAnimation* anim = new SpriteAnimation();
-        anim->addAnimation("idle", "slime", 0, 0, 32, 32, 1);
+        anim->addAnimation("idle", name, 0, 0, 32, 32, 1);
         anim->play("idle");
         allUpgrades.push_back(new Upgrade({64, 64}, anim, name, desc, hpMult, dmgMult, movMult));
     }
@@ -54,6 +54,7 @@ void LevelUpMenu::applyUpgradeToPlayer(Player& player, const Upgrade& upgrade) {
     player.setHp(player.getHp() * upgrade.getHpMultiplier());
     player.setAtkSpeed(player.getAtkSpeed() * upgrade.getDamageMultiplier());
     player.setMovSpeed(player.getMovSpeed() * upgrade.getMovSpeedMultiplier());
+	player.getUpgrades().push_back(std::make_unique<Upgrade>(upgrade));
 }
 
 int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, const std::vector<Upgrade*>& upgrades, int screenWidth, int screenHeight) {

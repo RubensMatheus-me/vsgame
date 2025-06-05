@@ -7,4 +7,5 @@ class GUIRenderer {
 public:
     static void renderXpBar(SDL_Renderer* renderer, Player* player);
     static void renderPlayerHpBar(SDL_Renderer* renderer, Player* player);
+	static void renderItems(SDL_Renderer* renderer, Player* player);
 };

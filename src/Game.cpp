@@ -57,7 +57,6 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	int flags = 0;
 
 
-	
 	if (fullscreen) {
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
@@ -163,6 +162,7 @@ void Game::render() {
 
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
 	GUIRenderer::renderXpBar(renderer, player.get());
+	GUIRenderer::renderItems(renderer, player.get());
 
 	for (auto& proj : projectiles) {
 		proj->render(renderer);
@@ -252,6 +252,10 @@ void Game::loadResources() {
 	//GUI
 	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
 
+	//Upgrades
+	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
+	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "TitanBlessing");
+	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "HealthSurge");
 
 	//projectiles
 	TextureManager::loadTexture("assets/sprites/effects/axe.png", "axe");
