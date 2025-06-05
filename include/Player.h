@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "SpriteAnimation.h"
+#include "enums/PlayerAnimationState.h"
 #include "Weapon.h"
 #include <vector>
 #include <string>
@@ -27,8 +28,8 @@ class Player : public Character {
         void setAnimations(SpriteAnimation* anim) {this->spriteAnimation = anim;}
         void setDamageCooldown(float damageCooldown) { this->damageCooldown = damageCooldown; }
         void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
+		void setAnimationState(PlayerAnimationState newState);
     
-
         void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
         Rect getCollider() const override;
@@ -49,6 +50,7 @@ class Player : public Character {
         float xpNextLevel;
         float atkSpeed;
         float attackCooldown = 0.0f;  
-        float attackRate;            
+        float attackRate;  
+		PlayerAnimationState currentAnimationState;          
         Weapon* weapon;    
 };

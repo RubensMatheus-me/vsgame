@@ -11,7 +11,7 @@ class SpriteAnimation {
         SpriteAnimation();
         SpriteAnimation(const SpriteAnimation& other);
 
-        void addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames);
+        void addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop);
         void play(const std::string& animationName);
         void update(float deltaTime);
         void render(SDL_Renderer* renderer, int x, int y, bool flip = false);
@@ -22,6 +22,7 @@ class SpriteAnimation {
         struct AnimationData {
             std::string textureName;
             std::vector<SDL_Rect> frames;
+			bool loop;
         };
 
     private:

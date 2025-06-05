@@ -7,6 +7,6 @@
   "moveSpeed": 50.0,
   "xpDrop": 5,
   "spawnWeight": 5,
-  "baseAtk": 3,
+  "baseAtk": 50,
   "sprite": "slime"
 }

@@ -1,33 +1,37 @@
-#include "Projectile.h"
+	#include "Projectile.h"
 
-Projectile::Projectile(const Vector& size, const Vector& position, const Vector& direction, float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, Entity* owner)
-    : Entity(size, position, direction * speed, animation.get()), direction(direction), speed(speed), lifeRemaining(lifetime), animation(std::move(animation)), owner(owner)
-{}
+	Projectile::Projectile(const Vector& size, const Vector& position, const Vector& direction, float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, Entity* owner)
+		: Entity(size, position, direction * speed, animation.get()), direction(direction), speed(speed), lifeRemaining(lifetime), animation(std::move(animation)), owner(owner)
+	{}
 
 
-void Projectile::update(float dt) {
-    Vector newPos = getPosition() + getSpeed() * dt;
-    setPosition(newPos);
+	void Projectile::update(float dt) {
+		Vector newPos = getPosition() + getSpeed() * dt;
+		setPosition(newPos);
 
-    lifeRemaining -= dt;
-}
+		lifeRemaining -= dt;
+		
+		if(animation) {
+			animation->update(dt);
+		}
+	}
 
-void Projectile::render(SDL_Renderer* renderer) {
-    animation->render(renderer, getPosition().x , getPosition().y, SDL_FLIP_NONE);
-}
+	void Projectile::render(SDL_Renderer* renderer) {
+		animation->render(renderer, getPosition().x , getPosition().y, SDL_FLIP_NONE);
+	}
 
-bool Projectile::isAlive() const {
-    return lifeRemaining > 0;
-}
+	bool Projectile::isAlive() const {
+		return lifeRemaining > 0;
+	}
 
-void Projectile::setAlive(bool alive) {
-    lifeRemaining = alive ? lifeRemaining : 0;
-}
+	void Projectile::setAlive(bool alive) {
+		lifeRemaining = alive ? lifeRemaining : 0;
+	}
 
-void Projectile::expire() {
-    lifeRemaining = 0;
-}
+	void Projectile::expire() {
+		lifeRemaining = 0;
+	}
 
-Rect Projectile::getCollider() const {
-    return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
-}
+	Rect Projectile::getCollider() const {
+		return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
+	}

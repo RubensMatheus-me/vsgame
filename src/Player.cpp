@@ -24,38 +24,66 @@ void Player::render(SDL_Renderer* renderer) {
   spriteAnimation->render(renderer,  getPosition().x, getPosition().y);
 }
 
+void Player::setAnimationState(PlayerAnimationState newState) {
+    if (currentAnimationState == newState) return;
+    currentAnimationState = newState;
+
+    switch (newState) {
+        case PlayerAnimationState::IdleRight:
+            spriteAnimation->play("idle-right");
+            break;
+        case PlayerAnimationState::IdleLeft:
+            spriteAnimation->play("idle-left");
+            break;
+        case PlayerAnimationState::WalkRight:
+            spriteAnimation->play("walk-right");
+            break;
+        case PlayerAnimationState::WalkLeft:
+            spriteAnimation->play("walk-left");
+            break;
+        case PlayerAnimationState::Death:
+            spriteAnimation->play("death-player");
+            break;
+    }
+}
+
 Rect Player::getCollider() const {
   return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
 }
 
 void Player::update(float deltaTime) {
-  if (attackCooldown > 0) {
-            attackCooldown -= deltaTime;
-  }
-  if (damageCooldown > 0.0f) {
-    damageCooldown -= deltaTime;
-    
-    if(damageCooldown < 0.0f) damageCooldown = 0.0f;
-  } 
-  if (isMoving) {
-    if (direction.x > 0) {
-      spriteAnimation->play("walk-right");
-      facingRight = true;
-      } else if (direction.x < 0) {
-          spriteAnimation->play("walk-left");
-          facingRight = false;
+    if (getCurrentHp() <= 0.0f) {
+        setAnimationState(PlayerAnimationState::Death);
+        setSpeed({0.0f, 0.0f});
+        setMovSpeed(0);
+    } else if (isMoving) {
+        if (direction.x > 0) {
+            setAnimationState(PlayerAnimationState::WalkRight);
+            facingRight = true;
+        } else if (direction.x < 0) {
+            setAnimationState(PlayerAnimationState::WalkLeft);
+            facingRight = false;
         } else {
-            spriteAnimation->play(facingRight ? "walk-right" : "walk-left");
+            setAnimationState(facingRight ? PlayerAnimationState::WalkRight : PlayerAnimationState::WalkLeft);
         }
-  } else {
-        spriteAnimation->play(facingRight ? "idle-right" : "idle-left");
-      }
-      
-      spriteAnimation->update(deltaTime);
-  if(xp > xpNextLevel) {
-      level = level +1;
-      xpNextLevel = xpNextLevel * Config::NEXT_LEVEL_EXPERIENCE_RATE;
-      xp = 0.0f;
-  }
+    } else {
+        setAnimationState(facingRight ? PlayerAnimationState::IdleRight : PlayerAnimationState::IdleLeft);
+    }
+
+    if (attackCooldown > 0.0f)
+        attackCooldown -= deltaTime;
+
+    if (damageCooldown > 0.0f) {
+        damageCooldown -= deltaTime;
+        if (damageCooldown < 0.0f) damageCooldown = 0.0f;
+    }
+
+    spriteAnimation->update(deltaTime);
+
+    if (xp > xpNextLevel) {
+        level++;
+        xpNextLevel *= Config::NEXT_LEVEL_EXPERIENCE_RATE;
+        xp = 0.0f;
+    }
 }
 

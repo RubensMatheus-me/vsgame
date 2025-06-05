@@ -14,14 +14,14 @@ SpriteAnimation::SpriteAnimation(const SpriteAnimation& other)
       elapsedTime(other.elapsedTime)
 {}
 
-void SpriteAnimation::addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames) {
+void SpriteAnimation::addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop) {
     std::vector<SDL_Rect> frames;
     
     for(int i = 0; i < numFrames; i++) {
         SDL_Rect frame = {startX + i * frameWidth, startY, frameWidth, frameHeight};
         frames.push_back(frame);
     }
-    animations[name] = {texture, frames};
+    animations[name] = {texture, frames, loop};
 }
 
 void SpriteAnimation::play(const std::string& animationName) {
@@ -38,8 +38,17 @@ void SpriteAnimation::update(float deltaTime) {
 
     elapsedTime += deltaTime * 1000.0f;
 
-    if(elapsedTime >= frameTime) {
-        currentFrame = (currentFrame + 1) % animations[currentAnimation].frames.size();
+    const AnimationData& anim = animations[currentAnimation];
+
+    if (elapsedTime >= frameTime) {
+        if (anim.loop) {
+            currentFrame = (currentFrame + 1) % anim.frames.size();
+        } else {
+            if (currentFrame < anim.frames.size() - 1) {
+                currentFrame++;
+            }
+        }
+
         elapsedTime = 0.0f;
     }
 }
