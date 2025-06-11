@@ -475,13 +475,16 @@ void Game::shootProjectile() {
 		
 	Vector enemyPos = target->getPosition();
     Vector direction = enemyPos - playerPos;
-    direction.normalize();
+	direction.normalize();
+
+	//Vector spawnOffSet = direction * 10.0f;
+
 
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
 	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
 	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-	anim->play("axe-idle");
+	anim->play("axe-right");
 
 	auto p = std::make_unique<AxeProjectile>(
 		playerPos + 10.0f,

@@ -12,10 +12,10 @@ void AxeProjectile::update(float dt) {
 	if (!animationInitialized) {
         animationInitialized = true;
 
-        if (direction.x >= 0) {
+        if (direction.x > 0.0f) {
         setAnimationState(AxeProjectileState::RotateRight);
 		} else {
-			setAnimationState(AxeProjectileState::RotateLeft);
+            setAnimationState(AxeProjectileState::RotateLeft);
 		}
     }
 
