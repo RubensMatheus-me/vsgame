@@ -7,6 +7,6 @@
   "moveSpeed": 60.0,
   "xpDrop": 15,
   "spawnWeight": 2,
-  "baseAtk": 5,
+  "baseAtk": 20,
   "sprite": "skeleton"
 }

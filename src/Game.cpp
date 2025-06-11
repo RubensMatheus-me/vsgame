@@ -198,6 +198,7 @@ void Game::update() {
         CameraManager::getCameraManager()->follow(player->getPosition());
         keyboard->update(*player, dt);
         player->update(dt);
+
     }
 
     // if (!allElements.empty()) {
@@ -240,9 +241,12 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "warrior-walk-right");
 
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/guerreiro-death.png", "death-player");
+
 	//enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
 	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
+	
 	//tiles
 	TextureManager::loadTexture("assets/sprites/tiles/grassTile.png", "grassTile");
 	TextureManager::loadTexture("assets/sprites/tiles/grassTile2.png", "grassTile2");
@@ -258,7 +262,7 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "HealthSurge");
 
 	//projectiles
-	TextureManager::loadTexture("assets/sprites/effects/axe.png", "axe");
+	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
 }
 
 void Game::limitFPS(float targetFPS) {
@@ -278,10 +282,13 @@ void Game::limitFPS(float targetFPS) {
 
 void Game::initializeEntities() {
 
-	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4);
-	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4);
-	playerAnimation->addAnimation("idle-right", "warrior-idle-right", 0, 0, 34, 32, 6);
-	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6);
+	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4, true);
+	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4, true);
+	playerAnimation->addAnimation("idle-right", "warrior-idle-right", 0, 0, 34, 32, 6, true);
+	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6, true);
+
+	playerAnimation->addAnimation("death-player", "death-player", 0, 0, 32, 32, 6, false);
+
 	playerAnimation->play("idle-right");
 
 	int mapCenterX = tileManager->getMapWidthInPixels() / 2;
@@ -426,7 +433,7 @@ void Game::spawnEnemy() {
 	}
 
 	auto slimeAnim = std::make_unique<SpriteAnimation>();
-	slimeAnim->addAnimation("idle", "slime", 0, 0, 32, 32, 1);
+	slimeAnim->addAnimation("idle", "slime", 0, 0, 32, 32, 1, true);
 	slimeAnim->play("idle");
 
 	auto slime = std::make_unique<Enemy>(
@@ -453,19 +460,35 @@ void Game::spawnEnemy() {
 
 void Game::shootProjectile() {
 	if (enemies.empty()) return;
-	Vector playerPos = player->getPosition();
+
+    Vector playerPos = player->getPosition();
+
+    Enemy* target = nullptr;
+    float closestDistanceSq = std::numeric_limits<float>::max();
+
+    for (const auto& e : enemies) {
+        float distSq = (e->getPosition() - playerPos).length_squared();
+        if (distSq < closestDistanceSq) {
+            closestDistanceSq = distSq;
+            target = e.get();
+        }
+    }
+
+    if (!target) return;
 
 		
-	Enemy* target = enemies.front().get();
 	Vector enemyPos = target->getPosition();
-
-		
-	Vector direction = enemyPos - playerPos;
+    Vector direction = enemyPos - playerPos;
 	direction.normalize();
 
+	//Vector spawnOffSet = direction * 10.0f;
+
+
 	auto anim = std::make_unique<SpriteAnimation>();
-	anim->addAnimation("default", "axe", 0, 0, 32, 32, 1);
-	anim->play("default");
+	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
+	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
+	anim->play("axe-right");
 
 	auto p = std::make_unique<AxeProjectile>(
 		playerPos + 10.0f,

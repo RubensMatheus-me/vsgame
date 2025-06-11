@@ -79,7 +79,7 @@ void EnemySpawner::spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>
     }
 
     auto anim = std::make_unique<SpriteAnimation>();
-    anim->addAnimation("idle", enemyConfig["sprite"], 0, 0, 32, 32, 1);
+    anim->addAnimation("idle", enemyConfig["sprite"], 0, 0, 32, 32, 1, true);
     anim->play("idle");
     Vector size = {enemyConfig["size"], enemyConfig["size"]};
     Vector speed = {enemyConfig["speed"], enemyConfig["speed"]};

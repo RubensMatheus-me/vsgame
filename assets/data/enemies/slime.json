@@ -1,4 +1,15 @@
-{ "frames": {
+{   
+	"id": "slime",
+	"size": 16,
+	"speed": 0,
+	"hp": 20,
+	"attackRate": 1.0,
+	"moveSpeed": 50.0,
+	"xpDrop": 5,
+	"spawnWeight": 5,
+	"baseAtk": 50,
+	"sprite": "slime",
+	"frames": {
    "slime 0.aseprite": {
     "frame": { "x": 0, "y": 0, "w": 16, "h": 16 },
     "rotated": false,
