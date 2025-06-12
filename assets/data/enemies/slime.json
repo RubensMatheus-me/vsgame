@@ -9,6 +9,8 @@
 	"spawnWeight": 5,
 	"baseAtk": 50,
 	"sprite": "slime",
+	"height": 32,
+	"width": 32, 
 	"frames": {
    "slime 0.aseprite": {
     "frame": { "x": 0, "y": 0, "w": 16, "h": 16 },

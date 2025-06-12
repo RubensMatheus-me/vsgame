@@ -9,7 +9,7 @@ namespace Config {
     inline const Vector PLAYER_SPEED(0.5f, 0.5f);
     inline constexpr float PLAYER_HP = 100.0f;
     inline constexpr float PLAYER_ATTACK_RATE = 1.0f;
-    inline constexpr float PLAYER_MOV_SPEED = 100.0f;
+    inline constexpr float PLAYER_MOV_SPEED = 700.0f;
     inline constexpr float PLAYER_INITIAL_XP = 0.0f;
     inline constexpr int PLAYER_INITIAL_LEVEL = 1;
     inline constexpr float PLAYER_ATTACK_SPEED = 1.5f;

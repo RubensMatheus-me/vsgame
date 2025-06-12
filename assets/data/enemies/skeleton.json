@@ -8,5 +8,7 @@
   "xpDrop": 15,
   "spawnWeight": 2,
   "baseAtk": 20,
+  "height": 32,
+  "width": 32,
   "sprite": "skeleton"
 }

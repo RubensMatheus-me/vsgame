@@ -11,8 +11,10 @@ public:
         float atkSpeedMultiplier, int level,
         SpriteAnimation* axeProjectileAnimation, float projectileSpeed, float projectileLifetime);
 
-    void attack(const Vector& position, const Vector& direction, std::vector<Projectile*>& projectiles, Entity* owner) override;
-
+    void attack(const Vector& position, const Vector& direction,  std::vector<std::unique_ptr<Projectile>>& projectiles, Entity* owner);
+	void render(SDL_Renderer* renderer) override;
+	void update(float deltaTime) override;
+	
 private:
     SpriteAnimation* axeProjectileAnimation;
     float projectileSpeed;

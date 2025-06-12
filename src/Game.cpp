@@ -15,6 +15,7 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
+#include "Axe.h"
 
 using namespace Config;
 
@@ -314,8 +315,26 @@ void Game::initializeEntities() {
 		Config::PLAYER_DAMAGE_COOLDOWN,
 		Config::PLAYER_INVULNERABILITY_TIME                   
     );
-	
-
+	auto anim = std::make_unique<SpriteAnimation>();
+	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
+	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
+	anim->play("axe-right");
+	std::string desc = "teste";
+	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
+		Config::ENEMY_SIZE,
+		nullptr,
+		desc,
+		10.0f,
+		10.0f,
+		10.0f,
+		10.0f,
+		1,
+		anim.get(),
+		150.0f,
+		10.0f
+	);
+	player->getWeapons().push_back(std::move(weapon));
 	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
 }
@@ -459,6 +478,7 @@ void Game::spawnEnemy() {
 }
 
 void Game::shootProjectile() {
+
 	if (enemies.empty()) return;
 
     Vector playerPos = player->getPosition();
@@ -481,28 +501,9 @@ void Game::shootProjectile() {
     Vector direction = enemyPos - playerPos;
 	direction.normalize();
 
-	//Vector spawnOffSet = direction * 10.0f;
-
-
-	auto anim = std::make_unique<SpriteAnimation>();
-	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
-	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-	anim->play("axe-right");
-
-	auto p = std::make_unique<AxeProjectile>(
-		playerPos + 10.0f,
-		direction,
-		150.0f,
-		10.0f,
-		std::move(anim),
-		player.get()
-	);
-
-	projectiles.push_back(std::move(p));
-	allElements.push_back(projectiles.back().get());
-
+	player->getWeapons().at(0)->attack(playerPos, direction, projectiles, player.get());
 }
+
 
 void Game::removeDeadEntities() {
 	projectiles.erase(

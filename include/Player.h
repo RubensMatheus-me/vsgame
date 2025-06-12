@@ -39,7 +39,7 @@ class Player : public Character {
     
         bool canAttack() const { return attackCooldown <= 0;}
         void resetAttackCooldown() {attackCooldown = attackRate;}
-        Weapon* getWeapon() { return weapon; }
+		std::vector<std::unique_ptr<Weapon>>& getWeapons() { return this->weapons; }
         
     private:
         SpriteAnimation* spriteAnimation;
@@ -55,7 +55,7 @@ class Player : public Character {
         float attackCooldown = 0.0f;  
         float attackRate;  
 		PlayerAnimationState currentAnimationState;          
-        Weapon* weapon;          
+		std::vector<std::unique_ptr<Weapon>> weapons;
 		std::vector<std::unique_ptr<Upgrade>> upgrades;
 
 };

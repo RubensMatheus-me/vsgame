@@ -12,7 +12,7 @@ public:
 
     virtual ~Weapon() = default;
 
-    virtual void attack(const Vector& position, const Vector& direction, std::vector<Projectile*>& projectiles, Entity* owner) = 0;
+    virtual void attack(const Vector& position, const Vector& direction, std::vector<std::unique_ptr<Projectile>>& projectiles, Entity* owner) = 0;
 
     float getFlatDamage() const { return this->flatDamage; }
     float getFlatAtkSpeed() const { return this->flatAtkSpeed; }
