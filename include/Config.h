@@ -3,7 +3,6 @@
 #include "Vector.h"
 namespace Config {
 
-
 	//Player base stats
 	inline const Vector PLAYER_SIZE(32, 32);
     inline const Vector PLAYER_SPEED(0.5f, 0.5f);
@@ -19,16 +18,8 @@ namespace Config {
     inline constexpr float PLAYER_INVULNERABILITY_TIME = 1.0f;
     inline constexpr float INITIAL_NEXT_LEVEL_EXPERIENCE = 100.0f;
     inline constexpr float NEXT_LEVEL_EXPERIENCE_RATE = 2.0f;
+	inline constexpr float HIT_ANIM_DURATION = 0.5f;
 
-    // Enemy base stats
-    inline const Vector ENEMY_SIZE(32, 32);
-    inline const Vector ENEMY_SPEED(0, 0);
-    inline constexpr float ENEMY_HP = 10.0f;
-    inline constexpr float ENEMY_ATTACK_RATE = 1.0f;
-    inline constexpr float ENEMY_MOV_SPEED = 50.0f;
-    inline constexpr float ENEMY_XP_DROP = 5.0f;
-    inline constexpr int ENEMY_SPAWN_WEIGHT = 1;
-    inline constexpr int ENEMY_BASE_ATK = 500.0f;
     //Enemy spawner
     inline constexpr int MAX_ENEMIES = 100;
     inline constexpr int SPAWN_INTERVAL = 1;

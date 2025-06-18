@@ -420,45 +420,6 @@ void Game::updateXp() {
 	}
 }
 
-void Game::spawnEnemy() {
-
-	int spawnMargin = 100;
-	int side = rand() % 4;
-	float x = 0, y = 0;
-
-	switch(side) {
-		case 0: x = rand() %(windowWidth + 200) - 100; y = -spawnMargin; break;
-        case 1: x = rand() % (windowWidth + 200) - 100; y = windowHeight + spawnMargin; break;
-        case 2: x = -spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
-        case 3: x = windowWidth + spawnMargin; y = rand() % (windowHeight + 200) - 100; break;
-	}
-
-	auto slimeAnim = std::make_unique<SpriteAnimation>();
-	slimeAnim->addAnimation("idle", "slime", 0, 0, 32, 32, 1, true);
-	slimeAnim->play("idle");
-
-	auto slime = std::make_unique<Enemy>(
-		Config::ENEMY_SIZE,
-		nullptr,
-		std::move(slimeAnim),
-		Vector(x, y),
-		Config::ENEMY_SPEED,
-		Config::ENEMY_HP,
-		Config::ENEMY_HP,
-		Config::ENEMY_ATTACK_RATE,
-		Config::ENEMY_MOV_SPEED,
-		Config::ENEMY_XP_DROP,
-		Config::ENEMY_SPAWN_WEIGHT,
-		Config::ENEMY_BASE_ATK 
-	);
-	slime->setTarget(player.get());
-
-	Enemy* rawEnemyPtr = slime.get();
-	enemies.emplace_back(std::move(slime));
-
-	allElements.push_back(rawEnemyPtr);
-}
-
 void Game::shootProjectile() {
 	if (enemies.empty()) return;
 

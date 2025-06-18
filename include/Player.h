@@ -56,8 +56,7 @@ class Player : public Character {
         float attackCooldown = 0.0f;  
         float attackRate;  
         bool dead = false;
-        float hitAnimTimer = 0.f;          
-        const float HIT_ANIM_DURATION = 0.2f;
+        float hitAnimTimer = 0.0f;          
 		PlayerAnimationState currentAnimationState;          
         Weapon* weapon;          
 		std::vector<std::unique_ptr<Upgrade>> upgrades;

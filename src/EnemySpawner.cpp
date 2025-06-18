@@ -101,5 +101,5 @@ void EnemySpawner::spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>
     enemy->setTarget(player);
 
     Enemy* rawEnemyPtr = enemy.get();
-    enemies.emplace_back(std::move(enemy));
+    enemies.push_back(std::move(enemy));
 }

@@ -70,7 +70,7 @@ void Player::update(float deltaTime) {
         return;
     }
     else if (getCurrentHp() < lastHp) {
-        hitAnimTimer = HIT_ANIM_DURATION;
+        hitAnimTimer = Config::HIT_ANIM_DURATION;
         setAnimationState(PlayerAnimationState::TakenDamage);
     }
 
