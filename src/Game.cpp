@@ -240,8 +240,8 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "warrior-idle-right");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "warrior-walk-right");
-
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/guerreiro-death.png", "death-player");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/guerreiro-hurt.png", "player-taken-damage");
 
 	//enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
@@ -288,6 +288,7 @@ void Game::initializeEntities() {
 	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6, true);
 
 	playerAnimation->addAnimation("death-player", "death-player", 0, 0, 32, 32, 6, false);
+	playerAnimation->addAnimation("player-taken-damage", "player-taken-damage", 0, 0, 32, 32, 3, false);
 
 	playerAnimation->play("idle-right");
 

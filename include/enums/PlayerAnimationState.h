@@ -3,5 +3,6 @@ enum class PlayerAnimationState {
     IdleLeft,
     WalkRight,
     WalkLeft,
+    TakenDamage,
     Death
 };

@@ -8,7 +8,7 @@
 #include "Config.h"
 
 Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
-     float hp,  float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
+     float hp, float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
 	 bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime)
     : Character(size, pos, speed, hp, currentHp, atkRate, movSpeed, spriteAnimation),
     xp(xp),
@@ -19,7 +19,8 @@ Player::Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vecto
     direction(direction),
     facingRight(true),
     damageCooldown(damageCooldown),
-    invulnerabilityTime(invulnerabilityTime){}
+    invulnerabilityTime(invulnerabilityTime),
+    lastHp(hp){}
 
 void Player::render(SDL_Renderer* renderer) {
   spriteAnimation->render(renderer,  getPosition().x, getPosition().y);
@@ -42,6 +43,9 @@ void Player::setAnimationState(PlayerAnimationState newState) {
         case PlayerAnimationState::WalkLeft:
             spriteAnimation->play("walk-left");
             break;
+        case PlayerAnimationState::TakenDamage:
+            spriteAnimation->play("player-taken-damage");
+            break;
         case PlayerAnimationState::Death:
             spriteAnimation->play("death-player");
             break;
@@ -53,22 +57,41 @@ Rect Player::getCollider() const {
 }
 
 void Player::update(float deltaTime) {
-    if (getCurrentHp() <= 0.0f) {
+
+    if (!dead && getCurrentHp() <= 0.0f) {
+        dead = true;
         setAnimationState(PlayerAnimationState::Death);
         setSpeed({0.0f, 0.0f});
         setMovSpeed(0);
-    } else if (isMoving) {
-        if (direction.x > 0) {
-            setAnimationState(PlayerAnimationState::WalkRight);
-            facingRight = true;
-        } else if (direction.x < 0) {
-            setAnimationState(PlayerAnimationState::WalkLeft);
-            facingRight = false;
-        } else {
-            setAnimationState(facingRight ? PlayerAnimationState::WalkRight : PlayerAnimationState::WalkLeft);
-        }
+
+    }
+    if (dead) {
+        spriteAnimation->update(deltaTime);
+        return;
+    }
+    else if (getCurrentHp() < lastHp) {
+        hitAnimTimer = HIT_ANIM_DURATION;
+        setAnimationState(PlayerAnimationState::TakenDamage);
+    }
+
+    if (hitAnimTimer > 0.f) {
+        hitAnimTimer -= deltaTime;
+        if (hitAnimTimer < 0.f) hitAnimTimer = 0.f;
+
     } else {
-        setAnimationState(facingRight ? PlayerAnimationState::IdleRight : PlayerAnimationState::IdleLeft);
+        if (isMoving) {
+            if (direction.x > 0) {
+                setAnimationState(PlayerAnimationState::WalkRight);
+                facingRight = true;
+            } else if (direction.x < 0) {
+                setAnimationState(PlayerAnimationState::WalkLeft);
+                facingRight = false;
+            } else {
+                setAnimationState(facingRight ? PlayerAnimationState::WalkRight : PlayerAnimationState::WalkLeft);
+            }
+        } else {
+            setAnimationState(facingRight ? PlayerAnimationState::IdleRight : PlayerAnimationState::IdleLeft);
+        }
     }
 
     if (attackCooldown > 0.0f)
@@ -79,12 +102,14 @@ void Player::update(float deltaTime) {
         if (damageCooldown < 0.0f) damageCooldown = 0.0f;
     }
 
-    spriteAnimation->update(deltaTime);
-
     if (xp > xpNextLevel) {
         level++;
         xpNextLevel *= Config::NEXT_LEVEL_EXPERIENCE_RATE;
         xp = 0.0f;
     }
+
+    lastHp = getCurrentHp();
+    spriteAnimation->update(deltaTime);
 }
+
 

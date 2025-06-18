@@ -49,11 +49,15 @@ class Player : public Character {
         float damageCooldown;
         float invulnerabilityTime;
         float xp;
+        float lastHp;
         int level;
         float xpNextLevel;
         float atkSpeed;
         float attackCooldown = 0.0f;  
         float attackRate;  
+        bool dead = false;
+        float hitAnimTimer = 0.f;          
+        const float HIT_ANIM_DURATION = 0.2f;
 		PlayerAnimationState currentAnimationState;          
         Weapon* weapon;          
 		std::vector<std::unique_ptr<Upgrade>> upgrades;
