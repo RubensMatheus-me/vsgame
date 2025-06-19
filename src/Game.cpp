@@ -15,6 +15,7 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
+#include <SDL2/SDL.h>
 
 using namespace Config;
 
@@ -42,6 +43,7 @@ std::string lastXpText;
 SDL_Texture* fpsTexture = nullptr;
 SDL_Texture* timeTexture = nullptr;
 SDL_Texture* xpTexture = nullptr;
+SDL_DisplayMode displayMode;
 
 Game::Game() : timerEvents(2.0f), gameTime(1.0f){}; 
 Game::~Game() {};
@@ -118,6 +120,10 @@ void Game::clean() {
 }
 
 void Game::render() {
+
+	int screenWidth = displayMode.w;
+    int screenHeight = displayMode.h;
+
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
 
@@ -159,9 +165,9 @@ void Game::render() {
         SDL_Rect xpRect = {10, 25, textW, textH};
         SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
 	}
-
+    
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
-	GUIRenderer::renderXpBar(renderer, player.get());
+	GUIRenderer::renderXpBar(renderer, player.get(), screenWidth, screenHeight);
 	GUIRenderer::renderItems(renderer, player.get());
 
 	for (auto& proj : projectiles) {
@@ -255,6 +261,8 @@ void Game::loadResources() {
 
 	//GUI
 	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
+	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
+	TextureManager::loadTexture("assets/sprites/gui/xpBar.png", "xpBar");
 
 	//Upgrades
 	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
