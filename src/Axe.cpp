@@ -24,6 +24,7 @@ void Axe::attack(const Vector& position, const Vector& direction,  std::vector<s
 		projectileSpeed,
 		projectileLifetime,
 		std::move(anim),
+		flatDamage * damageMultiplier,
 		owner
 	);
     projectiles.push_back(std::move(p));

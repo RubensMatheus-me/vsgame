@@ -39,8 +39,13 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
 
             if(projectileRect.intersects(enemyRect)) {
                 projectile->setAlive(false);
-                enemy->setAlive(false);
-                player->setXp(player->getXp()+enemy->getXpDrop());
+
+				if(enemy->getCurrentHp() <= 0.0f) {
+					enemy->setAlive(false);
+					player->setXp(player->getXp()+enemy->getXpDrop());
+				}else {
+					enemy->setCurrentHp(enemy->getCurrentHp() - projectile->getDamage());
+				}
                 
                 if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
             }

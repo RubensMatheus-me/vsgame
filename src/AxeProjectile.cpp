@@ -1,8 +1,8 @@
 #include "AxeProjectile.h"
 
 AxeProjectile::AxeProjectile(const Vector& position, const Vector& direction,
-                             float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, Entity* owner)
-    : Projectile({getSize().x, getSize().y}, position, direction, speed, lifetime, std::move(animation), owner), currentState(AxeProjectileState::RotateRight),
+                             float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, float damage, Entity* owner)
+    : Projectile({getSize().x, getSize().y}, position, direction, speed, lifetime, std::move(animation), damage, owner), currentState(AxeProjectileState::RotateRight),
       animationInitialized(false)
 {}
 
