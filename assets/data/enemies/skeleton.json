@@ -2,11 +2,55 @@
   "id": "skeleton",
   "size": 32,
   "speed": 0,
-  "hp": 20,
+  "hp": 25,
   "attackRate": 1.0,
-  "moveSpeed": 60.0,
+  "moveSpeed": 55.0,
   "xpDrop": 15,
   "spawnWeight": 2,
-  "baseAtk": 5,
-  "sprite": "skeleton"
-}
+  "baseAtk": 10,
+  "sprite": "skeleton",
+  "frames": {
+    "esqueleto 0.aseprite": {
+     "frame": { "x": 0, "y": 0, "w": 32, "h": 33 },
+     "rotated": false,
+     "trimmed": false,
+     "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 33 },
+     "sourceSize": { "w": 32, "h": 33 },
+     "duration": 150
+    },
+    "esqueleto 1.aseprite": {
+     "frame": { "x": 32, "y": 0, "w": 32, "h": 33 },
+     "rotated": false,
+     "trimmed": false,
+     "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 33 },
+     "sourceSize": { "w": 32, "h": 33 },
+     "duration": 150
+    },
+    "esqueleto 2.aseprite": {
+     "frame": { "x": 64, "y": 0, "w": 32, "h": 33 },
+     "rotated": false,
+     "trimmed": false,
+     "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 33 },
+     "sourceSize": { "w": 32, "h": 33 },
+     "duration": 200
+    }
+  },
+  "meta": {
+   "app": "https://www.aseprite.org/",
+   "version": "1.3.14.2-x64",
+   "format": "RGBA8888",
+   "size": { "w": 96, "h": 33 },
+   "scale": "1",
+   "frameTags": [
+   ],
+   "layers": [
+    { "name": "corpo", "opacity": 255, "blendMode": "normal" },
+    { "name": "braço direito", "opacity": 255, "blendMode": "normal" },
+    { "name": "braço esquerdo", "opacity": 255, "blendMode": "normal" },
+    { "name": "perna direita", "opacity": 255, "blendMode": "normal" },
+    { "name": "perna esquerda", "opacity": 255, "blendMode": "normal" }
+   ],
+   "slices": [
+   ]
+  }
+ }

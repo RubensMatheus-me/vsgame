@@ -1,24 +1,44 @@
 {
-    "tiles": {
-      "1": {
-        "image": "simpleTile.png",
-        "walkable": true,
-        "terrainType": "grass"
-      },
-      "2": {
-        "image": "grama.png",
-        "walkable": true,
-        "terrainType": "grass"
-      },
-      "3": {
-        "image": "lama.png",
-        "walkable": true,
-        "terrainType": "grass/mud"
-      },
-      "4": {
-        "image": "pedra.png",
-        "walkable": true,
-        "terrainType": "grass/rock"
-      }
+  "tiles": {
+    "1": {
+      "image": "simpleTile.png",
+      "walkable": true,
+      "terrainType": "grass"
+    },
+    "2": {
+      "image": "grama.png",
+      "walkable": true,
+      "terrainType": "grass"
+    },
+    "3": {
+      "image": "lama.png",
+      "walkable": true,
+      "terrainType": "grass/mud"
+    },
+    "4": {
+      "image": "pedra.png",
+      "walkable": true,
+      "terrainType": "grass/rock"
+    },
+    "5": {
+      "image": "flor.png",
+      "walkable": true,
+      "terrainType": "flower"
+    },
+    "6": {
+      "image": "florDois.png",
+      "walkable": true,
+      "terrainType": "flower/grass"
+    },
+    "7": {
+      "image": "gramaTipoDois.png",
+      "walkable": true,
+      "terrainType": "grass"
+    },
+    "8": {
+      "image": "gramaTipoTres.png",
+      "walkable": true,
+      "terrainType": "grass"
     }
   }
+}
