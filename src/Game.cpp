@@ -246,13 +246,20 @@ void Game::loadResources() {
 	//enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
 	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
+	TextureManager::loadTexture("assets/sprites/enemies/morcego.png", "morcego");
+	TextureManager::loadTexture("assets/sprites/enemies/olho.png", "olho");
+	TextureManager::loadTexture("assets/sprites/enemies/zombie.png", "zombie");
 	
 	//tiles
-	TextureManager::loadTexture("assets/sprites/tiles/grassTile.png", "grassTile");
-	TextureManager::loadTexture("assets/sprites/tiles/grassTile2.png", "grassTile2");
-	TextureManager::loadTexture("assets/sprites/tiles/mudTile.png", "mudTile");
-	TextureManager::loadTexture("assets/sprites/tiles/sandTile.png", "sandTile");
-
+	TextureManager::loadTexture("assets/sprites/tiles/flor.png", "flor");
+	TextureManager::loadTexture("assets/sprites/tiles/florDois.png", "florDois");
+	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "grama");
+	TextureManager::loadTexture("assets/sprites/tiles/gramaTipoDois.png", "gramaTipoDois");
+	TextureManager::loadTexture("assets/sprites/tiles/gramaTipoTres.png", "gramaTipoTres");
+	TextureManager::loadTexture("assets/sprites/tiles/lama.png", "lama");
+	TextureManager::loadTexture("assets/sprites/tiles/pedra.png", "pedra");
+	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "simpleTile");
+	
 	//GUI
 	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
 
