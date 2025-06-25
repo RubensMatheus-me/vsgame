@@ -21,6 +21,8 @@ class Enemy : public Character {
 
 		void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
+
+		void applyKnockback(const Vector& direction, float force);
         
         Rect getCollider() const override;
         void setAlive(bool val) { alive = val; }

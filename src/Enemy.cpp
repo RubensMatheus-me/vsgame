@@ -28,3 +28,10 @@ void Enemy::update(float deltaTime){
           animation->update(deltaTime);
      }
 }
+
+void Enemy::applyKnockback(const Vector& direction, float force) {
+	Vector dir = direction;
+	dir.normalize();
+	Vector knockback = dir * force;
+	setPosition(getPosition() + knockback);
+}
