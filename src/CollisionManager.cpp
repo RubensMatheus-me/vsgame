@@ -4,48 +4,63 @@
 #include "Entity.h"
 #include "Player.h"
 #include "GraphicalElement.h"
+#include "AudioManager.h"
 
-bool CollisionManager::checkCollision(const Rect& a, const Rect& b) {
+bool CollisionManager::checkCollision(const Rect &a, const Rect &b)
+{
     return a.intersects(b);
 }
 
-void CollisionManager::handlePlayerCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
+void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
+{
     Rect playerRect = player->getCollider();
-    
-    for(size_t i = 0; i < enemies.size();i++) {
-        Enemy* enemy = enemies[i].get(); 
+
+    for (size_t i = 0; i < enemies.size(); i++)
+    {
+        Enemy *enemy = enemies[i].get();
         Rect enemyRect = enemy->getCollider();
 
-        if(playerRect.intersects(enemyRect)) {
-            if (player->getDamageCooldown() <= 0.0f) {
+        if (playerRect.intersects(enemyRect))
+        {
+            if (player->getDamageCooldown() <= 0.0f)
+            {
+                AudioManager::getInstance().playSound("playerHit");
                 player->setDamageCooldown(player->getInvunerabilityTime());
-                player->setCurrentHp(player->getCurrentHp()-enemy->getBaseAtk());
-				
-                if (Game::getDebugMode()) std::cout << "Dano ao jogador.\n";
-            } else {
-                if (Game::getDebugMode()) std::cout << "Jogador invulnerável.\n";
+                player->setCurrentHp(player->getCurrentHp() - enemy->getBaseAtk());
+
+                if (Game::getDebugMode())
+                    std::cout << "Dano ao jogador.\n";
+            }
+            else
+            {
+                if (Game::getDebugMode())
+                    std::cout << "Jogador invulnerável.\n";
             }
         }
     }
 }
 
-void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles) {
-    for (size_t i = 0; i < projectiles.size(); ++i) {
-        Projectile* projectile = projectiles[i].get();
+void CollisionManager::handleProjectileCollisions(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles)
+{
+    for (size_t i = 0; i < projectiles.size(); ++i)
+    {
+        Projectile *projectile = projectiles[i].get();
         Rect projectileRect = projectile->getCollider();
-        for (size_t j = 0; j < enemies.size(); ++j) {
-            Enemy* enemy = enemies[j].get();
+        for (size_t j = 0; j < enemies.size(); ++j)
+        {
+            Enemy *enemy = enemies[j].get();
             Rect enemyRect = enemy->getCollider();
 
-            if(projectileRect.intersects(enemyRect)) {
+            if (projectileRect.intersects(enemyRect))
+            {
                 projectile->setAlive(false);
                 enemy->setAlive(false);
-                player->setXp(player->getXp()+enemy->getXpDrop());
-                
-                if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
+                player->setXp(player->getXp() + enemy->getXpDrop());
+
+                if (Game::getDebugMode())
+                    std::cout << "Inimigo atingido por projétil!\n";
             }
         }
-
     }
 }
 

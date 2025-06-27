@@ -15,10 +15,11 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
+#include "AudioManager.h"
 
 using namespace Config;
 
-const char* pathFont = "assets/fonts/dogica.ttf";
+const char *pathFont = "assets/fonts/dogica.ttf";
 int windowWidth, windowHeight;
 
 bool Game::debugMode = true;
@@ -26,7 +27,7 @@ bool Game::debugMode = true;
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
 std::vector<std::unique_ptr<Enemy>> enemies;
-std::vector<GraphicalElement*> allElements;
+std::vector<GraphicalElement *> allElements;
 std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
@@ -39,14 +40,15 @@ std::unique_ptr<EnemySpawner> enemySpawner;
 std::string lastFpsText;
 std::string lastTimeText;
 std::string lastXpText;
-SDL_Texture* fpsTexture = nullptr;
-SDL_Texture* timeTexture = nullptr;
-SDL_Texture* xpTexture = nullptr;
+SDL_Texture *fpsTexture = nullptr;
+SDL_Texture *timeTexture = nullptr;
+SDL_Texture *xpTexture = nullptr;
 
-Game::Game() : timerEvents(2.0f), gameTime(1.0f){}; 
+Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
 Game::~Game() {};
 
-void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen) {
+void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
+{
 
 	keyboard = std::make_unique<Keyboard>();
 	tickRate = std::make_unique<TickRate>();
@@ -56,21 +58,35 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 	levelUpMenu = std::make_unique<LevelUpMenu>();
 	int flags = 0;
 
-
-	if (fullscreen) {
+	if (fullscreen)
+	{
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		if(TTF_Init() == -1) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+	{
+		if (TTF_Init() == -1)
+		{
 			setIsRunning(false);
 			return;
 		}
+
+		if (!AudioManager::getInstance().init())
+		{
+			setIsRunning(false);
+			return;
+		}
+
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-		
+
 		CameraManager::getCameraManager()->init(windowWidth, windowHeight);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
+
+		// background Musica
+		AudioManager::getInstance().playMusic("assets/Audios/background/backgroundMusic.ogg");
+		// Efeitos sonoros
+		AudioManager::getInstance().loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
 
 		TextureManager::init(renderer);
 		loadResources();
@@ -79,37 +95,42 @@ void Game::init(const char* title, int xPos, int yPos, int width, int height, bo
 		levelUpMenu->init("assets/data/upgrades.json");
 
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
-		
+
 		initializeEntities();
 
 		setIsRunning(true);
-
-	} else {
+	}
+	else
+	{
 		setIsRunning(false);
 	}
-	
 }
 
-void Game::events() {
+void Game::events()
+{
 	SDL_Event event;
 
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) {
+	while (SDL_PollEvent(&event))
+	{
+		if (event.type == SDL_QUIT)
+		{
 			setIsRunning(false);
 		}
 	}
-
 }
 
-void Game::clean() {
+void Game::clean()
+{
 
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	TextureManager::cleanTexture();
 
 	SDL_DestroyTexture(fpsTexture);
-    SDL_DestroyTexture(timeTexture);
-    SDL_DestroyTexture(xpTexture);
+	SDL_DestroyTexture(timeTexture);
+	SDL_DestroyTexture(xpTexture);
+
+	AudioManager::getInstance().clean();
 
 	TTF_Quit();
 	SDL_Quit();
@@ -117,54 +138,64 @@ void Game::clean() {
 	std::cout << "Jogo limpo" << std::endl;
 }
 
-void Game::render() {
+void Game::render()
+{
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
 
 	tileManager->renderMap(renderer, player->getCollider());
-	
+
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-	if (player != nullptr) {
-        player->render(renderer);
-    }else {
-        std::cout << "Player não está inicializado!" << std::endl;
-    }
+	if (player != nullptr)
+	{
+		player->render(renderer);
+	}
+	else
+	{
+		std::cout << "Player não está inicializado!" << std::endl;
+	}
 
-	for (auto& e : enemies) {
+	for (auto &e : enemies)
+	{
 		e->render(renderer);
 	}
 
-	if (fpsTexture == nullptr) {
+	if (fpsTexture == nullptr)
+	{
 		std::cerr << "Falha ao criar textura de FPS!" << std::endl;
 	}
 
-	if(fpsTexture != nullptr) {
+	if (fpsTexture != nullptr)
+	{
 		int textW = 0, textH = 0;
-        SDL_QueryTexture(fpsTexture, nullptr, nullptr, &textW, &textH);
-        SDL_Rect fpsRect = {10, 10, textW, textH};
-        SDL_RenderCopy(renderer, fpsTexture, nullptr, &fpsRect);
+		SDL_QueryTexture(fpsTexture, nullptr, nullptr, &textW, &textH);
+		SDL_Rect fpsRect = {10, 10, textW, textH};
+		SDL_RenderCopy(renderer, fpsTexture, nullptr, &fpsRect);
 	}
 
-	if (timeTexture != nullptr) {
-        int textW = 0, textH = 0;
-        SDL_QueryTexture(timeTexture, nullptr, nullptr, &textW, &textH);
-        SDL_Rect timeRect = {(windowWidth - textW) / 2, 10, textW, textH};
-        SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
-    }
-
-	if (xpTexture != nullptr) {
+	if (timeTexture != nullptr)
+	{
 		int textW = 0, textH = 0;
-        SDL_QueryTexture(xpTexture, nullptr, nullptr, &textW, &textH);
-        SDL_Rect xpRect = {10, 25, textW, textH};
-        SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
+		SDL_QueryTexture(timeTexture, nullptr, nullptr, &textW, &textH);
+		SDL_Rect timeRect = {(windowWidth - textW) / 2, 10, textW, textH};
+		SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
+	}
+
+	if (xpTexture != nullptr)
+	{
+		int textW = 0, textH = 0;
+		SDL_QueryTexture(xpTexture, nullptr, nullptr, &textW, &textH);
+		SDL_Rect xpRect = {10, 25, textW, textH};
+		SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
 	}
 
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
 
-	for (auto& proj : projectiles) {
+	for (auto &proj : projectiles)
+	{
 		proj->render(renderer);
 	}
 	/*
@@ -175,67 +206,74 @@ void Game::render() {
 	SDL_RenderPresent(renderer);
 }
 
-void Game::update() {
-    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-    tickRate->update();
-    float dt = tickRate->getDeltaTime();
+void Game::update()
+{
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	tickRate->update();
+	float dt = tickRate->getDeltaTime();
 
-    timerEvents.update(dt);
+	timerEvents.update(dt);
 	gameTime.update(dt);
 
-	if (player->getLevel() > levelUpMenu->lastUpgradedLevel) {
-		TTF_Font* font = TTF_OpenFont(pathFont, 10);
+	if (player->getLevel() > levelUpMenu->lastUpgradedLevel)
+	{
+		TTF_Font *font = TTF_OpenFont(pathFont, 10);
 		levelUpMenu->show(renderer, font, *player, windowWidth, windowHeight);
 		TTF_CloseFont(font);
-		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel +1;
+		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel + 1;
 	}
 
-    if (timerEvents.hasElapsed()) {
-        shootProjectile();
-        timerEvents.reset();
-    }
-    if (player) {
-        CameraManager::getCameraManager()->follow(player->getPosition());
-        keyboard->update(*player, dt);
-        player->update(dt);
+	if (timerEvents.hasElapsed())
+	{
+		shootProjectile();
+		timerEvents.reset();
+	}
+	if (player)
+	{
+		CameraManager::getCameraManager()->follow(player->getPosition());
+		keyboard->update(*player, dt);
+		player->update(dt);
+	}
 
-    }
-
-    // if (!allElements.empty()) {
-    //     CollisionManager::handleCollisions(allElements);
-    // } else {
-    //     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
-    // }
-	if(!enemies.empty()) {
+	// if (!allElements.empty()) {
+	//     CollisionManager::handleCollisions(allElements);
+	// } else {
+	//     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
+	// }
+	if (!enemies.empty())
+	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 	}
-	if(!enemies.empty() && !projectiles.empty()) {
+	if (!enemies.empty() && !projectiles.empty())
+	{
 		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	}
 
 	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
-    for (auto& e : enemies) {
-        Vector toPlayer = player->getPosition() - e->getPosition();
-        toPlayer.normalize();
-        e->setSpeed(toPlayer * e->getMovSpeed());
-        e->update(dt);
-    }
+	for (auto &e : enemies)
+	{
+		Vector toPlayer = player->getPosition() - e->getPosition();
+		toPlayer.normalize();
+		e->setSpeed(toPlayer * e->getMovSpeed());
+		e->update(dt);
+	}
 
-    for (auto& proj : projectiles) {
-        proj->update(dt);
-    }
+	for (auto &proj : projectiles)
+	{
+		proj->update(dt);
+	}
 
 	removeDeadEntities();
 
-    updateFpsDisplay();
-    updateClockDisplay();
+	updateFpsDisplay();
+	updateClockDisplay();
 	updateXp();
 }
 
+void Game::loadResources()
+{
 
-void Game::loadResources() {
-
-	//player
+	// player
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-left.png", "warrior-idle-left");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "warrior-idle-right");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
@@ -243,14 +281,14 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/guerreiro-death.png", "death-player");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/guerreiro-hurt.png", "player-taken-damage");
 
-	//enemies
+	// enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
 	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
 	TextureManager::loadTexture("assets/sprites/enemies/morcego.png", "morcego");
 	TextureManager::loadTexture("assets/sprites/enemies/olho.png", "olho");
 	TextureManager::loadTexture("assets/sprites/enemies/zombie.png", "zombie");
-	
-	//tiles
+
+	// tiles
 	TextureManager::loadTexture("assets/sprites/tiles/flor.png", "flor");
 	TextureManager::loadTexture("assets/sprites/tiles/florDois.png", "florDois");
 	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "grama");
@@ -259,20 +297,21 @@ void Game::loadResources() {
 	TextureManager::loadTexture("assets/sprites/tiles/lama.png", "lama");
 	TextureManager::loadTexture("assets/sprites/tiles/pedra.png", "pedra");
 	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "simpleTile");
-	
-	//GUI
+
+	// GUI
 	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
 
-	//Upgrades
+	// Upgrades
 	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
 	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "TitanBlessing");
 	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "HealthSurge");
 
-	//projectiles
+	// projectiles
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
 }
 
-void Game::limitFPS(float targetFPS) {
+void Game::limitFPS(float targetFPS)
+{
 	static Uint64 previousTicks = SDL_GetPerformanceCounter();
 	Uint64 currentTicks = SDL_GetPerformanceCounter();
 
@@ -280,14 +319,16 @@ void Game::limitFPS(float targetFPS) {
 
 	float elapsedTime = (currentTicks - previousTicks) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
-	if(elapsedTime < frameDelay) {
+	if (elapsedTime < frameDelay)
+	{
 		SDL_Delay(static_cast<Uint32>(frameDelay - elapsedTime));
 	}
 
 	previousTicks = SDL_GetPerformanceCounter();
 }
 
-void Game::initializeEntities() {
+void Game::initializeEntities()
+{
 
 	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4, true);
 	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4, true);
@@ -320,36 +361,38 @@ void Game::initializeEntities() {
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME                   
-    );
-	
+		Config::PLAYER_INVULNERABILITY_TIME);
 
 	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
 }
 
-void Game::updateFpsDisplay() {
+void Game::updateFpsDisplay()
+{
 	int textW, textH;
 	std::string currentFpsText = std::to_string(tickRate->getFPS());
 
 	std::string fullText = "FPS: " + currentFpsText;
 
-
 	SDL_Color black = {0, 0, 0, 255};
 
-	if(currentFpsText != lastFpsText) {
+	if (currentFpsText != lastFpsText)
+	{
 		lastFpsText = currentFpsText;
-		
-		if(fpsTexture != nullptr) SDL_DestroyTexture(fpsTexture);
-		
-		TTF_Font* font = TTF_OpenFont(pathFont, 10);
-		if(!font) {
+
+		if (fpsTexture != nullptr)
+			SDL_DestroyTexture(fpsTexture);
+
+		TTF_Font *font = TTF_OpenFont(pathFont, 10);
+		if (!font)
+		{
 			std::cerr << TTF_GetError() << std::endl;
 			return;
 		}
-		
+
 		textW = 0, textH = 0;
-		if(TTF_SizeText(font, fullText.c_str(), &textW, &textH) != 0) {
+		if (TTF_SizeText(font, fullText.c_str(), &textW, &textH) != 0)
+		{
 			std::cerr << TTF_GetError() << std::endl;
 			TTF_CloseFont(font);
 			return;
@@ -358,100 +401,114 @@ void Game::updateFpsDisplay() {
 		fpsTexture = TextureManager::renderText(fullText, pathFont, black, 10);
 		TTF_CloseFont(font);
 	}
-	
 }
 
-void Game::updateClockDisplay() {
+void Game::updateClockDisplay()
+{
 	std::string timeText = gameTime.clock();
 
 	SDL_Color black = {0, 0, 0, 255};
 
-	if(timeText != lastTimeText) {
+	if (timeText != lastTimeText)
+	{
 		lastTimeText = timeText;
-	
-		if(timeTexture != nullptr) {
+
+		if (timeTexture != nullptr)
+		{
 			SDL_DestroyTexture(timeTexture);
 			timeTexture = nullptr;
 		}
 
-		TTF_Font* font = TTF_OpenFont(pathFont, 12);
-		if(!font) {
+		TTF_Font *font = TTF_OpenFont(pathFont, 12);
+		if (!font)
+		{
 			std::cerr << "erro: " << TTF_GetError() << std::endl;
 			return;
 		}
 
 		int textW = 0, textH = 0;
 
-		if(TTF_SizeText(font, timeText.c_str(), &textW, &textH) != 0) {
+		if (TTF_SizeText(font, timeText.c_str(), &textW, &textH) != 0)
+		{
 			std::cerr << TTF_GetError() << std::endl;
 			TTF_CloseFont(font);
 			return;
 		}
 		timeTexture = TextureManager::renderText(timeText, pathFont, black, 12);
-		if (timeTexture == nullptr) {
+		if (timeTexture == nullptr)
+		{
 			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
 		}
 		TTF_CloseFont(font);
 	}
 }
 
-void Game::updateXp() {
+void Game::updateXp()
+{
 	std::string xpText = "LEVEL: " + std::to_string(player->getLevel()) + " XP:" + std::to_string(static_cast<int>(player->getXp())) + " / " + std::to_string(static_cast<int>(player->getXpNextLevel()));
-	if(xpText != lastXpText) {
+	if (xpText != lastXpText)
+	{
 		SDL_Color black = {0, 0, 0, 255};
 		lastXpText = xpText;
-	
-		if(xpTexture != nullptr) {
+
+		if (xpTexture != nullptr)
+		{
 			SDL_DestroyTexture(xpTexture);
 			xpTexture = nullptr;
 		}
 
-		TTF_Font* font = TTF_OpenFont(pathFont, 12);
-		if(!font) {
+		TTF_Font *font = TTF_OpenFont(pathFont, 12);
+		if (!font)
+		{
 			std::cerr << "erro: " << TTF_GetError() << std::endl;
 			return;
 		}
 
 		int textW = 0, textH = 0;
 
-		if(TTF_SizeText(font, xpText.c_str(), &textW, &textH) != 0) {
+		if (TTF_SizeText(font, xpText.c_str(), &textW, &textH) != 0)
+		{
 			std::cerr << TTF_GetError() << std::endl;
 			TTF_CloseFont(font);
 			return;
 		}
 		xpTexture = TextureManager::renderText(xpText, pathFont, black, 12);
-		if (xpTexture == nullptr) {
+		if (xpTexture == nullptr)
+		{
 			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
 		}
 		TTF_CloseFont(font);
 	}
 }
 
-void Game::shootProjectile() {
-	if (enemies.empty()) return;
+void Game::shootProjectile()
+{
+	if (enemies.empty())
+		return;
 
-    Vector playerPos = player->getPosition();
+	Vector playerPos = player->getPosition();
 
-    Enemy* target = nullptr;
-    float closestDistanceSq = std::numeric_limits<float>::max();
+	Enemy *target = nullptr;
+	float closestDistanceSq = std::numeric_limits<float>::max();
 
-    for (const auto& e : enemies) {
-        float distSq = (e->getPosition() - playerPos).length_squared();
-        if (distSq < closestDistanceSq) {
-            closestDistanceSq = distSq;
-            target = e.get();
-        }
-    }
+	for (const auto &e : enemies)
+	{
+		float distSq = (e->getPosition() - playerPos).length_squared();
+		if (distSq < closestDistanceSq)
+		{
+			closestDistanceSq = distSq;
+			target = e.get();
+		}
+	}
 
-    if (!target) return;
+	if (!target)
+		return;
 
-		
 	Vector enemyPos = target->getPosition();
-    Vector direction = enemyPos - playerPos;
+	Vector direction = enemyPos - playerPos;
 	direction.normalize();
 
-	//Vector spawnOffSet = direction * 10.0f;
-
+	// Vector spawnOffSet = direction * 10.0f;
 
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
@@ -465,33 +522,34 @@ void Game::shootProjectile() {
 		150.0f,
 		10.0f,
 		std::move(anim),
-		player.get()
-	);
+		player.get());
 
 	projectiles.push_back(std::move(p));
 	allElements.push_back(projectiles.back().get());
-
 }
 
-void Game::removeDeadEntities() {
+void Game::removeDeadEntities()
+{
 	projectiles.erase(
-        std::remove_if(projectiles.begin(), projectiles.end(),
-            [](const std::unique_ptr<Projectile>& p) {
-                return !p->isAlive();
-            }),
-        projectiles.end()
-    );
+		std::remove_if(projectiles.begin(), projectiles.end(),
+					   [](const std::unique_ptr<Projectile> &p)
+					   {
+						   return !p->isAlive();
+					   }),
+		projectiles.end());
 
-    enemies.erase(
-        std::remove_if(enemies.begin(), enemies.end(),
-            [](const std::unique_ptr<Enemy>& e) {
-                return !e->isAlive();
-            }),
-        enemies.end()
-    );
+	enemies.erase(
+		std::remove_if(enemies.begin(), enemies.end(),
+					   [](const std::unique_ptr<Enemy> &e)
+					   {
+						   return !e->isAlive();
+					   }),
+		enemies.end());
 
-    allElements.clear();
-    allElements.push_back(player.get());
-    for (auto& e : enemies) allElements.push_back(e.get());
-    for (auto& p : projectiles) allElements.push_back(p.get());
+	allElements.clear();
+	allElements.push_back(player.get());
+	for (auto &e : enemies)
+		allElements.push_back(e.get());
+	for (auto &p : projectiles)
+		allElements.push_back(p.get());
 }
