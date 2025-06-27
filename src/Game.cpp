@@ -83,10 +83,13 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
-		// background Musica
-		AudioManager::getInstance().playMusic("assets/Audios/background/backgroundMusic.ogg");
-		// Efeitos sonoros
-		AudioManager::getInstance().loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
+		// Efeitos sonoros e Músicas
+		AudioManager &audio = AudioManager::getInstance();
+		audio.init();
+		audio.loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
+		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
+
+		audio.playMusic("backgroundMusic");
 
 		TextureManager::init(renderer);
 		loadResources();
