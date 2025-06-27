@@ -17,6 +17,7 @@ Este é um jogo simples feito com **C++** e **SDL2**, inspirado no estilo do jog
    sudo apt-get install libsdl2-dev libsdl2-image-dev g++ make
    sudo apt install libsdl2-ttf-dev
    sudo apt install nlohmann-json3-dev
+   sudo apt install libsdl2-mixer-dev
 2. **Clone o repositório**:
    ```bash
    git clone https://github.com/RubensMatheus-me/vsgame
