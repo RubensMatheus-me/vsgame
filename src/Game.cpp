@@ -233,9 +233,9 @@ void Game::update()
 	}
 	if (player)
 	{
+		player->update(dt);
 		CameraManager::getCameraManager()->follow(player->getPosition());
 		keyboard->update(*player, dt);
-		player->update(dt);
 	}
 
 	// if (!allElements.empty()) {
