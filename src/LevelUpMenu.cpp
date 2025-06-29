@@ -73,10 +73,18 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer *renderer, TTF_Font *font, co
     SDL_Event e;
 
     SDL_Texture *menuTexture = TextureManager::getTexture("upgradeMenu");
+
     const int menuWidth = 407;
     const int menuHeight = 520;
-    const int upgradeBoxHeight = (menuHeight / 5);
-    const int upgradeAreaY = menuWidth / 3;
+    const int upgradeAreaStartY = 100;
+
+    const int ICON_SIZE = 32;
+    const int ITEM_START_Y = 150;
+    const int ITEM_SPACING = 140;
+    const int ICON_X = 30;
+    const int TEXT_X = ICON_X + ICON_SIZE + 20;
+
+    const int HORIZONTAL_TEXT_OFFSET = 20;
 
     int menuX = (screenWidth - menuWidth) / 2;
     int menuY = (screenHeight - menuHeight) / 2;
@@ -113,26 +121,34 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer *renderer, TTF_Font *font, co
 
         for (int i = 0; i < itemCount; ++i)
         {
-            int boxY = upgradeAreaY + i * upgradeBoxHeight;
+            int itemY = menuY + ITEM_START_Y + i * ITEM_SPACING;
 
-            upgrades[i]->render(renderer, Vector((float)(menuX + 20), (float)(boxY + 10)));
+            int iconY = itemY - ICON_SIZE / 2;
+            upgrades[i]->render(renderer, Vector((float)(menuX + ICON_X), (float)iconY));
 
             std::string text = upgrades[i]->getDescription();
-
             SDL_Color color = {255, 255, 255};
             if (i == selected)
-            {
                 color = {255, 255, 0};
-            }
 
-            SDL_Surface *surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 340);
+            SDL_Surface *surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 300);
+
             SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-            SDL_Rect dst = {menuX + 80, boxY + 10, surface->w, surface->h};
-            SDL_RenderCopy(renderer, texture, nullptr, &dst);
+            if (surface)
+            {
+                SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+                if (texture)
+                {
+                    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-            SDL_FreeSurface(surface);
-            SDL_DestroyTexture(texture);
+                    int textY = itemY - surface->h / 2;
+                    SDL_Rect dst = {menuX + TEXT_X, (textY + HORIZONTAL_TEXT_OFFSET), surface->w, surface->h};
+                    SDL_RenderCopy(renderer, texture, nullptr, &dst);
+
+                    SDL_DestroyTexture(texture);
+                }
+                SDL_FreeSurface(surface);
+            }
         }
 
         SDL_RenderPresent(renderer);

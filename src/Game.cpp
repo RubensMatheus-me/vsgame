@@ -302,7 +302,7 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "simpleTile");
 
 	// GUI
-	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
+	TextureManager::loadTexture("assets/sprites/gui/upgradMenu.png", "upgradeMenu");
 
 	// Upgrades
 	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
