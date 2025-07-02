@@ -2,21 +2,22 @@
 #include "Player.h"
 #include "CameraManager.h"
 
-void GUIRenderer::renderXpBar(SDL_Renderer* renderer, Player* player) {
+void GUIRenderer::renderXpBar(SDL_Renderer *renderer, Player *player)
+{
     float currentXp = player->getXp();
     float maxXp = player->getXpNextLevel();
 
     const int barWidth = 150;
     const int barHeight = 10;
-    const int x = 10; 
+    const int x = 10;
     const int y = 45;
 
     float progress = std::min(currentXp / maxXp, 1.0f);
     int filledWidth = static_cast<int>(barWidth * progress);
 
-    SDL_Color outlineColor = {255, 255, 255, 255};        
-    SDL_Color fillColor = {0, 191, 255, 255};              
-    SDL_Color backgroundColor = {25, 25, 112, 255};       
+    SDL_Color outlineColor = {255, 255, 255, 255};
+    SDL_Color fillColor = {0, 191, 255, 255};
+    SDL_Color backgroundColor = {25, 25, 112, 255};
 
     SDL_Rect outlineRect = {x - 1, y - 1, barWidth + 2, barHeight + 2};
     SDL_Rect backgroundRect = {x, y, barWidth, barHeight};
@@ -32,7 +33,8 @@ void GUIRenderer::renderXpBar(SDL_Renderer* renderer, Player* player) {
     SDL_RenderFillRect(renderer, &filledRect);
 }
 
-void GUIRenderer::renderPlayerHpBar(SDL_Renderer* renderer, Player* player) {
+void GUIRenderer::renderPlayerHpBar(SDL_Renderer *renderer, Player *player)
+{
     float currentHp = player->getCurrentHp();
     float maxHp = player->getHp();
 
@@ -46,12 +48,12 @@ void GUIRenderer::renderPlayerHpBar(SDL_Renderer* renderer, Player* player) {
     Vector cameraOffset = CameraManager::getCameraManager()->getOffSet();
 
     int x = static_cast<int>(playerPos.x + (playerSize.x - barWidth) / 2) - cameraOffset.x;
-    int y = static_cast<int>(playerPos.y + playerSize.y + 4) - cameraOffset.y;  
+    int y = static_cast<int>(playerPos.y + playerSize.y + 4) - cameraOffset.y;
     int filledWidth = static_cast<int>(barWidth * progress);
 
-    SDL_Color outlineColor = {255, 255, 255, 255};   
-    SDL_Color fillColor = {255, 0, 0, 255};          
-    SDL_Color backgroundColor = {139, 0, 0, 255};   
+    SDL_Color outlineColor = {255, 255, 255, 255};
+    SDL_Color fillColor = {255, 0, 0, 255};
+    SDL_Color backgroundColor = {139, 0, 0, 255};
 
     SDL_Rect outlineRect = {x - 1, y - 1, barWidth + 2, barHeight + 2};
     SDL_Rect backgroundRect = {x, y, barWidth, barHeight};
@@ -67,12 +69,14 @@ void GUIRenderer::renderPlayerHpBar(SDL_Renderer* renderer, Player* player) {
     SDL_RenderFillRect(renderer, &filledRect);
 }
 
-void GUIRenderer::renderItems(SDL_Renderer* renderer, Player* player) {
-	std::vector<std::unique_ptr<Upgrade>>& upgrades = player->getUpgrades();
-	Vector cameraOffset = CameraManager::getCameraManager()->getOffSet();
-	for (int i = 0; i < upgrades.size(); i++) {
-		float x = 5.0f + (i * 32.0f) + (5.0f*i);
-		float y = 60.0f;    
-		upgrades[i]->render(renderer, Vector(cameraOffset.x+x, cameraOffset.y+y));
-	}
+void GUIRenderer::renderItems(SDL_Renderer *renderer, Player *player)
+{
+    std::vector<std::unique_ptr<Upgrade>> &upgrades = player->getUpgrades();
+
+    for (int i = 0; i < upgrades.size(); i++)
+    {
+        float x = 5.0f + (i * 32.0f) + (5.0f * i);
+        float y = 60.0f;
+        upgrades[i]->render(renderer, Vector(x, y));
+    }
 }
