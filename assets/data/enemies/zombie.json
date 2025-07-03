@@ -1,54 +1,54 @@
 {
   "id": "zombie",
-  "size": 32,
+  "size": 64,
   "speed": 0,
   "hp": 20,
   "attackRate": 1.0,
   "moveSpeed": 60.0,
-  "xpDrop": 200,
+  "xpDrop": 150,
   "spawnWeight": 2,
-  "baseAtk": 5,
+  "baseAtk": 30,
   "sprite": "zombie",
   "frames": {
     "zombie 0.aseprite": {
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "sourceSize": {
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "duration": 150
     },
     "zombie 1.aseprite": {
       "frame": {
-        "x": 32,
+        "x": 64,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "sourceSize": {
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "duration": 150
     },
@@ -56,20 +56,20 @@
       "frame": {
         "x": 64,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "sourceSize": {
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "duration": 150
     },
@@ -77,20 +77,20 @@
       "frame": {
         "x": 96,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "sourceSize": {
-        "w": 32,
-        "h": 32
+        "w": 64,
+        "h": 64
       },
       "duration": 150
     }
@@ -101,7 +101,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 128,
-      "h": 32
+      "h": 64
     },
     "scale": "1",
     "frameTags": [],

@@ -9,7 +9,7 @@ class AudioManager
 public:
     static AudioManager &getInstance();
     // frequenia valores (22050, 44100, 48000) buffer size(512 ,1024, 2048, 4096, 8192, 16384)
-    bool init(int frequency = 44100, Uint16 format = MIX_DEFAULT_FORMAT, int channels = 2, int chunkSize = 2048, int numChannels = 32);
+    bool init(int frequency = 44100, Uint16 format = MIX_DEFAULT_FORMAT, int channels = 2, int chunkSize = 4096, int numChannels = 32);
     void clean();
 
     bool loadSound(const std::string &id, const std::string &filePath);

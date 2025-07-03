@@ -5,9 +5,9 @@
   "hp": 20,
   "attackRate": 1.0,
   "moveSpeed": 60.0,
-  "xpDrop": 200,
+  "xpDrop": 50,
   "spawnWeight": 2,
-  "baseAtk": 5,
+  "baseAtk": 20,
   "sprite": "olho",
   "frames": {
     "olho 0.aseprite": {

@@ -1,86 +1,128 @@
 {
   "id": "skeleton",
-  "size": 32,
+  "size": 64,
   "speed": 0,
   "hp": 25,
   "attackRate": 1.0,
   "moveSpeed": 55.0,
-  "xpDrop": 200,
+  "xpDrop": 100,
   "spawnWeight": 2,
-  "baseAtk": 10,
+  "baseAtk": 25,
   "sprite": "skeleton",
   "frames": {
     "esqueleto 0.aseprite": {
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "sourceSize": {
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "duration": 150
     },
     "esqueleto 1.aseprite": {
       "frame": {
-        "x": 32,
+        "x": 64,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "sourceSize": {
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "duration": 150
     },
     "esqueleto 2.aseprite": {
       "frame": {
-        "x": 64,
+        "x": 128,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
       },
       "sourceSize": {
-        "w": 32,
-        "h": 33
+        "w": 64,
+        "h": 66
+      },
+      "duration": 150
+    },
+    "esqueleto 3.aseprite": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 64,
+        "h": 66
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 66
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 66
+      },
+      "duration": 200
+    },
+    "esqueleto 4.aseprite": {
+      "frame": {
+        "x": 256,
+        "y": 0,
+        "w": 64,
+        "h": 66
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 66
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 66
       },
       "duration": 200
     }
   },
   "meta": {
     "app": "https://www.aseprite.org/",
-    "version": "1.3.14.2-x64",
+    "version": "1.3.14.3-x64",
     "format": "RGBA8888",
     "size": {
-      "w": 96,
-      "h": 33
+      "w": 320,
+      "h": 66
     },
     "scale": "1",
     "frameTags": [],
