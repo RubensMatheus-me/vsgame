@@ -1,5 +1,5 @@
 {
-  "id": "skeleton",
+  "id": "zombie",
   "size": 32,
   "speed": 0,
   "hp": 20,
@@ -8,7 +8,7 @@
   "xpDrop": 200,
   "spawnWeight": 2,
   "baseAtk": 5,
-  "sprite": "skeleton",
+  "sprite": "zombie",
   "frames": {
     "zombie 0.aseprite": {
       "frame": {
