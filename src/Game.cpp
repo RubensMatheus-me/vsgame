@@ -34,6 +34,7 @@ std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
 std::vector<std::unique_ptr<Projectile>> projectiles;
+std::vector<std::unique_ptr<MeleeAttack>> meleeAttacks;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
 std::unique_ptr<EnemySpawner> enemySpawner;
 
@@ -193,6 +194,7 @@ void Game::update() {
 
     if (timerEvents.hasElapsed()) {
         shootProjectile();
+		performMeleeAttack();
         timerEvents.reset();
     }
     if (player) {
@@ -225,6 +227,10 @@ void Game::update() {
     for (auto& proj : projectiles) {
         proj->update(dt);
     }
+
+	for (auto& melee : meleeAttacks) {
+		melee->update(dt);
+	}
 
 	removeDeadEntities();
 
@@ -502,6 +508,35 @@ void Game::shootProjectile() {
 	direction.normalize();
 
 	player->getWeapons().at(0)->attack(playerPos, direction, projectiles, player.get());
+}
+
+void Game::performMeleeAttack() {
+    if (enemies.empty()) return;
+
+    Vector playerPos = player->getPosition();
+
+    Enemy* target = nullptr;
+    float closestDistanceSq = std::numeric_limits<float>::max();
+
+    for (const auto& e : enemies) {
+        float distSq = (e->getPosition() - playerPos).length_squared();
+        if (distSq < closestDistanceSq) {
+            closestDistanceSq = distSq;
+            target = e.get();
+        }
+    }
+
+    if (!target) return;
+
+    Vector direction = target->getPosition() - playerPos;
+    direction.normalize();
+
+    if (player->getWeapons().size() < 2) return;
+
+    auto* weapon = dynamic_cast<BrassKnuckles*>(player->getWeapons()[1].get());
+    if (weapon) {
+        weapon->attack(playerPos, direction, meleeAttacks, player.get());
+    }
 }
 
 

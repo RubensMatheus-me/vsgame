@@ -10,6 +10,11 @@ Axe::Axe(const Vector& size, SpriteAnimation* spriteAnim, const std::string& des
       projectileSpeed(projSpeed),
       projectileLifetime(projLifetime)
 {}
+void updateProjetics() {
+
+}
+
+
 
 void Axe::attack(const Vector& position, const Vector& direction,  std::vector<std::unique_ptr<Projectile>>& projectiles, Entity* owner) {
 	auto anim = std::make_unique<SpriteAnimation>();

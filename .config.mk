@@ -1,0 +1,1 @@
+MY_LIB_PATH = ../my-lib/include

@@ -2,7 +2,8 @@
 #include "Item.h"
 #include "SpriteAnimation.h"
 #include <vector>
-#include "Projectile.h"  // Vai precisar para referência
+#include "Projectile.h"
+#include "MeleeAttack.h" 
 
 class Weapon : public Item {
 public:
@@ -13,6 +14,7 @@ public:
     virtual ~Weapon() = default;
 
     virtual void attack(const Vector& position, const Vector& direction, std::vector<std::unique_ptr<Projectile>>& projectiles, Entity* owner) = 0;
+	virtual void attack(const Vector& position, const Vector& direction, std::vector<std::unique_ptr<MeleeAttack>>& meleeAttack, Entity* owner) = 0;
 
     float getFlatDamage() const { return this->flatDamage; }
     float getFlatAtkSpeed() const { return this->flatAtkSpeed; }
@@ -20,6 +22,8 @@ public:
     float getAtkSpeedMultiplier() const { return this->atkSpeedMultiplier; }
     int getLevel() const { return this->level; }
     SpriteAnimation* getSprite() const { return spriteAnimation; }
+
+	float getTotalDamage() const { return flatDamage * damageMultiplier; }
 
     void setFlatDamage(float flatDamage) { this->flatDamage = flatDamage; }
     void setFlatAtkSpeed(float flatAtkSpeed) { this->flatAtkSpeed = flatAtkSpeed; }

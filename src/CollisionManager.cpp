@@ -42,7 +42,7 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
 
 				Vector direction = enemy->getPosition() - projectile->getPosition();
 
-				float forceKnockback = 15.5f;
+				float forceKnockback = 10.0f;
 				enemy->applyKnockback(direction, forceKnockback);
 
 				if(enemy->getCurrentHp() <= 0.0f) {
