@@ -24,7 +24,6 @@ void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::u
         {
             if (player->getDamageCooldown() <= 0.0f)
             {
-                AudioManager::getInstance().playSound("playerHit");
                 player->setDamageCooldown(player->getInvunerabilityTime());
                 player->setCurrentHp(player->getCurrentHp() - enemy->getBaseAtk());
 

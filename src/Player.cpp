@@ -49,9 +49,11 @@ void Player::setAnimationState(PlayerAnimationState newState)
         spriteAnimation->play("walk-left");
         break;
     case PlayerAnimationState::TakenDamage:
+        AudioManager::getInstance().playSound("playerHit");
         spriteAnimation->play("player-taken-damage");
         break;
     case PlayerAnimationState::Death:
+        AudioManager::getInstance().setEffectsVolume(0.2f);
         AudioManager::getInstance().playSound("gameOver");
         spriteAnimation->play("death-player");
         break;

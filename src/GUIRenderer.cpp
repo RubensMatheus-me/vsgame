@@ -36,7 +36,7 @@ void GUIRenderer::renderXpBar(SDL_Renderer *renderer, Player *player)
     float progress = std::min(currentXp / maxXp, 1.0f);
     int filledWidth = static_cast<int>(progressBarWidth * progress);
 
-    SDL_Color fillColor = {0, 191, 255, 255};
+    SDL_Color fillColor = {13, 131, 255, 255};
     SDL_Color backgroundColor = {25, 25, 112, 255};
 
     SDL_Rect backgroundRect = {progressBarX, progressBarY, progressBarWidth, progressBarHeight};
@@ -97,4 +97,24 @@ void GUIRenderer::renderItems(SDL_Renderer *renderer, Player *player)
         float y = 60.0f;
         upgrades[i]->render(renderer, Vector(x, y));
     }
+}
+
+void GUIRenderer::renderPlayerInfo(SDL_Renderer *renderer, Player *player)
+{
+    SDL_Texture *infoTexture = TextureManager::getTexture("infoJogador");
+    if (!infoTexture)
+    {
+        std::cerr << "Erro ao carregar textura de informações do jogador!" << std::endl;
+        return;
+    }
+
+    int textureWidth, textureHeight;
+    SDL_QueryTexture(infoTexture, NULL, NULL, &textureWidth, &textureHeight);
+
+    const int screenWidth = CameraManager::getCameraManager()->getScreenWidth();
+    const int uiPositionX = (screenWidth - textureWidth) / 2;
+    const int uiPositionY = 0;
+
+    SDL_Rect destRect = {uiPositionX, uiPositionY, textureWidth, textureHeight};
+    SDL_RenderCopy(renderer, infoTexture, NULL, &destRect);
 }

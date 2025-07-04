@@ -86,13 +86,14 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
-		// Efeitos sonoros e Músicas
 		AudioManager &audio = AudioManager::getInstance();
 		audio.init();
+		// Sound Effects
 		audio.loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
-		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
 		audio.loadSound("gameOver", "assets/Audios/effects/gameOver.mp3");
-
+		audio.loadSound("AxeThrow", "assets/Audios/effects/AxeThrow.mp3");
+		// Musics
+		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
 		audio.playMusic("backgroundMusic");
 
 		TextureManager::init(renderer);
@@ -106,10 +107,12 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		initializeEntities();
 
 		setIsRunning(true);
+		GameStateManager::getInstance().setState(GameState::InGame);
 	}
 	else
 	{
 		setIsRunning(false);
+		GameStateManager::getInstance().setState(GameState::InLose);
 	}
 }
 
@@ -200,6 +203,7 @@ void Game::render()
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
+	GUIRenderer::renderPlayerInfo(renderer, player.get());
 
 	for (auto &proj : projectiles)
 	{
@@ -220,6 +224,9 @@ void Game::update()
 		setIsRunning(false);
 		return;
 	}
+
+	if (!GameStateManager::getInstance().isInGame())
+		return;
 
 	tickRate->update();
 	float dt = tickRate->getDeltaTime();
@@ -304,12 +311,9 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/tiles/pedra.png", "pedra");
 	TextureManager::loadTexture("assets/sprites/tiles/grama.png", "simpleTile");
 	// GUI
-	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradMenu");
-	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
+	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
 	TextureManager::loadTexture("assets/sprites/gui/xpBar.png", "xpBar");
-
-	// GUI
-	TextureManager::loadTexture("assets/sprites/gui/upgradMenu.png", "upgradeMenu");
+	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
 
 	// Upgrades
 	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
