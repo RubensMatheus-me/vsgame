@@ -88,5 +88,5 @@ void SpriteAnimation::render(SDL_Renderer *renderer, int x, int y, bool flip)
         srcRect.h};
 
     SDL_RendererFlip flipFlag = flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-    SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);
+    SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0.0, nullptr, flipFlag);
 }

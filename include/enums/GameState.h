@@ -1,5 +1,6 @@
-enum class GameState {
-    InGame,
+enum class GameState
+{
+	InGame,
 	InMenu,
 	InPause,
 	InUpgrade,

@@ -12,55 +12,60 @@
 #include "TileManager.h"
 #include "CameraManager.h"
 
-//const float MAX_FPS = 60.0f;
+// const float MAX_FPS = 60.0f;
 
-class Game {
-	public:
-		Game();
-		~Game();
+class Game
+{
+public:
+	Game();
+	~Game();
 
-		void init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen);
+	bool isPaused = false;
+	void setPaused(bool value) { isPaused = value; }
+	bool getIsPaused() const { return isPaused; }
 
-		void events();
-		void update();
-		void render();
-		void clean();
+	void init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen);
 
-		void loadResources();
-		void limitFPS(float targetFPS);
+	void events();
+	void update();
+	void render();
+	void clean();
 
-		void initializeEntities();
-		void updateFpsDisplay();
-		void updateClockDisplay();
-		void updateXp();
+	void loadResources();
+	void limitFPS(float targetFPS);
 
-		bool getIsRunning() const {return this->isRunning;}
-		int getWidth() const {return this->width;}
-		int getHeight() const {return this->height;}
-		static bool getDebugMode() {return debugMode;}
-		
-		void setWidth(const int newWidth) {this->width = newWidth;}
-		void setHeight(const int newHeight) {this->height = newHeight;}
-		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
-		static void setDebugMode(const bool newDebugMode) {debugMode = newDebugMode;}
-		void shootProjectile();
-		void removeDeadEntities();
+	void initializeEntities();
+	void updateFpsDisplay();
+	void updateClockDisplay();
+	void updateXp();
 
-		void spawnEnemy();
-		
-		std::unique_ptr<Player> player;
-		std::unique_ptr<Enemy> enemy;
-		std::unique_ptr<Keyboard> keyboard;
-		std::unique_ptr<TileManager> tileManager;
-		std::unique_ptr<CameraManager> camera;
-		
-	private:
-		int width;
-		int height;
-        bool isRunning;
-		static bool debugMode;
-        SDL_Window *window;
-        SDL_Renderer *renderer;
-		Timer timerEvents;
-		Timer gameTime;
+	bool getIsRunning() const { return this->isRunning; }
+	int getWidth() const { return this->width; }
+	int getHeight() const { return this->height; }
+	static bool getDebugMode() { return debugMode; }
+
+	void setWidth(const int newWidth) { this->width = newWidth; }
+	void setHeight(const int newHeight) { this->height = newHeight; }
+	void setIsRunning(const bool newIsRunning) { this->isRunning = newIsRunning; }
+	static void setDebugMode(const bool newDebugMode) { debugMode = newDebugMode; }
+	void shootProjectile();
+	void removeDeadEntities();
+
+	void spawnEnemy();
+
+	std::unique_ptr<Player> player;
+	std::unique_ptr<Enemy> enemy;
+	std::unique_ptr<Keyboard> keyboard;
+	std::unique_ptr<TileManager> tileManager;
+	std::unique_ptr<CameraManager> camera;
+
+private:
+	int width;
+	int height;
+	bool isRunning;
+	static bool debugMode;
+	SDL_Window *window;
+	SDL_Renderer *renderer;
+	Timer timerEvents;
+	Timer gameTime;
 };

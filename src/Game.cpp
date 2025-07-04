@@ -17,6 +17,7 @@
 #include "EnemySpawner.h"
 #include "AudioManager.h"
 #include <SDL2/SDL.h>
+#include "GameStateManager.h"
 
 using namespace Config;
 
@@ -90,6 +91,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		audio.init();
 		audio.loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
 		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
+		audio.loadSound("gameOver", "assets/Audios/effects/gameOver.mp3");
 
 		audio.playMusic("backgroundMusic");
 
@@ -114,12 +116,11 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 void Game::events()
 {
 	SDL_Event event;
-
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 		{
-			setIsRunning(false);
+			GameStateManager::getInstance().setState(GameState::InLose);
 		}
 	}
 }
@@ -214,7 +215,12 @@ void Game::render()
 
 void Game::update()
 {
-	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	if (GameStateManager::getInstance().isInLose())
+	{
+		setIsRunning(false);
+		return;
+	}
+
 	tickRate->update();
 	float dt = tickRate->getDeltaTime();
 
@@ -223,54 +229,48 @@ void Game::update()
 
 	if (player->getLevel() > levelUpMenu->lastUpgradedLevel)
 	{
+		GameStateManager::getInstance().setState(GameState::InUpgrade);
 		TTF_Font *font = TTF_OpenFont(pathFont, 10);
 		levelUpMenu->show(renderer, font, *player, windowWidth, windowHeight);
 		TTF_CloseFont(font);
-		levelUpMenu->lastUpgradedLevel = levelUpMenu->lastUpgradedLevel + 1;
+		levelUpMenu->lastUpgradedLevel++;
+		tickRate->reset();
+		GameStateManager::getInstance().setState(GameState::InGame);
 	}
 
-	if (timerEvents.hasElapsed())
+	if (GameStateManager::getInstance().isInGame())
 	{
-		shootProjectile();
-		timerEvents.reset();
-	}
-	if (player)
-	{
+		if (timerEvents.hasElapsed())
+		{
+			shootProjectile();
+			timerEvents.reset();
+		}
+
 		player->update(dt);
-		CameraManager::getCameraManager()->follow(player->getPosition());
 		keyboard->update(*player, dt);
-	}
+		CameraManager::getCameraManager()->follow(player->getPosition());
 
-	// if (!allElements.empty()) {
-	//     CollisionManager::handleCollisions(allElements);
-	// } else {
-	//     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
-	// }
-	if (!enemies.empty())
-	{
-		CollisionManager::handlePlayerCollisions(player.get(), enemies);
-	}
-	if (!enemies.empty() && !projectiles.empty())
-	{
-		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
-	}
+		enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
 
-	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
-	for (auto &e : enemies)
-	{
-		Vector toPlayer = player->getPosition() - e->getPosition();
-		toPlayer.normalize();
-		e->setSpeed(toPlayer * e->getMovSpeed());
-		e->update(dt);
-	}
+		for (auto &e : enemies)
+		{
+			Vector toPlayer = player->getPosition() - e->getPosition();
+			toPlayer.normalize();
+			e->setSpeed(toPlayer * e->getMovSpeed());
+			e->update(dt);
+		}
 
-	for (auto &proj : projectiles)
-	{
-		proj->update(dt);
+		for (auto &proj : projectiles)
+			proj->update(dt);
+
+		if (!enemies.empty())
+			CollisionManager::handlePlayerCollisions(player.get(), enemies);
+
+		if (!enemies.empty() && !projectiles.empty())
+			CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	}
 
 	removeDeadEntities();
-
 	updateFpsDisplay();
 	updateClockDisplay();
 	updateXp();

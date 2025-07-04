@@ -20,7 +20,6 @@ int main(int argc, const char *argv[])
         return -1;
     }
 
-    // int screenWidth = displayMode.w;
     int screenWidth = 800;
     int screenHeight = 600;
 
