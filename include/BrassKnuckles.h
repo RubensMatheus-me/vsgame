@@ -22,7 +22,7 @@ public:
 
     void render(SDL_Renderer* renderer) override;
     void update(float deltaTime) override;
-	void attack(const Vector& position, const Vector& direction, std::vector<std::unique_ptr<MeleeAttack>>& meleeAttack, Entity* owner) override;
+	void attack(const Vector& position, const Vector& direction, Entity* owner) override;
 
 private:
     SpriteAnimation* punchAnimation;

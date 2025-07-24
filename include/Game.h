@@ -44,6 +44,7 @@ class Game {
 		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
 		static void setDebugMode(const bool newDebugMode) {debugMode = newDebugMode;}
 		void shootProjectile();
+		void performMeleeAttack();
 		void removeDeadEntities();
 
 		void spawnEnemy();

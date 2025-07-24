@@ -2,7 +2,8 @@
 #include "Character.h"
 #include "SpriteAnimation.h"
 #include "enums/PlayerAnimationState.h"
-#include "Weapon.h"
+#include "MeleeWeapon.h"
+#include "RangedWeapon.h"
 #include "Upgrade.h"
 #include <vector>
 #include <string>
@@ -39,8 +40,9 @@ class Player : public Character {
     
         bool canAttack() const { return attackCooldown <= 0;}
         void resetAttackCooldown() {attackCooldown = attackRate;}
-		std::vector<std::unique_ptr<Weapon>>& getWeapons() { return this->weapons; }
-        
+		std::vector<std::unique_ptr<MeleeWeapon>>& getMeleeWeapons() { return this->meleeWeapons; }
+		std::vector<std::unique_ptr<RangedWeapon>>& getRangedWeapons() { return this->rangedWeapons; }
+		
     private:
         SpriteAnimation* spriteAnimation;
         bool facingRight;
@@ -55,7 +57,8 @@ class Player : public Character {
         float attackCooldown = 0.0f;  
         float attackRate;  
 		PlayerAnimationState currentAnimationState;          
-		std::vector<std::unique_ptr<Weapon>> weapons;
+		std::vector<std::unique_ptr<MeleeWeapon>> meleeWeapons;
+		std::vector<std::unique_ptr<RangedWeapon>> rangedWeapons;
 		std::vector<std::unique_ptr<Upgrade>> upgrades;
 
 };

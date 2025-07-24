@@ -15,6 +15,7 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
+#include "RangedWeapon.h" 
 #include "Axe.h"
 
 using namespace Config;
@@ -327,7 +328,7 @@ void Game::initializeEntities() {
 	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
 	anim->play("axe-right");
 	std::string desc = "teste";
-	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
+	std::unique_ptr<RangedWeapon> weapon = std::make_unique<Axe>(
 		Config::ENEMY_SIZE,
 		nullptr,
 		desc,
@@ -340,7 +341,7 @@ void Game::initializeEntities() {
 		150.0f,
 		10.0f
 	);
-	player->getWeapons().push_back(std::move(weapon));
+	player->getRangedWeapons().push_back(std::move(weapon));
 	player->setAnimations(playerAnimation.get());
 	allElements.push_back(player.get());
 }
@@ -507,36 +508,13 @@ void Game::shootProjectile() {
     Vector direction = enemyPos - playerPos;
 	direction.normalize();
 
-	player->getWeapons().at(0)->attack(playerPos, direction, projectiles, player.get());
+	for(const auto& weapon : player->getRangedWeapons()) {
+		weapon->attack(playerPos, direction, player.get());
+	}
 }
 
 void Game::performMeleeAttack() {
-    if (enemies.empty()) return;
 
-    Vector playerPos = player->getPosition();
-
-    Enemy* target = nullptr;
-    float closestDistanceSq = std::numeric_limits<float>::max();
-
-    for (const auto& e : enemies) {
-        float distSq = (e->getPosition() - playerPos).length_squared();
-        if (distSq < closestDistanceSq) {
-            closestDistanceSq = distSq;
-            target = e.get();
-        }
-    }
-
-    if (!target) return;
-
-    Vector direction = target->getPosition() - playerPos;
-    direction.normalize();
-
-    if (player->getWeapons().size() < 2) return;
-
-    auto* weapon = dynamic_cast<BrassKnuckles*>(player->getWeapons()[1].get());
-    if (weapon) {
-        weapon->attack(playerPos, direction, meleeAttacks, player.get());
-    }
 }
 
 

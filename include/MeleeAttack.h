@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GraphicalElement.h"
 #include "Rect.h"
 #include "Entity.h"
@@ -8,9 +10,7 @@
 class MeleeAttack : public GraphicalElement {
 	public:
 		MeleeAttack(const Vector& size, const Vector& position,float damage, float duration, std::unique_ptr<SpriteAnimation> animation, Entity* owner = nullptr);
-	
-		void update(float dt);
-		void render(SDL_Renderer* renderer);
+
 		bool isAlive() const;
 		Entity* getOwner() const;
 	
