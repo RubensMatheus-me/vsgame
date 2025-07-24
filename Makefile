@@ -7,7 +7,7 @@ MY_LIB_PATH ?= ../my-lib/include
 
 
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -D_REENTRANT -Iinclude -I$(MY_LIB_PATH) -I/usr/include/SDL2 -I../libs/include
+CXXFLAGS = -std=c++23 -Wall -D_REENTRANT -Iinclude -I$(MY_LIB_PATH) -I/usr/include/SDL2 -I../include
 LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 SRC = $(shell find src -type f -name "*.cpp") main.cpp

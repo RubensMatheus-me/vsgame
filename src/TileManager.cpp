@@ -23,6 +23,15 @@ bool  TileManager::loadMap(const std::string& tileMapPath, const std::string& ti
     tileWidth = mapJson["tilewidth"];
     tileHeight = mapJson["tileheight"];
 
+	CameraManager::getCameraManager()->init(
+		Game::getWidth(), 
+		Game::getHeight(), 
+		mapWidth, 
+		mapHeight, 
+		tileWidth, 
+		tileHeight
+	);
+
 
     for (auto& [key, value] : tilesJson["tiles"].items()) {
         int id = std::stoi(key);
@@ -96,4 +105,20 @@ void TileManager::renderMap(SDL_Renderer* renderer, const Rect& playerCollider) 
             }
         }
     }
+}
+
+int TileManager::getTileIdAt(int row, int col) const {
+	int index = row * mapWidth + col;
+    if (index >= 0 && index < tileData.size()) {
+        return tileData[index];
+    }
+	return -1;
+}
+
+bool TileManager::isTileWalkable(int tileId) const {
+	auto it = tileMap.find(tileId);
+	if (it != tileMap.end()) {
+		return it->second.walkable;
+	}
+	return false;
 }

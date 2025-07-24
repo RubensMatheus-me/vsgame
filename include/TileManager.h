@@ -26,8 +26,11 @@ class TileManager {
     int getMapWidthInPixels() const {return mapWidth * tileWidth;}
     int getMapHeightInPixels() const {return mapHeight * tileHeight;}
 
-    int getTileWidth() const { return tileWidth; }
-    int getTileHeight() const { return tileHeight; }
+	int getTileIdAt(int row, int col) const;
+	bool isTileWalkable(int tileId) const;
+
+    int getTileWidth() { return tileWidth; }
+    int getTileHeight() { return tileHeight; }
 
 
     private:

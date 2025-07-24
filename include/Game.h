@@ -35,8 +35,8 @@ class Game {
 		void updateXp();
 
 		bool getIsRunning() const {return this->isRunning;}
-		int getWidth() const {return this->width;}
-		int getHeight() const {return this->height;}
+		static int getWidth() {return width;}
+		static int getHeight() {return height;}
 		static bool getDebugMode() {return debugMode;}
 		
 		void setWidth(const int newWidth) {this->width = newWidth;}
@@ -46,6 +46,7 @@ class Game {
 		void shootProjectile();
 		void removeDeadEntities();
 
+		
 		void spawnEnemy();
 		
 		std::unique_ptr<Player> player;
@@ -55,8 +56,8 @@ class Game {
 		std::unique_ptr<CameraManager> camera;
 		
 	private:
-		int width;
-		int height;
+		static int width;
+		static int height;
         bool isRunning;
 		static bool debugMode;
         SDL_Window *window;
