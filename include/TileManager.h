@@ -32,6 +32,8 @@ class TileManager {
     int getTileWidth() { return tileWidth; }
     int getTileHeight() { return tileHeight; }
 
+    int getMapWidth() const { return mapWidth; }
+    int getMapHeight() const { return mapHeight; }
 
     private:
         int mapWidth, mapHeight;

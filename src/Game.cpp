@@ -244,7 +244,7 @@ void Game::update()
 		CameraManager::getCameraManager()->follow(player->getPosition());
 		keyboard->update(*player, dt);
 	}
-	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidthInPixels(), tileManager->getMapHeightInPixels());
+	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
 
 	// if (!allElements.empty()) {
 	//     CollisionManager::handleCollisions(allElements);
