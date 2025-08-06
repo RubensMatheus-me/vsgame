@@ -50,6 +50,9 @@ SDL_DisplayMode displayMode;
 Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
 Game::~Game() {};
 
+int Game::width = 800; 
+int Game::height = 600;
+
 void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
 {
 
@@ -82,7 +85,6 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-		CameraManager::getCameraManager()->init(windowWidth, windowHeight);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
@@ -256,6 +258,23 @@ void Game::update()
 		player->update(dt);
 		keyboard->update(*player, dt);
 		CameraManager::getCameraManager()->follow(player->getPosition());
+		keyboard->update(*player, dt);
+	}
+	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
+
+	// if (!allElements.empty()) {
+	//     CollisionManager::handleCollisions(allElements);
+	// } else {
+	//     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
+	// }
+	if (!enemies.empty())
+	{
+		CollisionManager::handlePlayerCollisions(player.get(), enemies);
+	}
+	if (!enemies.empty() && !projectiles.empty())
+	{
+		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	}
 
 		enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
 

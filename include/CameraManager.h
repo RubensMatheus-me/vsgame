@@ -14,7 +14,7 @@ class CameraManager{
         void renderAll(SDL_Renderer* renderer);
         void clearElements();
         static CameraManager* getCameraManager();
-        void init(int windowWidth, int windowHeight);
+        void init(int windowWidth, int windowHeight, int mapWidth, int mapHeight, int tileWidth, int tileHeight);
 
         Vector getOffSet() const {return this->offSet;}
 
@@ -27,6 +27,8 @@ class CameraManager{
     private:
         int screenWidth;
         int screenHeight;
+		int mapWidth;
+		int mapHeight;
         Vector offSet;
         std::vector<GraphicalElement*> elements;
 };

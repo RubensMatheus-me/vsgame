@@ -39,33 +39,34 @@ public:
 	void updateClockDisplay();
 	void updateXp();
 
-	bool getIsRunning() const { return this->isRunning; }
-	int getWidth() const { return this->width; }
-	int getHeight() const { return this->height; }
-	static bool getDebugMode() { return debugMode; }
+		bool getIsRunning() const {return this->isRunning;}
+		static int getWidth() {return width;}
+		static int getHeight() {return height;}
+		static bool getDebugMode() {return debugMode;}
+		
+		void setWidth(const int newWidth) {this->width = newWidth;}
+		void setHeight(const int newHeight) {this->height = newHeight;}
+		void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
+		static void setDebugMode(const bool newDebugMode) {debugMode = newDebugMode;}
+		void shootProjectile();
+		void removeDeadEntities();
 
-	void setWidth(const int newWidth) { this->width = newWidth; }
-	void setHeight(const int newHeight) { this->height = newHeight; }
-	void setIsRunning(const bool newIsRunning) { this->isRunning = newIsRunning; }
-	static void setDebugMode(const bool newDebugMode) { debugMode = newDebugMode; }
-	void shootProjectile();
-	void removeDeadEntities();
-
-	void spawnEnemy();
-
-	std::unique_ptr<Player> player;
-	std::unique_ptr<Enemy> enemy;
-	std::unique_ptr<Keyboard> keyboard;
-	std::unique_ptr<TileManager> tileManager;
-	std::unique_ptr<CameraManager> camera;
-
-private:
-	int width;
-	int height;
-	bool isRunning;
-	static bool debugMode;
-	SDL_Window *window;
-	SDL_Renderer *renderer;
-	Timer timerEvents;
-	Timer gameTime;
+		
+		void spawnEnemy();
+		
+		std::unique_ptr<Player> player;
+		std::unique_ptr<Enemy> enemy;
+		std::unique_ptr<Keyboard> keyboard;
+		std::unique_ptr<TileManager> tileManager;
+		std::unique_ptr<CameraManager> camera;
+		
+	private:
+		static int width;
+		static int height;
+        bool isRunning;
+		static bool debugMode;
+        SDL_Window *window;
+        SDL_Renderer *renderer;
+		Timer timerEvents;
+		Timer gameTime;
 };
