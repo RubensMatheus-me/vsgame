@@ -92,7 +92,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		audio.init();
 		// Sound Effects
 		audio.loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
-		audio.loadSound("gameOver", "assets/Audios/effects/gameOver.mp3");
+		audio.loadSound("gameOver", "assets/Audios/effects/gameover.mp3");
 		audio.loadSound("AxeThrow", "assets/Audios/effects/AxeThrow.mp3");
 		// Musics
 		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
@@ -294,12 +294,13 @@ void Game::update()
 
 		if (!enemies.empty() && !projectiles.empty())
 			CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
-	}
+	
 
 	removeDeadEntities();
 	updateFpsDisplay();
 	updateClockDisplay();
 	updateXp();
+	
 }
 
 void Game::loadResources()
@@ -549,7 +550,11 @@ void Game::shootProjectile()
 	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
 	anim->play("axe-right");
 
+	AudioManager &audio = AudioManager::getInstance();
+	audio.setEffectsVolume(1.0f);
+	audio.playSound("AxeThrow");
 	auto p = std::make_unique<AxeProjectile>(
+
 		playerPos + 10.0f,
 		direction,
 		150.0f,

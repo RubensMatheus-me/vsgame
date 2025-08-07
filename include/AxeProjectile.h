@@ -1,6 +1,7 @@
 // AxeProjectile.h
 #pragma once
 #include "Projectile.h"
+#include "AudioManager.h"
 #include "enums/AxeProjectileState.h"
 
 class AxeProjectile : public Projectile {

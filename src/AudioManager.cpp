@@ -16,7 +16,7 @@ bool AudioManager::init(int frequency, Uint16 format, int channels, int chunkSiz
         return false;
     }
     Mix_AllocateChannels(numChannels);
-    setMusicVolume(0.1f);
+    setMusicVolume(0.5f);
     setEffectsVolume(1.0f);
     return true;
 }

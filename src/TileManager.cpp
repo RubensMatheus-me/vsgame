@@ -63,6 +63,7 @@ bool TileManager::loadMap(const std::string &tileMapPath, const std::string &til
 
     return true;
 }
+}
 
 void TileManager::renderMap(SDL_Renderer *renderer, const Rect &playerCollider)
 {

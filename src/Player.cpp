@@ -53,7 +53,9 @@ void Player::setAnimationState(PlayerAnimationState newState)
         spriteAnimation->play("player-taken-damage");
         break;
     case PlayerAnimationState::Death:
-        AudioManager::getInstance().setEffectsVolume(0.2f);
+	AudioManager::getInstance().stopMusic();
+		AudioManager::getInstance().stopAllSounds();
+        AudioManager::getInstance().setEffectsVolume(1.0f);
         AudioManager::getInstance().playSound("gameOver");
         spriteAnimation->play("death-player");
         break;
