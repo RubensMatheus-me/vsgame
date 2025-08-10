@@ -39,6 +39,16 @@
       "image": "gramaTipoTres.png",
       "walkable": true,
       "terrainType": "grass"
+    },
+    "9": {
+      "image": "wall.png",
+      "walkable": false,
+      "terrainType": "wall"
+    },
+    "10": {
+      "image": "wallDois.png",
+      "walkable": false,
+      "terrainType": "wall"
     }
   }
 }

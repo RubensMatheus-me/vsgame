@@ -50,7 +50,7 @@ SDL_DisplayMode displayMode;
 Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
 Game::~Game() {};
 
-int Game::width = 800; 
+int Game::width = 800;
 int Game::height = 600;
 
 void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
@@ -84,7 +84,6 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
@@ -276,31 +275,29 @@ void Game::update()
 		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	}
 
-		enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
+	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
 
-		for (auto &e : enemies)
-		{
-			Vector toPlayer = player->getPosition() - e->getPosition();
-			toPlayer.normalize();
-			e->setSpeed(toPlayer * e->getMovSpeed());
-			e->update(dt);
-		}
+	for (auto &e : enemies)
+	{
+		Vector toPlayer = player->getPosition() - e->getPosition();
+		toPlayer.normalize();
+		e->setSpeed(toPlayer * e->getMovSpeed());
+		e->update(dt);
+	}
 
-		for (auto &proj : projectiles)
-			proj->update(dt);
+	for (auto &proj : projectiles)
+		proj->update(dt);
 
-		if (!enemies.empty())
-			CollisionManager::handlePlayerCollisions(player.get(), enemies);
+	if (!enemies.empty())
+		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 
-		if (!enemies.empty() && !projectiles.empty())
-			CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
-	
+	if (!enemies.empty() && !projectiles.empty())
+		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 
 	removeDeadEntities();
 	updateFpsDisplay();
 	updateClockDisplay();
 	updateXp();
-	
 }
 
 void Game::loadResources()
