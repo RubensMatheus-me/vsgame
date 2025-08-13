@@ -22,6 +22,8 @@ class Player : public Character {
         float getInvunerabilityTime() const { return this->invulnerabilityTime; }
         float getMovSpeed() const { return this->movSpeed; }
         float getXpNextLevel() const { return this->xpNextLevel; }
+        PlayerAnimationState getAnimationState() const { return this->currentAnimationState; }
+
 		std::vector<std::unique_ptr<Upgrade>>& getUpgrades() { return this->upgrades; }
     
         void setXp(float xp) { this->xp = xp; }

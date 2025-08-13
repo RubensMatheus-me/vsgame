@@ -12,7 +12,7 @@ class CollisionManager {
         static bool checkCollision(const Rect& a, const Rect& b);
 
         static void handlePlayerCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies);
-        static void handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>>  &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles);
+        static void handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>>  &enemies);
         
         static void handleCollisions(const std::vector<GraphicalElement*> &elements);
 

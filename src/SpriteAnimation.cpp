@@ -24,6 +24,14 @@ void SpriteAnimation::addAnimation(const std::string& name, const std::string& t
     animations[name] = {texture, frames, loop};
 }
 
+void SpriteAnimation::addAnimation(const std::string& name, const std::string& texture, std::vector<SDL_Rect> frames, bool loop) {
+    animations[name] = {texture, frames, loop};
+}
+
+bool SpriteAnimation::animationEnded() {
+    return currentFrame == animations.size()+1;
+}
+
 void SpriteAnimation::play(const std::string& animationName) {
     if(animationName != currentAnimation) {
         currentAnimation = animationName;
@@ -53,19 +61,22 @@ void SpriteAnimation::update(float deltaTime) {
     }
 }
 
-void SpriteAnimation::render(SDL_Renderer* renderer, int x, int y, bool flip) {
+void SpriteAnimation::render(SDL_Renderer* renderer, int x, int y, bool flip, bool mirror) {
     Vector cameraOffSet = CameraManager::getCameraManager()->getOffSet();
     float drawX = x - cameraOffSet.x;
     float drawY = y - cameraOffSet.y;
+     
     if (currentAnimation.empty() || animations.find(currentAnimation) == animations.end()) return;
-
     const AnimationData& anim = animations[currentAnimation];
     SDL_Texture* texture = TextureManager::getTexture(anim.textureName);
     if(!texture) return;
 
     SDL_Rect srcRect = anim.frames[currentFrame];
     SDL_Rect destRect = {drawX, drawY, srcRect.w, srcRect.h};
+    if(mirror) {
+        destRect.x -= srcRect.w;
+    }
     SDL_RendererFlip flipFlag = flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-    SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);
+    SDL_RnderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);
 }

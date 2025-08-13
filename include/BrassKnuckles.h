@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Weapon.h"
+#include "MeleeWeapon.h"
 #include "SpriteAnimation.h"
 #include "MeleeAttack.h"
 #include <vector>
 
-class BrassKnuckles : public Weapon {
+class BrassKnuckles : public MeleeWeapon {
 public:
     BrassKnuckles(
         const Vector& size,

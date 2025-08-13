@@ -15,7 +15,8 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
-#include "RangedWeapon.h" 
+#include "RangedWeapon.h"
+#include "BrassKnuckles.h" 
 #include "Axe.h"
 
 using namespace Config;
@@ -28,14 +29,11 @@ bool Game::debugMode = true;
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
 std::vector<std::unique_ptr<Enemy>> enemies;
-std::vector<GraphicalElement*> allElements;
 std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
-std::vector<std::unique_ptr<Projectile>> projectiles;
-std::vector<std::unique_ptr<MeleeAttack>> meleeAttacks;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
 std::unique_ptr<EnemySpawner> enemySpawner;
 
@@ -167,14 +165,17 @@ void Game::render() {
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
 
-	for (auto& proj : projectiles) {
-		proj->render(renderer);
+	for (auto& rangedWeapon : player->getRangedWeapons()) {
+		for(auto& projectile : rangedWeapon->getProjectiles()) {
+			projectile->render(renderer);
+		}
 	}
-	/*
-	if(getDebugMode()){
-		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
+	for (auto& meleeWeapon : player->getMeleeWeapons()) {
+		for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
+			meleeAttack->render(renderer);
+		}
 	}
-	*/
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -195,7 +196,6 @@ void Game::update() {
 
     if (timerEvents.hasElapsed()) {
         shootProjectile();
-		performMeleeAttack();
         timerEvents.reset();
     }
     if (player) {
@@ -213,8 +213,8 @@ void Game::update() {
 	if(!enemies.empty()) {
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 	}
-	if(!enemies.empty() && !projectiles.empty()) {
-		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	if(!enemies.empty()) {
+		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
 
 	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
@@ -225,13 +225,21 @@ void Game::update() {
         e->update(dt);
     }
 
-    for (auto& proj : projectiles) {
-        proj->update(dt);
-    }
+    // for (auto& proj : projectiles) {
+    //     proj->update(dt);
+    // }
 
-	for (auto& melee : meleeAttacks) {
-		melee->update(dt);
+	for (auto& rangedWeapon : player->getRangedWeapons()) {
+		for(auto& projectile : rangedWeapon->getProjectiles()) {
+			projectile->update(dt);
+		}
 	}
+	for (auto& meleeWeapon : player->getMeleeWeapons()) {
+		for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
+			meleeAttack->update(dt);
+		}
+	}
+
 
 	removeDeadEntities();
 
@@ -271,6 +279,9 @@ void Game::loadResources() {
 
 	//projectiles
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
+
+	//melee
+	TextureManager::loadTexture("assets/sprites/effects/brassknuckles-spritesheet-teste.png", "brassKnuckles");
 }
 
 void Game::limitFPS(float targetFPS) {
@@ -332,7 +343,7 @@ void Game::initializeEntities() {
 		Config::ENEMY_SIZE,
 		nullptr,
 		desc,
-		10.0f,
+		100.0f,
 		10.0f,
 		10.0f,
 		10.0f,
@@ -341,9 +352,45 @@ void Game::initializeEntities() {
 		150.0f,
 		10.0f
 	);
-	player->getRangedWeapons().push_back(std::move(weapon));
+
+	auto anim2 = std::make_unique<SpriteAnimation>();
+	anim2->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+	anim2->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
+	anim2->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
+	anim2->play("axe-right");
+
+	std::string desc2 = "teste";
+	std::unique_ptr<RangedWeapon> weapon2 = std::make_unique<Axe>(
+		Config::ENEMY_SIZE,
+		nullptr,
+		desc2,
+		100.0f,
+		10.0f,
+		10.0f,
+		10.0f,
+		1,
+		anim2.get(),
+		150.0f,
+		10.0f
+	);
+
+	std::unique_ptr<MeleeWeapon> weapon3 = std::make_unique<BrassKnuckles>(
+		Config::ENEMY_SIZE,
+		nullptr,
+		desc2,
+		1000.0f,
+		1000.0f,
+		1000.0f,
+		1000.0f,
+		1,
+		anim2.get(),
+		150.0f
+	);
+
+	//player->getRangedWeapons().push_back(std::move(weapon));
+	player->getRangedWeapons().push_back(std::move(weapon2));
+	player->getMeleeWeapons().push_back(std::move(weapon3));
 	player->setAnimations(playerAnimation.get());
-	allElements.push_back(player.get());
 }
 
 void Game::updateFpsDisplay() {
@@ -481,7 +528,6 @@ void Game::spawnEnemy() {
 	Enemy* rawEnemyPtr = slime.get();
 	enemies.emplace_back(std::move(slime));
 
-	allElements.push_back(rawEnemyPtr);
 }
 
 void Game::shootProjectile() {
@@ -509,23 +555,38 @@ void Game::shootProjectile() {
 	direction.normalize();
 
 	for(const auto& weapon : player->getRangedWeapons()) {
-		weapon->attack(playerPos, direction, player.get());
+		//weapon->attack(playerPos, direction, player.get());
 	}
+
+	for (auto& meleeWeapon : player->getMeleeWeapons()) {
+		Vector direction = {player->getAnimationState() == PlayerAnimationState::IdleRight || player->getAnimationState() == PlayerAnimationState::WalkRight, 0};
+		meleeWeapon->attack(playerPos, direction, player.get());
+	}
+
 }
-
-void Game::performMeleeAttack() {
-
-}
-
 
 void Game::removeDeadEntities() {
-	projectiles.erase(
+
+	for(auto& rangedWeapon : player->getRangedWeapons()) {
+		auto& projectiles = rangedWeapon->getProjectiles();
+		rangedWeapon->getProjectiles().erase(
         std::remove_if(projectiles.begin(), projectiles.end(),
             [](const std::unique_ptr<Projectile>& p) {
                 return !p->isAlive();
             }),
         projectiles.end()
-    );
+		);
+	}
+	for(auto& meleeWeapon : player->getMeleeWeapons()) {
+		auto& meleeAttacks = meleeWeapon->getMeleeAttacks();
+		meleeWeapon->getMeleeAttacks().erase(
+        std::remove_if(meleeAttacks.begin(), meleeAttacks.end(),
+            [](const std::unique_ptr<MeleeAttack>& meleeAttack) {
+                return meleeAttack->hasEnded();
+            }),
+        meleeAttacks.end()
+		);
+	}
 
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
@@ -534,9 +595,4 @@ void Game::removeDeadEntities() {
             }),
         enemies.end()
     );
-
-    allElements.clear();
-    allElements.push_back(player.get());
-    for (auto& e : enemies) allElements.push_back(e.get());
-    for (auto& p : projectiles) allElements.push_back(p.get());
 }

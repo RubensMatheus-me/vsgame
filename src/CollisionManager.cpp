@@ -29,35 +29,52 @@ void CollisionManager::handlePlayerCollisions(Player* player, std::vector<std::u
     }
 }
 
-void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles) {
-    for (size_t i = 0; i < projectiles.size(); ++i) {
-        Projectile* projectile = projectiles[i].get();
-        Rect projectileRect = projectile->getCollider();
-        for (size_t j = 0; j < enemies.size(); ++j) {
-            Enemy* enemy = enemies[j].get();
-            Rect enemyRect = enemy->getCollider();
-
-            if(projectileRect.intersects(enemyRect)) {
-                projectile->setAlive(false);
-
-				Vector direction = enemy->getPosition() - projectile->getPosition();
-
-				float forceKnockback = 10.0f;
-				enemy->applyKnockback(direction, forceKnockback);
-
-				if(enemy->getCurrentHp() <= 0.0f) {
-					enemy->setAlive(false);
-					player->setXp(player->getXp()+enemy->getXpDrop());
-				}else {
-					enemy->setCurrentHp(enemy->getCurrentHp() - projectile->getDamage());
-				}
-                
-                if (Game::getDebugMode()) std::cout << "Inimigo atingido por projétil!\n";
+void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
+    for (auto& rangedWeapon : player->getRangedWeapons()) {
+        for(auto& projectile : rangedWeapon->getProjectiles()) {
+            Rect projectileRect = projectile->getCollider();
+            for (size_t j = 0; j < enemies.size(); ++j) {
+                Enemy* enemy = enemies[j].get();
+                Rect enemyRect = enemy->getCollider();
+                if(projectileRect.intersects(enemyRect)) {
+                    projectile->setAlive(false);
+                    Vector direction = enemy->getPosition() - projectile->getPosition();
+                    float forceKnockback = 10.0f;
+                    enemy->applyKnockback(direction, forceKnockback);
+                    enemy->setCurrentHp(enemy->getCurrentHp() - projectile->getDamage());
+                    if(enemy->getCurrentHp() <= 0.0f) {
+                        enemy->setAlive(false);
+                        player->setXp(player->getXp()+enemy->getXpDrop());
+                    }
+                    
+                }
             }
         }
+    }
 
+    for (auto& meleeWeapon : player->getMeleeWeapons()) {
+        for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
+            Rect meleeRect = meleeAttack->getCollider();
+            for (size_t j = 0; j < enemies.size(); ++j) {
+                Enemy* enemy = enemies[j].get();
+                Rect enemyRect = enemy->getCollider();
+                if(meleeRect.intersects(enemyRect)) {
+                    Vector direction = enemy->getPosition() - meleeAttack->getPosition();
+                    float forceKnockback = 10.0f;
+                    enemy->applyKnockback(direction, forceKnockback);
+                    enemy->setCurrentHp(enemy->getCurrentHp() - meleeAttack->getDamage());
+                    if(enemy->getCurrentHp() <= 0.0f) {
+                        enemy->setAlive(false);
+                        player->setXp(player->getXp()+enemy->getXpDrop());
+                    }
+                    
+                }
+            }
+        }
     }
 }
+
+
 
 /*
 void CollisionManager::debugDrawColliders(SDL_Renderer* renderer, const std::vector<GraphicalElement*>& elements, const Vector& cameraOffset) {
