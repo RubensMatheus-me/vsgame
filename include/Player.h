@@ -23,6 +23,7 @@ class Player : public Character {
         float getMovSpeed() const { return this->movSpeed; }
         float getXpNextLevel() const { return this->xpNextLevel; }
         PlayerAnimationState getAnimationState() const { return this->currentAnimationState; }
+		Vector getPlayerFacingDirection();
 
 		std::vector<std::unique_ptr<Upgrade>>& getUpgrades() { return this->upgrades; }
     

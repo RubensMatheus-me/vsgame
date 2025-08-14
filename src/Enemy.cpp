@@ -3,9 +3,9 @@
 #include "SpriteAnimation.h"
 
 Enemy::Enemy(const Vector& size, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
-     float hp, float atkRate, float currentHp, float movSpeed, float xpDrop, int spawnWeight, float baseAtk)
+     float hp, float atkRate, float currentHp, float movSpeed, float xpDrop, int spawnWeight, float baseAtk, float expectedHp)
      : Character(size, pos, speed, hp, currentHp, atkRate, movSpeed, spriteAnimation), animation(std::move(anim)),
-     xpDrop(xpDrop), spawnWeight(spawnWeight), baseAtk(baseAtk) {}
+     xpDrop(xpDrop), spawnWeight(spawnWeight), baseAtk(baseAtk), expectedHp(expectedHp) {}
 
 void Enemy::render(SDL_Renderer* renderer) {
      animation->render(renderer, getPosition().x, getPosition().y);

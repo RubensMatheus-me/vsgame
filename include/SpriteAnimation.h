@@ -21,6 +21,9 @@ class SpriteAnimation {
         void setFrameTime(float newFrameTime) {this->frameTime = newFrameTime;}
         void setTextureName(std::string& newTextureName) {this->textureName = newTextureName;}
 
+		int getCurrentFrame() { return this->currentFrame;}
+
+
         bool animationEnded();
 
 

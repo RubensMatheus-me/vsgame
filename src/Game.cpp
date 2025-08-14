@@ -387,7 +387,7 @@ void Game::initializeEntities() {
 		150.0f
 	);
 
-	//player->getRangedWeapons().push_back(std::move(weapon));
+	player->getRangedWeapons().push_back(std::move(weapon));
 	player->getRangedWeapons().push_back(std::move(weapon2));
 	player->getMeleeWeapons().push_back(std::move(weapon3));
 	player->setAnimations(playerAnimation.get());
@@ -521,7 +521,8 @@ void Game::spawnEnemy() {
 		Config::ENEMY_MOV_SPEED,
 		Config::ENEMY_XP_DROP,
 		Config::ENEMY_SPAWN_WEIGHT,
-		Config::ENEMY_BASE_ATK 
+		Config::ENEMY_BASE_ATK,
+		Config::ENEMY_HP
 	);
 	slime->setTarget(player.get());
 
@@ -531,38 +532,35 @@ void Game::spawnEnemy() {
 }
 
 void Game::shootProjectile() {
-
-	if (enemies.empty()) return;
+    if (enemies.empty()) return;
 
     Vector playerPos = player->getPosition();
 
-    Enemy* target = nullptr;
-    float closestDistanceSq = std::numeric_limits<float>::max();
+    for (const auto& weapon : player->getRangedWeapons()) {
+        Enemy* target = nullptr;
+        float closestDistanceSq = std::numeric_limits<float>::max();
 
-    for (const auto& e : enemies) {
-        float distSq = (e->getPosition() - playerPos).length_squared();
-        if (distSq < closestDistanceSq) {
-            closestDistanceSq = distSq;
-            target = e.get();
+        for (const auto& e : enemies) {
+            float distSq = (e->getPosition() - playerPos).length_squared();
+            if (distSq < closestDistanceSq && e->getExpectedHp() > 0) {
+                closestDistanceSq = distSq;
+                target = e.get();
+            }
+        }
+
+        if (target) {
+            Vector direction = target->getPosition() - playerPos;
+            direction.normalize();
+
+            float dmg = weapon->getFlatDamage();
+            target->setExpectedHp(target->getExpectedHp() - dmg);
+            weapon->attack(playerPos, direction, player.get());
         }
     }
 
-    if (!target) return;
-
-		
-	Vector enemyPos = target->getPosition();
-    Vector direction = enemyPos - playerPos;
-	direction.normalize();
-
-	for(const auto& weapon : player->getRangedWeapons()) {
-		//weapon->attack(playerPos, direction, player.get());
-	}
-
-	for (auto& meleeWeapon : player->getMeleeWeapons()) {
-		Vector direction = {player->getAnimationState() == PlayerAnimationState::IdleRight || player->getAnimationState() == PlayerAnimationState::WalkRight, 0};
-		meleeWeapon->attack(playerPos, direction, player.get());
-	}
-
+    for (auto& meleeWeapon : player->getMeleeWeapons()) {
+        meleeWeapon->attack(playerPos, player->getPlayerFacingDirection(), player.get());
+    }
 }
 
 void Game::removeDeadEntities() {

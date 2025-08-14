@@ -7,7 +7,7 @@
 class Enemy : public Character {
     public:
         Enemy(const Vector& size, SpriteAnimation* spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector& pos, const Vector& speed,
-        float hp, float currentHp, float atkRate, float movSpeed, float xpDrop, int spawnWeigh, float baseAtk);
+        float hp, float currentHp, float atkRate, float movSpeed, float xpDrop, int spawnWeigh, float baseAtk, float expectedHp);
 
         void setTarget(const Player* newTarget) {this->target = newTarget;}
 
@@ -16,8 +16,10 @@ class Enemy : public Character {
 
         void setXpDrop(float xpDrop) { this->xpDrop = xpDrop; }
         void setSpawnWeight(int spawnWeight) { this->spawnWeight = spawnWeight; }
+        void setExpectedHp(float expectedHp) { this->expectedHp = expectedHp; }
 
         float getBaseAtk() { return this->baseAtk;}
+        float getExpectedHp() const { return this->expectedHp; }
 
 		void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
@@ -36,4 +38,5 @@ class Enemy : public Character {
         float xpDrop;
         int spawnWeight;
         float baseAtk;
+		float expectedHp;
 };

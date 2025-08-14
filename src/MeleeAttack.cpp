@@ -16,9 +16,11 @@ bool MeleeAttack::hasEnded() {
 void MeleeAttack::render(SDL_Renderer* renderer) {
     if (animation) {
         Vector drawPos = getPosition();
-        if (direction[0] == 0) { 
-            drawPos.x -= animation->currentFrame();
-        }
+        // if (direction[0] == 0) { 
+            // drawPos.x -= animation->getCurrentFrame();
+			// animation->render(renderer, drawPos.x, drawPos.y, SDL_FLIP_HORIZONTAL, true);
+			// return ;
+        // }
         animation->render(renderer, drawPos.x, drawPos.y, SDL_FLIP_HORIZONTAL, false);
     }
 }

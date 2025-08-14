@@ -88,3 +88,7 @@ void Player::update(float deltaTime) {
     }
 }
 
+Vector Player::getPlayerFacingDirection() {
+	return {this->getAnimationState() == PlayerAnimationState::IdleRight || this->getAnimationState() == PlayerAnimationState::WalkRight, 0};
+}
+

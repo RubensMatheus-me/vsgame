@@ -73,10 +73,8 @@ void SpriteAnimation::render(SDL_Renderer* renderer, int x, int y, bool flip, bo
 
     SDL_Rect srcRect = anim.frames[currentFrame];
     SDL_Rect destRect = {drawX, drawY, srcRect.w, srcRect.h};
-    if(mirror) {
-        destRect.x -= srcRect.w;
-    }
+	
     SDL_RendererFlip flipFlag = flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-    SDL_RnderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);
+    SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0, nullptr, flipFlag);
 }
