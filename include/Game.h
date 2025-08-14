@@ -16,28 +16,28 @@
 
 class Game
 {
-public:
-	Game();
-	~Game();
+	public:
+		Game();
+		~Game();
 
-	bool isPaused = false;
-	void setPaused(bool value) { isPaused = value; }
-	bool getIsPaused() const { return isPaused; }
+		bool isPaused = false;
+		void setPaused(bool value) { isPaused = value; }
+		bool getIsPaused() const { return isPaused; }
 
-	void init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen);
+		void init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen);
 
-	void events();
-	void update();
-	void render();
-	void clean();
+		void events();
+		void update();
+		void render();
+		void clean();
 
-	void loadResources();
-	void limitFPS(float targetFPS);
+		void loadResources();
+		void limitFPS(float targetFPS);
 
-	void initializeEntities();
-	void updateFpsDisplay();
-	void updateClockDisplay();
-	void updateXp();
+		void initializeEntities();
+		void updateFpsDisplay();
+		void updateClockDisplay();
+		void updateXp();
 
 		bool getIsRunning() const {return this->isRunning;}
 		static int getWidth() {return width;}
@@ -51,8 +51,10 @@ public:
 		void shootProjectile();
 		void removeDeadEntities();
 
-		
+		void handleInput(SDL_Event& event);
+
 		void spawnEnemy();
+		SDL_Renderer* getRenderer() const {return this->renderer;}
 		
 		std::unique_ptr<Player> player;
 		std::unique_ptr<Enemy> enemy;
