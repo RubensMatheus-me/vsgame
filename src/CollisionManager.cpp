@@ -92,18 +92,27 @@ void CollisionManager::handleCollisionMap(Player *player, TileManager &tileManag
                 bool collisionX = playerX + playerSizeX > tileX && playerX < tileX + tileWidth;
                 bool collisionY = playerY + playerSizeY > tileY && playerY < tileY + tileHeight;
 
-                if (collisionX && collisionY) {
-                    if (playerX + playerSizeX / 2 < tileX + tileWidth / 2) {
-                        playerX = tileX - playerSizeX;
-                    } else {
-                        playerX = tileX + tileWidth;
-                    }
-                    if (playerY + playerSizeY / 2 < tileY + tileHeight / 2) {
-                        playerY = tileY - playerSizeY;
-                    } else {
-                        playerY = tileY + tileHeight;
-                    }
-                }
+				if (collisionX && collisionY) {
+					float overlapX1 = (playerX + playerSizeX) - tileX;
+					float overlapX2 = (tileX + tileWidth) - playerX;
+					float overlapY1 = (playerY + playerSizeY) - tileY;
+					float overlapY2 = (tileY + tileHeight) - playerY;
+
+					float minOverlapX = std::min(overlapX1, overlapX2);
+					float minOverlapY = std::min(overlapY1, overlapY2);
+
+					if (minOverlapX < minOverlapY) {
+						if (playerX + playerSizeX / 2 < tileX + tileWidth / 2)
+							playerX = tileX - playerSizeX;
+						else
+							playerX = tileX + tileWidth;
+					} else {
+						if (playerY + playerSizeY / 2 < tileY + tileHeight / 2)
+							playerY = tileY - playerSizeY;
+						else
+							playerY = tileY + tileHeight;
+					}
+				}
             }
         }
     }
@@ -119,24 +128,3 @@ void CollisionManager::handleCollisionMap(Player *player, TileManager &tileManag
 
     player->setPosition(Vector(playerX, playerY));
 }
-
-/*
-void CollisionManager::debugDrawColliders(SDL_Renderer* renderer, const std::vector<GraphicalElement*>& elements, const Vector& cameraOffset) {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    for (auto& element : elements) {
-        Rect collider = element->getCollider();
-
-        SDL_Rect drawRect = {
-            static_cast<int>(collider.x - cameraOffset.x),
-            static_cast<int>(collider.y - cameraOffset.y),
-            static_cast<int>(collider.w),
-            static_cast<int>(collider.h)
-        };
-
-        SDL_RenderDrawRect(renderer, &drawRect);
-    }
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Reset cor
-}
-*/
