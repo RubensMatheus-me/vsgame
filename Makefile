@@ -3,7 +3,7 @@ TARGET = game
 -include .config.mk
 
 # Caminho padrão da biblioteca (relativo ao projeto)
-MY_LIB_PATH ?= ../libs/my-lib/include
+MY_LIB_PATH ?= ../my-lib/include
 
 
 CXX = g++

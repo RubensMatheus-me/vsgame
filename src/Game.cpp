@@ -333,9 +333,12 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
 
 	// Upgrades
-	TextureManager::loadTexture("assets/sprites/upgrades/PowerStrike.png", "PowerStrike");
-	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "TitanBlessing");
-	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "HealthSurge");
+	TextureManager::loadTexture("assets/sprites/upgrades/AttackBoost.png", "Força Bruta");
+	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "Benção Titânica");
+	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "Surto de Saúde");
+	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneração Vital");
+	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
+	TextureManager::loadTexture("assets/sprites/upgrades/SpeedAttack.png", "Impulso de Ataque");
 
 	// projectiles
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
