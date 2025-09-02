@@ -1,4 +1,3 @@
-// AxeProjectile.h
 #pragma once
 #include "Projectile.h"
 #include "enums/AxeProjectileState.h"

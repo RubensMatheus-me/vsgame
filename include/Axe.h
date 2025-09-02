@@ -1,22 +1,31 @@
 #pragma once
-#include "RangedWeapon.h"
+#include "Weapon.h"
 #include "SpriteAnimation.h"
 #include "Projectile.h"
 #include "Entity.h"
 
-class Axe : public RangedWeapon {
+class Axe : public Weapon {
 public:
-    Axe(const Vector& size, SpriteAnimation* spriteAnimation, const std::string& description,
-        float flatDamage, float flatAtkSpeed, float damageMultiplier,
-        float atkSpeedMultiplier, int level,
-        SpriteAnimation* axeProjectileAnimation, float projectileSpeed, float projectileLifetime);
+    Axe(const Vector& size,
+        SpriteAnimation* spriteAnimation,
+        const std::string& description);
 
-    void attack(const Vector& position, const Vector& direction, Entity* owner) override;
+    Axe(const Vector& size,
+        SpriteAnimation* spriteAnimation,
+        const std::string& description,
+        float flatDamage,
+        float flatAtkSpeed,
+        float damageMultiplier,
+        float atkSpeedMultiplier,
+        int level,
+        float projectileSpeed,
+        float projectileLifetime,
+        float cooldown);
+
+    void attack(const Vector& position, const Vector& direction, Player* owner) override;
     void render(SDL_Renderer* renderer) override;
-    void update(float deltaTime) override;
 
 private:
-    SpriteAnimation* axeProjectileAnimation;
     float projectileSpeed;
     float projectileLifetime;
 };

@@ -1,11 +1,9 @@
 #pragma once
 
-#include "MeleeWeapon.h"
 #include "SpriteAnimation.h"
-#include "MeleeAttack.h"
 #include <vector>
 
-class BrassKnuckles : public MeleeWeapon {
+class BrassKnuckles : public Weapon {
 public:
     BrassKnuckles(
         const Vector& size,
@@ -16,15 +14,10 @@ public:
         float damageMultiplier,
         float atkSpeedMultiplier,
         int level,
-        SpriteAnimation* punchAnimation,
-        float attackDuration
+        float cooldown
     );
 
     void render(SDL_Renderer* renderer) override;
-    void update(float deltaTime) override;
-	void attack(const Vector& position, const Vector& direction, Entity* owner) override;
+	void attack(const Vector& position, const Vector& direction, Player* owner) override;
 
-private:
-    SpriteAnimation* punchAnimation;
-    float attackDuration;
 };

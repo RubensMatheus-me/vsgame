@@ -30,44 +30,24 @@ void CollisionManager::handlePlayerCollisions(Player* player, std::vector<std::u
 }
 
 void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
-    for (auto& rangedWeapon : player->getRangedWeapons()) {
-        for(auto& projectile : rangedWeapon->getProjectiles()) {
-            Rect projectileRect = projectile->getCollider();
+    for (auto& weapon : player->getWeapons()) {
+        for(auto& attack : weapon->getAttacks()) {
+            Rect attackRect = attack->getCollider();
             for (size_t j = 0; j < enemies.size(); ++j) {
                 Enemy* enemy = enemies[j].get();
                 Rect enemyRect = enemy->getCollider();
-                if(projectileRect.intersects(enemyRect)) {
-                    projectile->setAlive(false);
-                    Vector direction = enemy->getPosition() - projectile->getPosition();
+                if (attackRect.intersects(enemyRect)) {
+                    Vector direction = enemy->getPosition() - attack->getPosition();
                     float forceKnockback = 10.0f;
                     enemy->applyKnockback(direction, forceKnockback);
-                    enemy->setCurrentHp(enemy->getCurrentHp() - projectile->getDamage());
-                    if(enemy->getCurrentHp() <= 0.0f) {
+                    enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());
+                    if (enemy->getCurrentHp() <= 0.0f) {
                         enemy->setAlive(false);
-                        player->setXp(player->getXp()+enemy->getXpDrop());
+                        player->setXp(player->getXp() + enemy->getXpDrop());
                     }
-                    
-                }
-            }
-        }
-    }
-
-    for (auto& meleeWeapon : player->getMeleeWeapons()) {
-        for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
-            Rect meleeRect = meleeAttack->getCollider();
-            for (size_t j = 0; j < enemies.size(); ++j) {
-                Enemy* enemy = enemies[j].get();
-                Rect enemyRect = enemy->getCollider();
-                if(meleeRect.intersects(enemyRect)) {
-                    Vector direction = enemy->getPosition() - meleeAttack->getPosition();
-                    float forceKnockback = 10.0f;
-                    enemy->applyKnockback(direction, forceKnockback);
-                    enemy->setCurrentHp(enemy->getCurrentHp() - meleeAttack->getDamage());
-                    if(enemy->getCurrentHp() <= 0.0f) {
-                        enemy->setAlive(false);
-                        player->setXp(player->getXp()+enemy->getXpDrop());
+                    if (attack->getDestroyOnHit()) {
+                        attack->setAlive(false);
                     }
-                    
                 }
             }
         }
