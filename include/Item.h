@@ -4,6 +4,7 @@
 
 class Item : public GraphicalElement {
     public:
+        virtual ~Item() = default;
         Item(const Vector& size, SpriteAnimation* spriteAnimation, const std::string& description);
 
         std::string getDescription() const { return this->description; }

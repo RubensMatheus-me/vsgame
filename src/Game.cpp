@@ -15,9 +15,9 @@
 #include <time.h>
 #include "GUIRenderer.h"
 #include "EnemySpawner.h"
-#include "RangedWeapon.h"
 #include "BrassKnuckles.h" 
 #include "Axe.h"
+#include "Weapon.h"
 
 using namespace Config;
 
@@ -44,7 +44,7 @@ SDL_Texture* fpsTexture = nullptr;
 SDL_Texture* timeTexture = nullptr;
 SDL_Texture* xpTexture = nullptr;
 
-Game::Game() : timerEvents(2.0f), gameTime(1.0f){}; 
+Game::Game() : timerEvents(1.0f), gameTime(1.0f){}; 
 Game::~Game() {};
 
 void Game::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen) {
@@ -165,14 +165,9 @@ void Game::render() {
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
 
-	for (auto& rangedWeapon : player->getRangedWeapons()) {
-		for(auto& projectile : rangedWeapon->getProjectiles()) {
-			projectile->render(renderer);
-		}
-	}
-	for (auto& meleeWeapon : player->getMeleeWeapons()) {
-		for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
-			meleeAttack->render(renderer);
+	for (auto& weapon : player->getWeapons()) {
+		for(auto& attack : weapon->getAttacks()) {
+			attack->render(renderer);
 		}
 	}
 
@@ -225,21 +220,9 @@ void Game::update() {
         e->update(dt);
     }
 
-    // for (auto& proj : projectiles) {
-    //     proj->update(dt);
-    // }
-
-	for (auto& rangedWeapon : player->getRangedWeapons()) {
-		for(auto& projectile : rangedWeapon->getProjectiles()) {
-			projectile->update(dt);
-		}
+	for (auto& weapon : player->getWeapons()) {
+		weapon->update(dt);
 	}
-	for (auto& meleeWeapon : player->getMeleeWeapons()) {
-		for(auto& meleeAttack : meleeWeapon->getMeleeAttacks()) {
-			meleeAttack->update(dt);
-		}
-	}
-
 
 	removeDeadEntities();
 
@@ -339,57 +322,27 @@ void Game::initializeEntities() {
 	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
 	anim->play("axe-right");
 	std::string desc = "teste";
-	std::unique_ptr<RangedWeapon> weapon = std::make_unique<Axe>(
+	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
 		Config::ENEMY_SIZE,
-		nullptr,
-		desc,
-		100.0f,
-		10.0f,
-		10.0f,
-		10.0f,
-		1,
 		anim.get(),
-		150.0f,
-		10.0f
+		desc
 	);
 
-	auto anim2 = std::make_unique<SpriteAnimation>();
-	anim2->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-	anim2->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
-	anim2->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-	anim2->play("axe-right");
-
-	std::string desc2 = "teste";
-	std::unique_ptr<RangedWeapon> weapon2 = std::make_unique<Axe>(
+	std::unique_ptr<Weapon> weapon2 = std::make_unique<BrassKnuckles>(
 		Config::ENEMY_SIZE,
-		nullptr,
-		desc2,
-		100.0f,
-		10.0f,
-		10.0f,
-		10.0f,
+		anim.get(),
+		desc,
+		50.0f,
+		50.0f,
+		1.0f,
+		1.0f,
 		1,
-		anim2.get(),
-		150.0f,
-		10.0f
+		3.0f
 	);
 
-	std::unique_ptr<MeleeWeapon> weapon3 = std::make_unique<BrassKnuckles>(
-		Config::ENEMY_SIZE,
-		nullptr,
-		desc2,
-		1000.0f,
-		1000.0f,
-		1000.0f,
-		1000.0f,
-		1,
-		anim2.get(),
-		150.0f
-	);
+	player->getWeapons().push_back(std::move(weapon));
+	player->getWeapons().push_back(std::move(weapon2));
 
-	player->getRangedWeapons().push_back(std::move(weapon));
-	player->getRangedWeapons().push_back(std::move(weapon2));
-	player->getMeleeWeapons().push_back(std::move(weapon3));
 	player->setAnimations(playerAnimation.get());
 }
 
@@ -536,7 +489,8 @@ void Game::shootProjectile() {
 
     Vector playerPos = player->getPosition();
 
-    for (const auto& weapon : player->getRangedWeapons()) {
+
+    for (const auto& weapon : player->getWeapons()) {
         Enemy* target = nullptr;
         float closestDistanceSq = std::numeric_limits<float>::max();
 
@@ -548,41 +502,27 @@ void Game::shootProjectile() {
             }
         }
 
-        if (target) {
+        if (target && weapon->getCurrentCooldown() < 0.0f) {
             Vector direction = target->getPosition() - playerPos;
             direction.normalize();
 
             float dmg = weapon->getFlatDamage();
             target->setExpectedHp(target->getExpectedHp() - dmg);
-            weapon->attack(playerPos, direction, player.get());
+        	weapon->attack(playerPos, direction, player.get());		
         }
-    }
-
-    for (auto& meleeWeapon : player->getMeleeWeapons()) {
-        meleeWeapon->attack(playerPos, player->getPlayerFacingDirection(), player.get());
     }
 }
 
 void Game::removeDeadEntities() {
 
-	for(auto& rangedWeapon : player->getRangedWeapons()) {
-		auto& projectiles = rangedWeapon->getProjectiles();
-		rangedWeapon->getProjectiles().erase(
-        std::remove_if(projectiles.begin(), projectiles.end(),
-            [](const std::unique_ptr<Projectile>& p) {
+	for(auto& weapon : player->getWeapons()) {
+		auto& attacks = weapon->getAttacks();
+		weapon->getAttacks().erase(
+        std::remove_if(attacks.begin(), attacks.end(),
+            [](const std::unique_ptr<Attack>& p) {
                 return !p->isAlive();
             }),
-        projectiles.end()
-		);
-	}
-	for(auto& meleeWeapon : player->getMeleeWeapons()) {
-		auto& meleeAttacks = meleeWeapon->getMeleeAttacks();
-		meleeWeapon->getMeleeAttacks().erase(
-        std::remove_if(meleeAttacks.begin(), meleeAttacks.end(),
-            [](const std::unique_ptr<MeleeAttack>& meleeAttack) {
-                return meleeAttack->hasEnded();
-            }),
-        meleeAttacks.end()
+        attacks.end()
 		);
 	}
 

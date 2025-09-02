@@ -71,9 +71,6 @@ void Player::update(float deltaTime) {
         setAnimationState(facingRight ? PlayerAnimationState::IdleRight : PlayerAnimationState::IdleLeft);
     }
 
-    if (attackCooldown > 0.0f)
-        attackCooldown -= deltaTime;
-
     if (damageCooldown > 0.0f) {
         damageCooldown -= deltaTime;
         if (damageCooldown < 0.0f) damageCooldown = 0.0f;
