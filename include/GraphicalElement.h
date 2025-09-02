@@ -6,6 +6,7 @@
 class GraphicalElement {
 	public:
 		GraphicalElement(const Vector& size, SpriteAnimation* spriteAnimation);
+		virtual ~GraphicalElement() = default;
 
 		Vector getSize() const { return this->size; }
 

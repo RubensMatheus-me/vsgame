@@ -109,7 +109,9 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
         enemyConfig["moveSpeed"],
         enemyConfig["xpDrop"],
         enemyConfig["spawnWeight"],
-        enemyConfig["baseAtk"]);
+        enemyConfig["baseAtk"],
+		enemyConfig["hp"]
+    );
 
     enemy->setTarget(player);
     enemies.push_back(std::move(enemy));

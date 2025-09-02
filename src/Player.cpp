@@ -119,11 +119,7 @@ void Player::update(float deltaTime)
         }
     }
 
-    if (attackCooldown > 0.0f)
-        attackCooldown -= deltaTime;
-
-    if (damageCooldown > 0.0f)
-    {
+    if (damageCooldown > 0.0f) {
         damageCooldown -= deltaTime;
         if (damageCooldown < 0.0f)
             damageCooldown = 0.0f;
@@ -139,3 +135,8 @@ void Player::update(float deltaTime)
     lastHp = getCurrentHp();
     spriteAnimation->update(deltaTime);
 }
+
+Vector Player::getPlayerFacingDirection() {
+	return {this->getAnimationState() == PlayerAnimationState::IdleRight || this->getAnimationState() == PlayerAnimationState::WalkRight, 0};
+}
+

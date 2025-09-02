@@ -1,9 +1,8 @@
 	#include "Projectile.h"
 
-	Projectile::Projectile(const Vector& size, const Vector& position, const Vector& direction, float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, Entity* owner)
-		: Entity(size, position, direction * speed, animation.get()), direction(direction), speed(speed), lifeRemaining(lifetime), animation(std::move(animation)), owner(owner)
+	Projectile::Projectile(const Vector& size, const Vector& position, const Vector& direction, float speed, float lifetime, std::unique_ptr<SpriteAnimation> animation, float damage, Entity* owner)
+		: Entity(size, position, direction * speed, animation.get()), direction(direction), speed(speed), lifeRemaining(lifetime), animation(std::move(animation)), owner(owner), damage(damage)
 	{}
-
 
 	void Projectile::update(float dt) {
 		Vector newPos = getPosition() + getSpeed() * dt;

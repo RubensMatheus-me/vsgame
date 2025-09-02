@@ -18,6 +18,9 @@
 #include "AudioManager.h"
 #include <SDL2/SDL.h>
 #include "GameStateManager.h"
+#include "Weapon.h"
+#include "Axe.h"
+#include "BrassKnuckles.h"
 
 using namespace Config;
 
@@ -29,13 +32,11 @@ bool Game::debugMode = true;
 std::unique_ptr<Player> player;
 std::unique_ptr<Enemy> enemy;
 std::vector<std::unique_ptr<Enemy>> enemies;
-std::vector<GraphicalElement *> allElements;
 std::unique_ptr<CollisionManager> collision;
 std::unique_ptr<Keyboard> keyboard;
 std::unique_ptr<TickRate> tickRate;
 std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
-std::vector<std::unique_ptr<Projectile>> projectiles;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
 std::unique_ptr<EnemySpawner> enemySpawner;
 
@@ -47,7 +48,7 @@ SDL_Texture *timeTexture = nullptr;
 SDL_Texture *xpTexture = nullptr;
 SDL_DisplayMode displayMode;
 
-Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
+Game::Game() : timerEvents(1.0f), gameTime(1.0f){}; 
 Game::~Game() {};
 
 int Game::width = 800;
@@ -206,15 +207,12 @@ void Game::render()
 	GUIRenderer::renderItems(renderer, player.get());
 	GUIRenderer::renderPlayerInfo(renderer, player.get());
 
-	for (auto &proj : projectiles)
-	{
-		proj->render(renderer);
+	for (auto& weapon : player->getWeapons()) {
+		for(auto& attack : weapon->getAttacks()) {
+			attack->render(renderer);
+		}
 	}
-	/*
-	if(getDebugMode()){
-		collision->debugDrawColliders(renderer, allElements, camera->getOffSet());
-	}
-	*/
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -270,13 +268,11 @@ void Game::update()
 	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 	}
-	if (!enemies.empty() && !projectiles.empty())
-	{
-		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	if(!enemies.empty()) {
+		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
 
 	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
-
 	for (auto &e : enemies)
 	{
 		Vector toPlayer = player->getPosition() - e->getPosition();
@@ -284,15 +280,9 @@ void Game::update()
 		e->setSpeed(toPlayer * e->getMovSpeed());
 		e->update(dt);
 	}
-
-	for (auto &proj : projectiles)
-		proj->update(dt);
-
-	if (!enemies.empty())
-		CollisionManager::handlePlayerCollisions(player.get(), enemies);
-
-	if (!enemies.empty() && !projectiles.empty())
-		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	for (auto& weapon : player->getWeapons()) {
+		weapon->update(dt);
+	}
 
 	removeDeadEntities();
 	updateFpsDisplay();
@@ -342,6 +332,9 @@ void Game::loadResources()
 
 	// projectiles
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
+
+	//melee
+	TextureManager::loadTexture("assets/sprites/effects/brassknuckles-spritesheet-teste.png", "brassKnuckles");
 }
 
 void Game::limitFPS(float targetFPS)
@@ -395,10 +388,36 @@ void Game::initializeEntities()
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME);
+		Config::PLAYER_INVULNERABILITY_TIME                   
+    );
+	auto anim = std::make_unique<SpriteAnimation>();
+	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
+	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
+	anim->play("axe-right");
+	std::string desc = "teste";
+	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
+		Config::PLAYER_SIZE,
+		anim.get(),
+		desc
+	);
+
+	std::unique_ptr<Weapon> weapon2 = std::make_unique<BrassKnuckles>(
+		Config::PLAYER_SIZE,
+		anim.get(),
+		desc,
+		50.0f,
+		50.0f,
+		1.0f,
+		1.0f,
+		1,
+		3.0f
+	);
+
+	player->getWeapons().push_back(std::move(weapon));
+	player->getWeapons().push_back(std::move(weapon2));
 
 	player->setAnimations(playerAnimation.get());
-	allElements.push_back(player.get());
 }
 
 void Game::updateFpsDisplay()
@@ -515,79 +534,56 @@ void Game::updateXp()
 	}
 }
 
-void Game::shootProjectile()
-{
-	if (enemies.empty())
-		return;
+void Game::shootProjectile() {
+    if (enemies.empty()) return;
 
-	Vector playerPos = player->getPosition();
+    Vector playerPos = player->getPosition();
 
-	Enemy *target = nullptr;
-	float closestDistanceSq = std::numeric_limits<float>::max();
 
-	for (const auto &e : enemies)
-	{
-		float distSq = (e->getPosition() - playerPos).length_squared();
-		if (distSq < closestDistanceSq)
-		{
-			closestDistanceSq = distSq;
-			target = e.get();
-		}
-	}
+    for (const auto& weapon : player->getWeapons()) {
+        Enemy* target = nullptr;
+        float closestDistanceSq = std::numeric_limits<float>::max();
 
-	if (!target)
-		return;
+        for (const auto& e : enemies) {
+            float distSq = (e->getPosition() - playerPos).length_squared();
+            if (distSq < closestDistanceSq && e->getExpectedHp() > 0) {
+                closestDistanceSq = distSq;
+                target = e.get();
+            }
+        }
 
-	Vector enemyPos = target->getPosition();
-	Vector direction = enemyPos - playerPos;
-	direction.normalize();
+        if (target && weapon->getCurrentCooldown() < 0.0f) {
+            Vector direction = target->getPosition() - playerPos;
+            direction.normalize();
 
-	// Vector spawnOffSet = direction * 10.0f;
-
-	auto anim = std::make_unique<SpriteAnimation>();
-	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
-	anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-	anim->play("axe-right");
-
-	AudioManager &audio = AudioManager::getInstance();
-	audio.setEffectsVolume(1.0f);
-	audio.playSound("AxeThrow");
-	auto p = std::make_unique<AxeProjectile>(
-
-		playerPos + 10.0f,
-		direction,
-		150.0f,
-		10.0f,
-		std::move(anim),
-		player.get());
-
-	projectiles.push_back(std::move(p));
-	allElements.push_back(projectiles.back().get());
+			AudioManager &audio = AudioManager::getInstance();
+			audio.setEffectsVolume(1.0f);
+			audio.playSound("AxeThrow");
+            float dmg = weapon->getFlatDamage();
+            target->setExpectedHp(target->getExpectedHp() - dmg);
+        	weapon->attack(playerPos, direction, player.get());		
+        }
+    }
 }
 
-void Game::removeDeadEntities()
-{
-	projectiles.erase(
-		std::remove_if(projectiles.begin(), projectiles.end(),
-					   [](const std::unique_ptr<Projectile> &p)
-					   {
-						   return !p->isAlive();
-					   }),
-		projectiles.end());
+void Game::removeDeadEntities() {
 
-	enemies.erase(
-		std::remove_if(enemies.begin(), enemies.end(),
-					   [](const std::unique_ptr<Enemy> &e)
-					   {
-						   return !e->isAlive();
-					   }),
-		enemies.end());
+	for(auto& weapon : player->getWeapons()) {
+		auto& attacks = weapon->getAttacks();
+		weapon->getAttacks().erase(
+        std::remove_if(attacks.begin(), attacks.end(),
+            [](const std::unique_ptr<Attack>& p) {
+                return !p->isAlive();
+            }),
+        attacks.end()
+		);
+	}
 
-	allElements.clear();
-	allElements.push_back(player.get());
-	for (auto &e : enemies)
-		allElements.push_back(e.get());
-	for (auto &p : projectiles)
-		allElements.push_back(p.get());
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](const std::unique_ptr<Enemy>& e) {
+                return !e->isAlive();
+            }),
+        enemies.end()
+    );
 }

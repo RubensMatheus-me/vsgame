@@ -39,29 +39,32 @@ void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::u
     }
 }
 
-void CollisionManager::handleProjectileCollisions(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies, std::vector<std::unique_ptr<Projectile>> &projectiles)
-{
-    for (size_t i = 0; i < projectiles.size(); ++i)
-    {
-        Projectile *projectile = projectiles[i].get();
-        Rect projectileRect = projectile->getCollider();
-        for (size_t j = 0; j < enemies.size(); ++j)
-        {
-            Enemy *enemy = enemies[j].get();
-            Rect enemyRect = enemy->getCollider();
-
-            if (projectileRect.intersects(enemyRect))
-            {
-                projectile->setAlive(false);
-                enemy->setAlive(false);
-                player->setXp(player->getXp() + enemy->getXpDrop());
-
-                if (Game::getDebugMode())
-                    std::cout << "Inimigo atingido por projétil!\n";
+void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
+    for (auto& weapon : player->getWeapons()) {
+        for(auto& attack : weapon->getAttacks()) {
+            Rect attackRect = attack->getCollider();
+            for (size_t j = 0; j < enemies.size(); ++j) {
+                Enemy* enemy = enemies[j].get();
+                Rect enemyRect = enemy->getCollider();
+                if (attackRect.intersects(enemyRect)) {
+                    Vector direction = enemy->getPosition() - attack->getPosition();
+                    float forceKnockback = 10.0f;
+                    enemy->applyKnockback(direction, forceKnockback);
+                    enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());
+                    if (enemy->getCurrentHp() <= 0.0f) {
+                        enemy->setAlive(false);
+                        player->setXp(player->getXp() + enemy->getXpDrop());
+                    }
+                    if (attack->getDestroyOnHit()) {
+                        attack->setAlive(false);
+                    }
+                }
             }
         }
     }
 }
+
+
 
 void CollisionManager::handleCollisionMap(Player *player, TileManager &tileManager, int mapWidth, int mapHeight)
 {
