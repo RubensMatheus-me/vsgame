@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "IMotion.h"
-#include "ILifetime.h"
+#include "ILifeTime.h"
 #include <memory>
 
 class Attack : public Entity {

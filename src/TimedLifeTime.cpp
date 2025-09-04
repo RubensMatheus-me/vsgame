@@ -1,4 +1,4 @@
-#include "TimedLifetime.h"
+#include "TimedLifeTime.h"
 
 TimedLifetime::TimedLifetime(float duration)
     : elapsed(0.0f), duration(duration){}

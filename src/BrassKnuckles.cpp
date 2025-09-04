@@ -1,5 +1,5 @@
 #include "BrassKnuckles.h"
-#include "TimedLifetime.h"
+#include "TimedLifeTime.h"
 #include "WaveMotion.h"
 #include "Attack.h"
 #include "OrbitMotion.h"
@@ -16,9 +16,10 @@ BrassKnuckles::BrassKnuckles(
     float damageMultiplier,
     float atkSpeedMultiplier,
     int level,
-    float cooldown
+    float cooldown,
+	int id
 )
-    : Weapon(size, spriteAnimation, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown){}
+    : Weapon(size, spriteAnimation, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id){}
 
 void BrassKnuckles::attack(const Vector& position, const Vector& direction, Player* owner) {
     auto animation = std::make_unique<SpriteAnimation>(); 
@@ -50,4 +51,8 @@ void BrassKnuckles::render(SDL_Renderer* renderer) {
     if (getSprite()) {
         getSprite()->render(renderer, 1, 1);
     }
+}
+
+void BrassKnuckles::levelUp(int levelUp) {
+	level++;
 }
