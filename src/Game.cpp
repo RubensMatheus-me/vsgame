@@ -48,7 +48,7 @@ SDL_Texture *timeTexture = nullptr;
 SDL_Texture *xpTexture = nullptr;
 SDL_DisplayMode displayMode;
 
-Game::Game() : timerEvents(1.0f), gameTime(1.0f){}; 
+Game::Game() : timerEvents(1.0f), gameTime(1.0f) {};
 Game::~Game() {};
 
 int Game::width = 800;
@@ -207,8 +207,10 @@ void Game::render()
 	GUIRenderer::renderItems(renderer, player.get());
 	GUIRenderer::renderPlayerInfo(renderer, player.get());
 
-	for (auto& weapon : player->getWeapons()) {
-		for(auto& attack : weapon->getAttacks()) {
+	for (auto &weapon : player->getWeapons())
+	{
+		for (auto &attack : weapon->getAttacks())
+		{
 			attack->render(renderer);
 		}
 	}
@@ -268,7 +270,8 @@ void Game::update()
 	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 	}
-	if(!enemies.empty()) {
+	if (!enemies.empty())
+	{
 		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
 
@@ -280,7 +283,8 @@ void Game::update()
 		e->setSpeed(toPlayer * e->getMovSpeed());
 		e->update(dt);
 	}
-	for (auto& weapon : player->getWeapons()) {
+	for (auto &weapon : player->getWeapons())
+	{
 		weapon->update(dt);
 	}
 
@@ -329,11 +333,14 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneração Vital");
 	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
 	TextureManager::loadTexture("assets/sprites/upgrades/SpeedAttack.png", "Impulso de Ataque");
+	// Weapons Icons
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/chakram.png", "Chakram");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "Chamas de Ifrit");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "Raio do Julgamento");
 
-	// projectiles
+	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
-
-	//melee
 	TextureManager::loadTexture("assets/sprites/effects/brassknuckles-spritesheet-teste.png", "brassKnuckles");
 }
 
@@ -388,8 +395,7 @@ void Game::initializeEntities()
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME                   
-    );
+		Config::PLAYER_INVULNERABILITY_TIME);
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
 	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
@@ -399,8 +405,7 @@ void Game::initializeEntities()
 	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
 		Config::PLAYER_SIZE,
 		anim.get(),
-		desc
-	);
+		desc);
 
 	std::unique_ptr<Weapon> weapon2 = std::make_unique<BrassKnuckles>(
 		Config::PLAYER_SIZE,
@@ -411,8 +416,7 @@ void Game::initializeEntities()
 		1.0f,
 		1.0f,
 		1,
-		3.0f
-	);
+		3.0f);
 
 	player->getWeapons().push_back(std::move(weapon));
 	player->getWeapons().push_back(std::move(weapon2));
@@ -534,56 +538,63 @@ void Game::updateXp()
 	}
 }
 
-void Game::shootProjectile() {
-    if (enemies.empty()) return;
+void Game::shootProjectile()
+{
+	if (enemies.empty())
+		return;
 
-    Vector playerPos = player->getPosition();
+	Vector playerPos = player->getPosition();
 
+	for (const auto &weapon : player->getWeapons())
+	{
+		Enemy *target = nullptr;
+		float closestDistanceSq = std::numeric_limits<float>::max();
 
-    for (const auto& weapon : player->getWeapons()) {
-        Enemy* target = nullptr;
-        float closestDistanceSq = std::numeric_limits<float>::max();
+		for (const auto &e : enemies)
+		{
+			float distSq = (e->getPosition() - playerPos).length_squared();
+			if (distSq < closestDistanceSq && e->getExpectedHp() > 0)
+			{
+				closestDistanceSq = distSq;
+				target = e.get();
+			}
+		}
 
-        for (const auto& e : enemies) {
-            float distSq = (e->getPosition() - playerPos).length_squared();
-            if (distSq < closestDistanceSq && e->getExpectedHp() > 0) {
-                closestDistanceSq = distSq;
-                target = e.get();
-            }
-        }
-
-        if (target && weapon->getCurrentCooldown() < 0.0f) {
-            Vector direction = target->getPosition() - playerPos;
-            direction.normalize();
+		if (target && weapon->getCurrentCooldown() < 0.0f)
+		{
+			Vector direction = target->getPosition() - playerPos;
+			direction.normalize();
 
 			AudioManager &audio = AudioManager::getInstance();
 			audio.setEffectsVolume(1.0f);
 			audio.playSound("AxeThrow");
-            float dmg = weapon->getFlatDamage();
-            target->setExpectedHp(target->getExpectedHp() - dmg);
-        	weapon->attack(playerPos, direction, player.get());		
-        }
-    }
+			float dmg = weapon->getFlatDamage();
+			target->setExpectedHp(target->getExpectedHp() - dmg);
+			weapon->attack(playerPos, direction, player.get());
+		}
+	}
 }
 
-void Game::removeDeadEntities() {
+void Game::removeDeadEntities()
+{
 
-	for(auto& weapon : player->getWeapons()) {
-		auto& attacks = weapon->getAttacks();
+	for (auto &weapon : player->getWeapons())
+	{
+		auto &attacks = weapon->getAttacks();
 		weapon->getAttacks().erase(
-        std::remove_if(attacks.begin(), attacks.end(),
-            [](const std::unique_ptr<Attack>& p) {
-                return !p->isAlive();
-            }),
-        attacks.end()
-		);
+			std::remove_if(attacks.begin(), attacks.end(),
+						   [](const std::unique_ptr<Attack> &p)
+						   {
+							   return !p->isAlive();
+						   }),
+			attacks.end());
 	}
 
-    enemies.erase(
-        std::remove_if(enemies.begin(), enemies.end(),
-            [](const std::unique_ptr<Enemy>& e) {
-                return !e->isAlive();
-            }),
-        enemies.end()
-    );
+	enemies.erase(
+		std::remove_if(enemies.begin(), enemies.end(),
+					   [](const std::unique_ptr<Enemy> &e)
+					   {
+						   return !e->isAlive();
+					   }),
+		enemies.end());
 }
