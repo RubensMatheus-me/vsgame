@@ -17,7 +17,7 @@ namespace Config {
     inline constexpr float PLAYER_DAMAGE_COOLDOWN = 0.0f;
     inline constexpr float PLAYER_INVULNERABILITY_TIME = 1.0f;
     inline constexpr float INITIAL_NEXT_LEVEL_EXPERIENCE = 100.0f;
-    inline constexpr float NEXT_LEVEL_EXPERIENCE_RATE = 2.0f;
+    inline constexpr float NEXT_LEVEL_EXPERIENCE_RATE = 1.5f;
 	inline constexpr float HIT_ANIM_DURATION = 0.5f;
 
     //Enemy spawner

@@ -10,3 +10,7 @@ void TimedLifetime::advance(float dt) {
 bool TimedLifetime::alive(const Attack&) {
     return elapsed < duration;
 }
+
+void TimedLifetime::reset() {
+    elapsed = 0.0f;
+}

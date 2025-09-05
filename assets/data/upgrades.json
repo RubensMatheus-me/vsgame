@@ -43,10 +43,6 @@
 		"description": "Cria uma área com águas lamacentas por onde o jogador anda desacelerando os inimigos"
 	},
 	{
-		"name": "Chakram",
-		"description": "Cria chakrams em volta do jogador que ocasionalmente dão dano aos inimigos "
-	},
-	{
 		"name": "Boomerang",
 		"description": "Lança um bumerangue que volta para o jogador, causando dano aos inimigos no caminho"
 	}

@@ -46,3 +46,7 @@ void Attack::render(SDL_Renderer* renderer) {
 Rect Attack::getCollider() const {
     return Rect(getPosition(), getSize());
 }
+
+void Attack::resetLifetime() {
+    lifetime->reset();
+}

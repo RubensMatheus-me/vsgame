@@ -14,6 +14,7 @@
 #include "Axe.h"
 #include "BrassKnuckles.h"
 #include "Config.h"
+#include "Chakram.h"
 
 using namespace Config;
 
@@ -61,9 +62,10 @@ void LevelUpMenu::initWeapons(const std::string &jsonPath) {
 		int id = entry.value("id", 0);
         std::string name = entry.value("name", "");
         std::string desc = entry.value("description", "");
+        std::string spriteName = entry.value("spriteName", "");
 
         SpriteAnimation *anim = new SpriteAnimation();
-        anim->addAnimation("idle", name, 0, 0, 32, 32, 1, true);
+        anim->addAnimation("idle", spriteName, 0, 0, 32, 32, 1, true);
         anim->play("idle");
         allWeapons.push_back(new WeaponChoice(id, name, desc, anim));
     }
@@ -129,14 +131,11 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice* weaponChoice) {
         case 1: {
             auto anim = std::make_unique<SpriteAnimation>();
             anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-            anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
-            anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-            anim->play("axe-right");
-            std::string desc = "teste";
+            anim->play("axe-idle");
             std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
                 Config::PLAYER_SIZE,
                 anim.get(),
-                desc
+                "Machado"
             );
             player.getWeapons().push_back(std::move(weapon));
             break;
@@ -160,6 +159,18 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice* weaponChoice) {
                 1,
                 3.0f,
                 2
+            );
+            player.getWeapons().push_back(std::move(weapon));
+            break;
+        }
+        case 3: {
+            auto anim = std::make_unique<SpriteAnimation>();
+            anim->addAnimation("chakram-idle", "Chakram", 0, 0, 32, 32, 1, false);
+            anim->play("chakram-idle");
+            std::unique_ptr<Weapon> weapon = std::make_unique<Chakram>(
+                Config::PLAYER_SIZE,
+                anim.get(),
+                "Chakram"
             );
             player.getWeapons().push_back(std::move(weapon));
             break;

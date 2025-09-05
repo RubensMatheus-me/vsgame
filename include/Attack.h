@@ -19,6 +19,8 @@ public:
     Rect getCollider() const override;
     bool getDestroyOnHit() const { return destroyOnHit; }
     float getDamage() const { return damage; }
+    void resetLifetime();
+
     
 private:
     float damage;

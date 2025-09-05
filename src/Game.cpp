@@ -21,6 +21,7 @@
 #include "Weapon.h"
 #include "Axe.h"
 #include "BrassKnuckles.h"
+#include "Chakram.h"
 
 using namespace Config;
 
@@ -420,9 +421,14 @@ void Game::initializeEntities()
 		2
 	);
 
-	//player->getWeapons().push_back(std::move(weapon));
-	player->getWeapons().push_back(std::move(weapon2));
+	std::unique_ptr<Weapon> weapon3 = std::make_unique<Chakram>(
+		Config::PLAYER_SIZE,
+		anim.get(),
+		desc);
 
+	//player->getWeapons().push_back(std::move(weapon));
+	//player->getWeapons().push_back(std::move(weapon2));
+	player->getWeapons().push_back(std::move(weapon3));
 	player->setAnimations(playerAnimation.get());
 }
 

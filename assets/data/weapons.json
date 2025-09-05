@@ -1,13 +1,21 @@
 [
 	{
 		"id" : 1,
-		"name" : "Força Bruta",
-		"description" : "Joga um machado"
+		"name" : "Machado",
+		"description" : "Joga um machado no inimigo mais próximo",
+		"spriteName" : "axe"
 	},
 	{
 		"id" : 2,
-		"name" : "Força Bruta",
-		"description" : "Soco"
+		"name" : "Soco-inglês",
+		"description" : "Lança um soco na direção que o personagem está olhando",
+		"spriteName" : "brassKnuckles"
+	},
+	{
+		"id" : 3,
+		"name" : "Chakram",
+		"description" : "Um número de chakrams orbita o player",
+		"spriteName" : "Chakram"
 	}
 ]
 

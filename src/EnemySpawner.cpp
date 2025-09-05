@@ -96,7 +96,6 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
     anim->addAnimation("idle", enemyConfig["sprite"], 0, 0,
                        frameSize, frameSize, numFrames, true);
     anim->play("idle");
-
     auto enemy = std::make_unique<Enemy>(
         Vector(frameSize, frameSize),
         nullptr,
@@ -112,7 +111,7 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
         enemyConfig["baseAtk"],
 		enemyConfig["hp"]
     );
-
+    enemy->setCurrentHp(enemyConfig["hp"]);
     enemy->setTarget(player);
     enemies.push_back(std::move(enemy));
 }

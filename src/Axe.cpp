@@ -1,10 +1,9 @@
 #include "Axe.h"
 #include "AxeProjectile.h"
 #include "TimedLifeTime.h"
-#include "WaveMotion.h"
 #include "Attack.h"
-#include "OrbitMotion.h"
 #include "Player.h"
+#include "StraightLineMotion.h"
 
 Axe::Axe(const Vector& size, SpriteAnimation* spriteAnim, const std::string& description,
          float flatDamage, float flatAtkSpeed, float damageMultiplier,
@@ -30,16 +29,14 @@ void Axe::attack(const Vector& position, const Vector& direction, Player* owner)
 	auto p = std::make_unique<Attack>(
 		Vector(50.0f, 50.0f),                       
 		position + Vector(10.0f, 0.0f),             
-		50.0f,                                      
+		5.0f,                                      
 		std::move(anim),                            
-		std::make_unique<OrbitMotion>(
-			owner,        
-			50.0f,         
-			2.0f,          
-			0.0f           
+		std::make_unique<StraightLineMotion>(
+			direction,        
+			200.0f          
 		),
 		std::make_unique<TimedLifetime>(5.0f),    
-		false
+		true
 	);
 
     getAttacks().push_back(std::move(p));

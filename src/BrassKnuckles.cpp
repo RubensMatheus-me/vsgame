@@ -1,8 +1,6 @@
 #include "BrassKnuckles.h"
 #include "TimedLifeTime.h"
-#include "WaveMotion.h"
 #include "Attack.h"
-#include "OrbitMotion.h"
 #include "StraightLineMotion.h"
 #include "Player.h"
 #include "Weapon.h"
@@ -36,7 +34,7 @@ void BrassKnuckles::attack(const Vector& position, const Vector& direction, Play
     auto p = std::make_unique<Attack>(
         Vector(144.0f, 32.0f),
         newPosition,
-        50.0f,
+        5.0f,
         std::move(animation),
         std::make_unique<StraightLineMotion>(direction, 0.0f),
         std::make_unique<TimedLifetime>(1.0f),
