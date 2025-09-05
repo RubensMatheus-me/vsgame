@@ -48,8 +48,9 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
                 Rect enemyRect = enemy->getCollider();
                 if (attackRect.intersects(enemyRect)) {
                     Vector direction = enemy->getPosition() - attack->getPosition();
-                    float forceKnockback = 10.0f;
+                    float forceKnockback = 600.0f;
                     enemy->applyKnockback(direction, forceKnockback);
+                    //std::cout << "enemy hp: " << enemy->getCurrentHp() << "   atk dmg: " << attack->getDamage() << std::endl;
                     enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());
                     if (enemy->getCurrentHp() <= 0.0f) {
                         enemy->setAlive(false);

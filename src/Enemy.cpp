@@ -19,23 +19,22 @@ Rect Enemy::getCollider() const
 
 void Enemy::update(float deltaTime)
 {
-     if (target)
-     {
-          Vector direction = target->getPosition() - getPosition();
-          direction.normalize();
-
-          Vector velocity = direction * getMovSpeed() * deltaTime;
-          setPosition(getPosition() + velocity);
-     }
-     if (animation)
-     {
-          animation->update(deltaTime);
-     }
+    Vector moveVelocity(0, 0);
+    if (target) {
+        Vector direction = target->getPosition() - getPosition();
+        direction.normalize();
+        moveVelocity = direction * getMovSpeed();
+    }
+    Vector totalVelocity = moveVelocity + knockbackVelocity;
+    setPosition(getPosition() + totalVelocity * deltaTime);
+    float friction = 5.0f;
+    knockbackVelocity = knockbackVelocity * (1.0f - friction * deltaTime);
+    if (animation)
+        animation->update(deltaTime);
 }
 
 void Enemy::applyKnockback(const Vector& direction, float force) {
-	Vector dir = direction;
-	dir.normalize();
-	Vector knockback = dir * force;
-	setPosition(getPosition() + knockback);
+    Vector dir = direction;
+    dir.normalize();
+    knockbackVelocity = dir * force;  
 }

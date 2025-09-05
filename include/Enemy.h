@@ -20,7 +20,6 @@ class Enemy : public Character {
 
         float getBaseAtk() { return this->baseAtk;}
         float getExpectedHp() const { return this->expectedHp; }
-
 		void render(SDL_Renderer* renderer) override;
         void update(float deltaTime) override;
 
@@ -39,4 +38,5 @@ class Enemy : public Character {
         int spawnWeight;
         float baseAtk;
 		float expectedHp;
+        Vector knockbackVelocity = {0.0f, 0.0f};
 };
