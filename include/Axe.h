@@ -20,9 +20,11 @@ public:
         int level,
         float projectileSpeed,
         float projectileLifetime,
-        float cooldown);
+        float cooldown,
+		int id);
 
     void attack(const Vector& position, const Vector& direction, Player* owner) override;
+	void levelUp(int levelUp) override;
     void render(SDL_Renderer* renderer) override;
 
 private:

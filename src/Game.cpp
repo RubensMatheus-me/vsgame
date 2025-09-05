@@ -102,7 +102,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		loadResources();
 		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, windowWidth, windowHeight);
 		enemySpawner->loadAllEnemiesFromFolder("assets/data/enemies");
-		levelUpMenu->init("assets/data/upgrades.json");
+		levelUpMenu->init("assets/data/upgrades.json", "assets/data/weapons.json");
 
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
 
@@ -416,9 +416,11 @@ void Game::initializeEntities()
 		1.0f,
 		1.0f,
 		1,
-		3.0f);
+		3.0f,
+		2
+	);
 
-	player->getWeapons().push_back(std::move(weapon));
+	//player->getWeapons().push_back(std::move(weapon));
 	player->getWeapons().push_back(std::move(weapon2));
 
 	player->setAnimations(playerAnimation.get());
@@ -568,11 +570,12 @@ void Game::shootProjectile()
 			AudioManager &audio = AudioManager::getInstance();
 			audio.setEffectsVolume(1.0f);
 			audio.playSound("AxeThrow");
-			float dmg = weapon->getFlatDamage();
-			target->setExpectedHp(target->getExpectedHp() - dmg);
-			weapon->attack(playerPos, direction, player.get());
-		}
-	}
+            float dmg = weapon->getFlatDamage();
+            target->setExpectedHp(target->getExpectedHp() - dmg);
+        	weapon->attack(playerPos, direction, player.get());
+
+        }
+    }
 }
 
 void Game::removeDeadEntities()
