@@ -342,6 +342,7 @@ void Game::loadResources()
 
 	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "Chakram-spin");
 	TextureManager::loadTexture("assets/sprites/effects/brassknuckles-spritesheet-teste.png", "brassKnuckles");
 }
 
@@ -418,16 +419,15 @@ void Game::initializeEntities()
 		1.0f,
 		1,
 		3.0f,
-		2
-	);
+		2);
 
 	std::unique_ptr<Weapon> weapon3 = std::make_unique<Chakram>(
 		Config::PLAYER_SIZE,
 		anim.get(),
 		desc);
 
-	//player->getWeapons().push_back(std::move(weapon));
-	//player->getWeapons().push_back(std::move(weapon2));
+	// player->getWeapons().push_back(std::move(weapon));
+	// player->getWeapons().push_back(std::move(weapon2));
 	player->getWeapons().push_back(std::move(weapon3));
 	player->setAnimations(playerAnimation.get());
 }
@@ -576,12 +576,11 @@ void Game::shootProjectile()
 			AudioManager &audio = AudioManager::getInstance();
 			audio.setEffectsVolume(1.0f);
 			audio.playSound("AxeThrow");
-            float dmg = weapon->getFlatDamage();
-            target->setExpectedHp(target->getExpectedHp() - dmg);
-        	weapon->attack(playerPos, direction, player.get());
-
-        }
-    }
+			float dmg = weapon->getFlatDamage();
+			target->setExpectedHp(target->getExpectedHp() - dmg);
+			weapon->attack(playerPos, direction, player.get());
+		}
+	}
 }
 
 void Game::removeDeadEntities()
