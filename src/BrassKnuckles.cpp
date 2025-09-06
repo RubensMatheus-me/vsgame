@@ -6,28 +6,31 @@
 #include "Weapon.h"
 
 BrassKnuckles::BrassKnuckles(
-    const Vector& size,
-    SpriteAnimation* spriteAnimation,
-    const std::string& description,
+    const Vector &size,
+    SpriteAnimation *spriteAnimation,
+    const std::string &description,
     float flatDamage,
     float flatAtkSpeed,
     float damageMultiplier,
     float atkSpeedMultiplier,
     int level,
     float cooldown,
-	int id
-)
-    : Weapon(size, spriteAnimation, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id){}
+    int id)
+    : Weapon(size, spriteAnimation, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id) {}
 
-void BrassKnuckles::attack(const Vector& position, const Vector& direction, Player* owner) {
-    auto animation = std::make_unique<SpriteAnimation>(); 
-	animation->addAnimation("attack", "brassKnuckles", 0, 0, 64, 32, 4, false);
+void BrassKnuckles::attack(const Vector &position, const Vector &direction, Player *owner)
+{
+    auto animation = std::make_unique<SpriteAnimation>();
+    animation->addAnimation("attack", "brassKnuckles-attack", 0, 0, 64, 64, 4, false);
     animation->play("attack");
     Vector newPosition;
 
-    if(owner->getPlayerFacingDirection()[0] == 1) {   
+    if (owner->getPlayerFacingDirection()[0] == 1)
+    {
         newPosition = position + Vector(30.0f, 0.0f);
-    } else {
+    }
+    else
+    {
         newPosition = position - Vector(64.0f, 0.0f);
     }
 
@@ -38,19 +41,21 @@ void BrassKnuckles::attack(const Vector& position, const Vector& direction, Play
         std::move(animation),
         std::make_unique<StraightLineMotion>(direction, 0.0f),
         std::make_unique<TimedLifetime>(1.0f),
-        false
-    );
+        false);
 
     getAttacks().push_back(std::move(p));
     currentCooldown = cooldown / owner->getAtkRate();
 }
 
-void BrassKnuckles::render(SDL_Renderer* renderer) {
-    if (getSprite()) {
+void BrassKnuckles::render(SDL_Renderer *renderer)
+{
+    if (getSprite())
+    {
         getSprite()->render(renderer, 1, 1);
     }
 }
 
-void BrassKnuckles::levelUp(int levelUp) {
-	level++;
+void BrassKnuckles::levelUp(int levelUp)
+{
+    level++;
 }

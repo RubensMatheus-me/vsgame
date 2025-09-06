@@ -3,12 +3,12 @@
 		"id": 1,
 		"name": "Machado",
 		"description": "Arremessa um machado na direção do inimigo mais próximo",
-		"spriteName": "axe"
+		"spriteName": "Axe"
 	},
 	{
 		"id": 2,
 		"name": "Soco-inglês",
-		"description": "Desfere um soco na direção que o personagem esta virado",
+		"description": "Desfere um soco-ingles magico gigante na direção que o personagem esta virado",
 		"spriteName": "brassKnuckles"
 	},
 	{
@@ -39,6 +39,6 @@
 		"id": 7,
 		"name": "Boomerang",
 		"description": "Lança um bumerangue que volta para o jogador, causando dano aos inimigos no caminho",
-		"spriteName": "boomerang"
+		"spriteName": "Boomerang"
 	}
 ]

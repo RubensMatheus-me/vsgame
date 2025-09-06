@@ -335,15 +335,17 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
 	TextureManager::loadTexture("assets/sprites/upgrades/SpeedAttack.png", "Impulso de Ataque");
 	// Weapons Icons
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/axe.png", "Axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/chakram.png", "Chakram");
-	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "Chamas de Ifrit");
-	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "Raio do Julgamento");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/brassKnuckles.png", "brassKnuckles");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "ifritFlames");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "judgmentRay");
 
 	// Weapons Effects
-	TextureManager::loadTexture("assets/sprites/effects/axe-spritesheet.png", "axe");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/axe-spritesheet.png", "axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "Chakram-spin");
-	TextureManager::loadTexture("assets/sprites/effects/brassknuckles-spritesheet-teste.png", "brassKnuckles");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/brassKnuckles.png", "brassKnuckles-attack");
 }
 
 void Game::limitFPS(float targetFPS)
