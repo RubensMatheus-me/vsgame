@@ -11,14 +11,17 @@ public:
     SpriteAnimation();
     SpriteAnimation(const SpriteAnimation &other);
 
-    void addAnimation(const std::string& name, const std::string& texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop);
-    void play(const std::string& animationName);
+    void addAnimation(const std::string &name, const std::string &texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop);
+    void play(const std::string &animationName);
     void update(float deltaTime);
-    void render(SDL_Renderer* renderer, int x, int y, bool flip = false);
-    
-    void setFrameTime(float newFrameTime) {this->frameTime = newFrameTime;}
-    void setTextureName(std::string& newTextureName) {this->textureName = newTextureName;}
-    int getCurrentFrame() { return this->currentFrame;}
+    void render(SDL_Renderer *renderer, int x, int y, bool flip = false);
+
+    void setFrameTime(float newFrameTime) { this->frameTime = newFrameTime; }
+    void setTextureName(std::string &newTextureName) { this->textureName = newTextureName; }
+    int getCurrentFrame() { return this->currentFrame; }
+
+    void setFlipX(bool flip);
+    bool getFlipX() const;
 
     bool animationEnded();
 
@@ -54,4 +57,5 @@ private:
     int currentFrame;
     float frameTime;
     float elapsedTime;
+    bool flipX = false;
 };

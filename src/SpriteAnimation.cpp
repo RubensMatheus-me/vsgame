@@ -26,8 +26,9 @@ void SpriteAnimation::addAnimation(const std::string &name, const std::string &t
     animations[name] = {texture, frames, loop};
 }
 
-bool SpriteAnimation::animationEnded() {
-    return currentFrame == animations.size()+1;
+bool SpriteAnimation::animationEnded()
+{
+    return currentFrame == animations.size() + 1;
 }
 
 void SpriteAnimation::play(const std::string &animationName)
@@ -65,6 +66,16 @@ void SpriteAnimation::update(float deltaTime)
     }
 }
 
+void SpriteAnimation::setFlipX(bool flip)
+{
+    flipX = flip;
+}
+
+bool SpriteAnimation::getFlipX() const
+{
+    return flipX;
+}
+
 void SpriteAnimation::render(SDL_Renderer *renderer, int x, int y, bool flip)
 {
     Vector cameraOffSet = CameraManager::getCameraManager()->getOffSet();
@@ -91,6 +102,6 @@ void SpriteAnimation::render(SDL_Renderer *renderer, int x, int y, bool flip)
         srcRect.w,
         srcRect.h};
 
-    SDL_RendererFlip flipFlag = flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    SDL_RendererFlip flipFlag = flipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, 0.0, nullptr, flipFlag);
 }
