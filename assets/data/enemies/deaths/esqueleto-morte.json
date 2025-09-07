@@ -1,0 +1,65 @@
+{ "frames": [
+   {
+    "filename": "esqueleto #morte 0.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 1.aseprite",
+    "frame": { "x": 64, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 2.aseprite",
+    "frame": { "x": 128, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 3.aseprite",
+    "frame": { "x": 192, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 4.aseprite",
+    "frame": { "x": 256, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 5.aseprite",
+    "frame": { "x": 320, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.15.2-x64",
+  "image": "esqueleto-morte.png",
+  "format": "RGBA8888",
+  "size": { "w": 384, "h": 66 },
+  "scale": "1"
+ }
+}
