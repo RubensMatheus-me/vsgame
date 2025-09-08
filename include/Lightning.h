@@ -4,13 +4,13 @@
 #include "Weapon.h"
 #include <vector>
 
-class Chakram : public Weapon {
+class Lightning : public Weapon {
 public:
-    Chakram(const Vector& size,
+    Lightning(const Vector& size,
         SpriteAnimation* spriteAnimation,
         const std::string& description);
 
-    Chakram(
+    Lightning(
         const Vector& size,
         SpriteAnimation* spriteAnimation,
         const std::string& description,

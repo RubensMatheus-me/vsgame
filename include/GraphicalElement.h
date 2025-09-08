@@ -9,6 +9,7 @@ class GraphicalElement {
 		virtual ~GraphicalElement() = default;
 
 		Vector getSize() const { return this->size; }
+		void setSize(Vector size) { this->size = size; }
 
 		SpriteAnimation* getSprite() { return this->spriteAnimation; }
 

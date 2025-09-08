@@ -7,19 +7,20 @@
 
 Chakram::Chakram(const Vector &size, SpriteAnimation *spriteAnim, const std::string &description,
                  float flatDamage, float flatAtkSpeed, float damageMultiplier,
-                 float atkSpeedMultiplier, int level, float cooldown, int id)
-    : Weapon(size, spriteAnim, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id)
+                 float atkSpeedMultiplier, int level, float cooldown, int id, float knockback)
+    : Weapon(size, spriteAnim, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id, knockback)
 {
 }
 Chakram::Chakram(const Vector &size,
                  SpriteAnimation *spriteAnimation,
                  const std::string &description)
-    : Chakram(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 10.0f, 3)
+    : Chakram(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 10.0f, 3, 400.0f)
 {
 }
 
-void Chakram::attack(const Vector &position, const Vector &direction, Player *owner)
+void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player)
 {
+
     int lifeTime = 6.0f + level;
     float angle = 360.0f / (level + 1);
 
@@ -36,16 +37,17 @@ void Chakram::attack(const Vector &position, const Vector &direction, Player *ow
             10.0f,
             std::move(anim),
             std::make_unique<OrbitMotion>(
-                owner,
+                player,
                 100.0f,
                 60.0f + (10.0f + level),
                 angle * i),
             std::make_unique<TimedLifetime>(lifeTime),
+            false,
             false);
 
         getAttacks().push_back(std::move(attack));
     }
-    currentCooldown = cooldown / owner->getAtkRate();
+    currentCooldown = cooldown / player->getAtkRate();
 }
 
 void Chakram::render(SDL_Renderer *renderer)

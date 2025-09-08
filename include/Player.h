@@ -3,13 +3,15 @@
 #include "SpriteAnimation.h"
 #include "enums/PlayerAnimationState.h"
 #include "Upgrade.h"
-#include "Weapon.h"
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
+#include "Weapon.h"
 
 class Player : public Character {
     public:
+    ~Player();
     Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
         float hp, float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
         bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime);

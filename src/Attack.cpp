@@ -9,13 +9,15 @@ Attack::Attack(const Vector& size,
                std::unique_ptr<SpriteAnimation> animation,
                std::unique_ptr<IMotion> motion,
                std::unique_ptr<ILifetime> lifetime,
-               bool destroyOnHit)
+               bool stopHitboxOnHit,
+               bool stopAnimationOnHit)
     : Entity(size, position, {}, animation.get()), 
       damage(damage),
       animation(std::move(animation)),
       motion(std::move(motion)),
       lifetime(std::move(lifetime)),
-      destroyOnHit(destroyOnHit)
+      stopHitboxOnHit(stopHitboxOnHit),
+      stopAnimationOnHit(stopAnimationOnHit)
 {
 }
 
@@ -49,4 +51,13 @@ Rect Attack::getCollider() const {
 
 void Attack::resetLifetime() {
     lifetime->reset();
+}
+
+void Attack::onHit() {
+    if(stopAnimationOnHit) {
+        setAlive(false);
+    }
+    if(stopHitboxOnHit) {
+        isHitboxActive = false;
+    }
 }

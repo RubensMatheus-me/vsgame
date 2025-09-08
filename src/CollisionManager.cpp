@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "GraphicalElement.h"
 #include "AudioManager.h"
+#include "Weapon.h"
+#include "Attack.h"
 
 bool CollisionManager::checkCollision(const Rect &a, const Rect &b)
 {
@@ -42,23 +44,22 @@ void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::u
 void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
     for (auto& weapon : player->getWeapons()) {
         for(auto& attack : weapon->getAttacks()) {
+            if(!attack->getIsHitboxActive()) {
+                continue;
+            }
             Rect attackRect = attack->getCollider();
             for (size_t j = 0; j < enemies.size(); ++j) {
                 Enemy* enemy = enemies[j].get();
                 Rect enemyRect = enemy->getCollider();
                 if (attackRect.intersects(enemyRect)) {
                     Vector direction = enemy->getPosition() - attack->getPosition();
-                    float forceKnockback = 600.0f;
-                    enemy->applyKnockback(direction, forceKnockback);
-                    //std::cout << "enemy hp: " << enemy->getCurrentHp() << "   atk dmg: " << attack->getDamage() << std::endl;
+                    enemy->applyKnockback(direction, weapon->getknockback());
                     enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());
                     if (enemy->getCurrentHp() <= 0.0f) {
                         enemy->setAlive(false);
                         player->setXp(player->getXp() + enemy->getXpDrop());
                     }
-                    if (attack->getDestroyOnHit()) {
-                        attack->setAlive(false);
-                    }
+                    attack->onHit();
                 }
             }
         }

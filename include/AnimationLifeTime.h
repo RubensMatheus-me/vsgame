@@ -1,15 +1,11 @@
 #pragma once
 #include "ILifeTime.h"
 
-class TimedLifetime : public ILifetime {
+class AnimationLifeTime : public ILifetime {
 public:
-    TimedLifetime(float duration);
+    AnimationLifeTime();
 
     void advance(float dt) override;
     bool alive(Attack& hb) override;
     void reset() override;
-    
-private:
-    float elapsed;
-    float duration;
 };
