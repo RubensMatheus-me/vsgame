@@ -23,6 +23,8 @@ Player::Player(const Vector &size, SpriteAnimation *spriteAnimation, const Vecto
       invulnerabilityTime(invulnerabilityTime),
       lastHp(hp) {}
 
+Player::~Player() = default;
+
 void Player::render(SDL_Renderer *renderer)
 {
     spriteAnimation->render(renderer, getPosition().x, getPosition().y);

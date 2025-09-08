@@ -21,11 +21,13 @@ public:
         float projectileSpeed,
         float projectileLifetime,
         float cooldown,
-		int id);
+		int id,
+        float knockback);
 
-    void attack(const Vector& position, const Vector& direction, Player* owner) override;
+    void attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player) override;
 	void levelUp(int levelUp) override;
     void render(SDL_Renderer* renderer) override;
+    Vector resolveClosestTarget(const std::vector<std::unique_ptr<Enemy>> &enemies, Vector playerPosition);
 
 private:
     float projectileSpeed;

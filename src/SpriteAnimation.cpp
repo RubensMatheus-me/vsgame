@@ -28,7 +28,8 @@ void SpriteAnimation::addAnimation(const std::string &name, const std::string &t
 
 bool SpriteAnimation::animationEnded()
 {
-    return currentFrame == animations.size() + 1;
+    AnimationData &anim = animations[currentAnimation];
+    return currentFrame >= anim.frames.size()-1;
 }
 
 void SpriteAnimation::play(const std::string &animationName)

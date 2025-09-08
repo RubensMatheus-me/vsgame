@@ -19,9 +19,11 @@
 #include <SDL2/SDL.h>
 #include "GameStateManager.h"
 #include "Weapon.h"
+#include "Attack.h"
 #include "Axe.h"
 #include "BrassKnuckles.h"
 #include "Chakram.h"
+#include "Lightning.h"
 
 using namespace Config;
 
@@ -345,7 +347,8 @@ void Game::loadResources()
 	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/axe-spritesheet.png", "axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "Chakram-spin");
-	TextureManager::loadTexture("assets/sprites/Weapons/Animations/brassKnuckles.png", "brassKnuckles-attack");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/brassKnuckles-2.png", "brassKnuckles-attack");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/lightning.png", "lightning");
 }
 
 void Game::limitFPS(float targetFPS)
@@ -421,16 +424,23 @@ void Game::initializeEntities()
 		1.0f,
 		1,
 		3.0f,
-		2);
+		2,
+		600.0f);
 
 	std::unique_ptr<Weapon> weapon3 = std::make_unique<Chakram>(
 		Config::PLAYER_SIZE,
 		anim.get(),
 		desc);
 
-	// player->getWeapons().push_back(std::move(weapon));
-	// player->getWeapons().push_back(std::move(weapon2));
-	player->getWeapons().push_back(std::move(weapon3));
+	std::unique_ptr<Weapon> weapon4 = std::make_unique<Lightning>(
+		Config::PLAYER_SIZE,
+		anim.get(),
+		desc);
+
+	//player->getWeapons().push_back(std::move(weapon));
+	player->getWeapons().push_back(std::move(weapon2));
+	//player->getWeapons().push_back(std::move(weapon3));
+	player->getWeapons().push_back(std::move(weapon4));
 	player->setAnimations(playerAnimation.get());
 }
 
@@ -550,39 +560,22 @@ void Game::updateXp()
 
 void Game::shootProjectile()
 {
-	if (enemies.empty())
-		return;
+    if (enemies.empty())
+        return;
 
-	Vector playerPos = player->getPosition();
+    Vector playerPos = player->getPosition();
 
-	for (const auto &weapon : player->getWeapons())
-	{
-		Enemy *target = nullptr;
-		float closestDistanceSq = std::numeric_limits<float>::max();
+    for (const auto &weapon : player->getWeapons())
+    {
+        if (weapon->getCurrentCooldown() < 0.0f)
+        {
+            AudioManager &audio = AudioManager::getInstance();
+            audio.setEffectsVolume(1.0f);
+            audio.playSound("AxeThrow");
 
-		for (const auto &e : enemies)
-		{
-			float distSq = (e->getPosition() - playerPos).length_squared();
-			if (distSq < closestDistanceSq && e->getExpectedHp() > 0)
-			{
-				closestDistanceSq = distSq;
-				target = e.get();
-			}
-		}
-
-		if (target && weapon->getCurrentCooldown() < 0.0f)
-		{
-			Vector direction = target->getPosition() - playerPos;
-			direction.normalize();
-
-			AudioManager &audio = AudioManager::getInstance();
-			audio.setEffectsVolume(1.0f);
-			audio.playSound("AxeThrow");
-			float dmg = weapon->getFlatDamage();
-			target->setExpectedHp(target->getExpectedHp() - dmg);
-			weapon->attack(playerPos, direction, player.get());
-		}
-	}
+            weapon->attack(playerPos, enemies, player.get());
+        }
+    }
 }
 
 void Game::removeDeadEntities()

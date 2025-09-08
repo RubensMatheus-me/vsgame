@@ -20,8 +20,8 @@ public:
     bool getDestroyOnHit() const { return destroyOnHit; }
     float getDamage() const { return damage; }
     void resetLifetime();
-
     
+ 
 private:
     float damage;
     std::unique_ptr<SpriteAnimation> animation;

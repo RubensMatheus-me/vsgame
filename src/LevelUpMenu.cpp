@@ -158,7 +158,8 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice* weaponChoice) {
                 1.0f,
                 1,
                 3.0f,
-                2
+                2,
+                600.0f
             );
             player.getWeapons().push_back(std::move(weapon));
             break;
