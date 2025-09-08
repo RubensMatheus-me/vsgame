@@ -10,21 +10,21 @@
 #include "AnimationLifeTime.h"
 
 Lightning::Lightning(const Vector &size, SpriteAnimation *spriteAnim, const std::string &description,
-                 float flatDamage, float flatAtkSpeed, float damageMultiplier,
-                 float atkSpeedMultiplier, int level, float cooldown, int id, float knockback)
+                     float flatDamage, float flatAtkSpeed, float damageMultiplier,
+                     float atkSpeedMultiplier, int level, float cooldown, int id, float knockback)
     : Weapon(size, spriteAnim, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id, knockback)
 {
 }
 Lightning::Lightning(const Vector &size,
-                 SpriteAnimation *spriteAnimation,
-                 const std::string &description)
+                     SpriteAnimation *spriteAnimation,
+                     const std::string &description)
     : Lightning(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 2.0f, 3, 100.0f)
 {
 }
 
 void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player)
 {
-    std::vector<Enemy*> candidates;
+    std::vector<Enemy *> candidates;
 
     float maxRange = 200.0f;
     float maxRangeSq = maxRange * maxRange;
@@ -38,7 +38,8 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
         }
     }
 
-    if (candidates.empty()) return;
+    if (candidates.empty())
+        return;
 
     static std::random_device rd;
     static std::mt19937 rng(rd());
@@ -46,12 +47,12 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
 
     Enemy *target = candidates[dist(rng)];
     Vector direction = {1.0f, 1.0f};
-    //Vector direction = target->getPosition() - player->getPosition();
+    // Vector direction = target->getPosition() - player->getPosition();
     direction.normalize();
     auto anim = std::make_unique<SpriteAnimation>();
-    anim->addAnimation("lightning", "lightning", 0, 0, 32, 64, 6, false);
+    anim->addAnimation("lightning", "lightning", 0, 0, 64, 64, 6, false);
     anim->play("lightning");
-    anim->setFrameTime(25.0f);
+    // anim->setFrameTime(25.0f);
 
     auto p = std::make_unique<Attack>(
         Vector(32.0f, 64.0f),
@@ -64,7 +65,6 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
         std::make_unique<TimedLifetime>(0.5f),
         true,
         false);
-
 
     // auto anim = std::make_unique<SpriteAnimation>();
     // anim->addAnimation("lightning", "lightning", 0, 0, 32, 64, 6, false);
