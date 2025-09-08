@@ -299,12 +299,12 @@ void Game::loadResources()
 {
 
 	// player
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-left.png", "warrior-idle-left");
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "warrior-idle-right");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-left.png", "dwarven-idle-left");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "dwarven-idle-right");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "warrior-walk-right");
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/guerreiro-death.png", "death-player");
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/guerreiro-hurt.png", "player-taken-damage");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/dwarven-death.png", "death-player");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/dwarven-hurt.png", "dwarven-hit");
 
 	// enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
@@ -367,16 +367,17 @@ void Game::limitFPS(float targetFPS)
 
 void Game::initializeEntities()
 {
-
+	//
 	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4, true);
 	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4, true);
-	playerAnimation->addAnimation("idle-right", "warrior-idle-right", 0, 0, 34, 32, 6, true);
-	playerAnimation->addAnimation("idle-left", "warrior-idle-left", 0, 0, 34, 32, 6, true);
-
-	playerAnimation->addAnimation("death-player", "death-player", 0, 0, 32, 32, 6, false);
-	playerAnimation->addAnimation("player-taken-damage", "player-taken-damage", 0, 0, 32, 32, 3, false);
-
-	playerAnimation->play("idle-right");
+	//
+	playerAnimation->addAnimation("idle-right", "dwarven-idle-right", 0, 0, 32, 32, 5, true);
+	playerAnimation->addAnimation("idle-left", "dwarven-idle-left", 0, 0, 32, 32, 5, true);
+	//
+	playerAnimation->addAnimation("death-player", "death-player", 0, 0, 32, 32, 5, false);
+	playerAnimation->addAnimation("dwarven-hit", "dwarven-hit", 0, 0, 32, 32, 3, false);
+	//
+	playerAnimation->play("idle-left");
 
 	int mapCenterX = tileManager->getMapWidthInPixels() / 2;
 	int mapCenterY = tileManager->getMapHeightInPixels() / 2;

@@ -50,11 +50,11 @@ void Player::setAnimationState(PlayerAnimationState newState)
         break;
     case PlayerAnimationState::TakenDamage:
         AudioManager::getInstance().playSound("playerHit");
-        spriteAnimation->play("player-taken-damage");
+        spriteAnimation->play("dwarven-hit");
         break;
     case PlayerAnimationState::Death:
-	AudioManager::getInstance().stopMusic();
-		AudioManager::getInstance().stopAllSounds();
+        AudioManager::getInstance().stopMusic();
+        AudioManager::getInstance().stopAllSounds();
         AudioManager::getInstance().setEffectsVolume(1.0f);
         AudioManager::getInstance().playSound("gameOver");
         spriteAnimation->play("death-player");
@@ -119,7 +119,8 @@ void Player::update(float deltaTime)
         }
     }
 
-    if (damageCooldown > 0.0f) {
+    if (damageCooldown > 0.0f)
+    {
         damageCooldown -= deltaTime;
         if (damageCooldown < 0.0f)
             damageCooldown = 0.0f;
@@ -136,7 +137,7 @@ void Player::update(float deltaTime)
     spriteAnimation->update(deltaTime);
 }
 
-Vector Player::getPlayerFacingDirection() {
-	return {this->getAnimationState() == PlayerAnimationState::IdleRight || this->getAnimationState() == PlayerAnimationState::WalkRight, 0};
+Vector Player::getPlayerFacingDirection()
+{
+    return {this->getAnimationState() == PlayerAnimationState::IdleRight || this->getAnimationState() == PlayerAnimationState::WalkRight, 0};
 }
-
