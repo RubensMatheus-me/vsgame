@@ -303,8 +303,8 @@ void Game::loadResources()
 	// player
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-left.png", "dwarven-idle-left");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/idle/idle-right.png", "dwarven-idle-right");
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "warrior-walk-left");
-	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "warrior-walk-right");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-left.png", "dwarven-walk-left");
+	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/walk/walk-right.png", "dwarven-walk-right");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/dwarven-death.png", "death-player");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/dwarven-hurt.png", "dwarven-hit");
 
@@ -371,8 +371,8 @@ void Game::limitFPS(float targetFPS)
 void Game::initializeEntities()
 {
 	//
-	playerAnimation->addAnimation("walk-right", "warrior-walk-right", 0, 0, 32, 32, 4, true);
-	playerAnimation->addAnimation("walk-left", "warrior-walk-left", 0, 0, 32, 32, 4, true);
+	playerAnimation->addAnimation("walk-right", "dwarven-walk-right", 0, 0, 32, 32, 5, true);
+	playerAnimation->addAnimation("walk-left", "dwarven-walk-left", 0, 0, 32, 32, 5, true);
 	//
 	playerAnimation->addAnimation("idle-right", "dwarven-idle-right", 0, 0, 32, 32, 5, true);
 	playerAnimation->addAnimation("idle-left", "dwarven-idle-left", 0, 0, 32, 32, 5, true);
@@ -438,9 +438,9 @@ void Game::initializeEntities()
 		anim.get(),
 		desc);
 
-	//player->getWeapons().push_back(std::move(weapon));
+	// player->getWeapons().push_back(std::move(weapon));
 	player->getWeapons().push_back(std::move(weapon2));
-	//player->getWeapons().push_back(std::move(weapon3));
+	// player->getWeapons().push_back(std::move(weapon3));
 	player->getWeapons().push_back(std::move(weapon4));
 	player->setAnimations(playerAnimation.get());
 }
@@ -561,22 +561,22 @@ void Game::updateXp()
 
 void Game::shootProjectile()
 {
-    if (enemies.empty())
-        return;
+	if (enemies.empty())
+		return;
 
-    Vector playerPos = player->getPosition();
+	Vector playerPos = player->getPosition();
 
-    for (const auto &weapon : player->getWeapons())
-    {
-        if (weapon->getCurrentCooldown() < 0.0f)
-        {
-            AudioManager &audio = AudioManager::getInstance();
-            audio.setEffectsVolume(1.0f);
-            audio.playSound("AxeThrow");
+	for (const auto &weapon : player->getWeapons())
+	{
+		if (weapon->getCurrentCooldown() < 0.0f)
+		{
+			AudioManager &audio = AudioManager::getInstance();
+			audio.setEffectsVolume(1.0f);
+			audio.playSound("AxeThrow");
 
-            weapon->attack(playerPos, enemies, player.get());
-        }
-    }
+			weapon->attack(playerPos, enemies, player.get());
+		}
+	}
 }
 
 void Game::removeDeadEntities()
