@@ -12,20 +12,27 @@ public:
            std::unique_ptr<SpriteAnimation> animation,
            std::unique_ptr<IMotion> motion,
            std::unique_ptr<ILifetime> lifetime,
-           bool destroyOnHit);
+           bool stopHitboxOnHit,
+           bool stopAnimationOnHit);
 
     void update(float dt) override;
     void render(SDL_Renderer* renderer) override;
     Rect getCollider() const override;
-    bool getDestroyOnHit() const { return destroyOnHit; }
+    bool getStopHitboxOnHit() const { return stopHitboxOnHit; }
+    bool getStopAnimationOnHit() const { return stopAnimationOnHit; }
+    bool getIsHitboxActive() const { return isHitboxActive; }
+    
+
     float getDamage() const { return damage; }
     void resetLifetime();
-    
+    void onHit();
  
 private:
     float damage;
     std::unique_ptr<SpriteAnimation> animation;
     std::unique_ptr<IMotion> motion;
     std::unique_ptr<ILifetime> lifetime;
-    bool destroyOnHit;
+    bool isHitboxActive = true;
+    bool stopHitboxOnHit;
+    bool stopAnimationOnHit;
 };

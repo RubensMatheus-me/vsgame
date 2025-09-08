@@ -44,6 +44,9 @@ void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::u
 void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
     for (auto& weapon : player->getWeapons()) {
         for(auto& attack : weapon->getAttacks()) {
+            if(!attack->getIsHitboxActive()) {
+                continue;
+            }
             Rect attackRect = attack->getCollider();
             for (size_t j = 0; j < enemies.size(); ++j) {
                 Enemy* enemy = enemies[j].get();
@@ -56,9 +59,7 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
                         enemy->setAlive(false);
                         player->setXp(player->getXp() + enemy->getXpDrop());
                     }
-                    if (attack->getDestroyOnHit()) {
-                        attack->setAlive(false);
-                    }
+                    attack->onHit();
                 }
             }
         }

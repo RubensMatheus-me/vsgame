@@ -18,7 +18,10 @@ BrassKnuckles::BrassKnuckles(
     int id,
     float knockback)
     : Weapon(size, spriteAnimation, description, flatDamage, flatAtkSpeed, damageMultiplier, atkSpeedMultiplier, level, cooldown, id, knockback) {}
-
+BrassKnuckles::BrassKnuckles(const Vector &size,
+                 SpriteAnimation *spriteAnimation,
+                 const std::string &description)
+    : BrassKnuckles(size, spriteAnimation, description, 15.0f, 10.0f, 10.0f, 10.0f, 5, 8.0f, 3, 600.0f){}
 void BrassKnuckles::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player)
 {
     auto animation = std::make_unique<SpriteAnimation>();
@@ -51,6 +54,7 @@ void BrassKnuckles::attack(const Vector &position, const std::vector<std::unique
         std::move(animation),
         std::make_unique<StraightLineMotion>(direction, 300.0f),
         std::make_unique<AnimationLifeTime>(),
+        false,
         false);
 
     getAttacks().push_back(std::move(p));
@@ -68,4 +72,7 @@ void BrassKnuckles::render(SDL_Renderer *renderer)
 void BrassKnuckles::levelUp(int levelUp)
 {
     level++;
+    if(cooldown > 1) {
+        cooldown = cooldown - level;
+    }
 }

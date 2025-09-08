@@ -6,6 +6,9 @@
 
 class BrassKnuckles : public Weapon {
 public:
+    BrassKnuckles(const Vector& size,
+        SpriteAnimation* spriteAnimation,
+        const std::string& description);
     BrassKnuckles(
         const Vector& size,
         SpriteAnimation* spriteAnimation,

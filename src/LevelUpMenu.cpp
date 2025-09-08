@@ -143,23 +143,12 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice* weaponChoice) {
 
         case 2: {
             auto anim = std::make_unique<SpriteAnimation>();
-            anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-            anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
-            anim->addAnimation("axe-left", "axe", 160, 0, 32, 32, 5, true);
-            anim->play("axe-right");
-            std::string desc = "teste";
+            anim->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
+            anim->play("idle");
             std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
                 Config::PLAYER_SIZE,
                 anim.get(),
-                desc,
-                50.0f,
-                50.0f,
-                1.0f,
-                1.0f,
-                1,
-                3.0f,
-                2,
-                600.0f
+                "soco-inglês"
             );
             player.getWeapons().push_back(std::move(weapon));
             break;

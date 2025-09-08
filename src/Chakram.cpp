@@ -42,6 +42,7 @@ void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<E
                 60.0f + (10.0f + level),
                 angle * i),
             std::make_unique<TimedLifetime>(lifeTime),
+            false,
             false);
 
         getAttacks().push_back(std::move(attack));

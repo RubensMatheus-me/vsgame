@@ -61,7 +61,8 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
         std::make_unique<StraightLineMotion>(
             direction,
             0.0f),
-        std::make_unique<AnimationLifeTime>(),
+        std::make_unique<TimedLifetime>(0.5f),
+        true,
         false);
 
 

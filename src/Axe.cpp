@@ -43,6 +43,7 @@ void Axe::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy
                 direction,
                 200.0f),
             std::make_unique<TimedLifetime>(5.0f),
+            true,
             true);
 
         getAttacks().push_back(std::move(p));
