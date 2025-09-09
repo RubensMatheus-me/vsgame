@@ -335,7 +335,7 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "Surto de Saúde");
 	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneração Vital");
 	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
-	TextureManager::loadTexture("assets/sprites/upgrades/SpeedAttack.png", "Impulso de Ataque");
+	TextureManager::loadTexture("assets/sprites/upgrades/AttackSpeed.png", "Impulso de Ataque");
 	// Weapons Icons
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/axe.png", "Axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");
@@ -343,6 +343,7 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/brassKnuckles.png", "brassKnuckles");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "ifritFlames");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "judgmentRay");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/Atoleiro.png", "mudPool");
 
 	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/axe-spritesheet.png", "axe");
