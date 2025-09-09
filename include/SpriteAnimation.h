@@ -11,7 +11,7 @@ public:
     SpriteAnimation();
     SpriteAnimation(const SpriteAnimation &other);
 
-    void addAnimation(const std::string &name, const std::string &texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop);
+    void addAnimation(const std::string &name, const std::string &texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop, float frametime = 100.0f);
     void play(const std::string &animationName);
     void update(float deltaTime);
     void render(SDL_Renderer *renderer, int x, int y, bool flip = false);
@@ -48,6 +48,7 @@ public:
         std::string textureName;
         std::vector<SDL_Rect> frames;
         bool loop;
+        float frameTime;
     };
 
 private:

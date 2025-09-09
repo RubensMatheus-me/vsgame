@@ -310,10 +310,24 @@ void Game::loadResources()
 
 	// enemies
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/slime-hit.png", "slime-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/slime-morte.png", "slime-death");
+
 	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/zombie-hit.png", "skeleton-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/esqueleto-morte.png", "skeleton-death");
+
 	TextureManager::loadTexture("assets/sprites/enemies/morcego.png", "morcego");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/morcego-hit.png", "morcego-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/morcego-morte.png", "morcego-death");
+
 	TextureManager::loadTexture("assets/sprites/enemies/olho.png", "olho");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/olho-hit.png", "olho-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/olho-morte.png", "olho-death");
+
 	TextureManager::loadTexture("assets/sprites/enemies/zombie.png", "zombie");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/zombie-hit.png", "zombie-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/zombie-morte.png", "zombie-death");
 
 	// tiles
 	TextureManager::loadTexture("assets/sprites/tiles/flor.png", "flor");
@@ -599,7 +613,7 @@ void Game::removeDeadEntities()
 		std::remove_if(enemies.begin(), enemies.end(),
 					   [](const std::unique_ptr<Enemy> &e)
 					   {
-						   return !e->isAlive();
+						   return !e->isAlive() && e->getSpriteAnimation()->animationEnded();
 					   }),
 		enemies.end());
 }

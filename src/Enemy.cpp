@@ -28,6 +28,9 @@ void Enemy::update(float deltaTime)
 
         if (animation)
         {
+            if(animation->animationEnded()) {
+                animation->play("idle");
+            }
             if (direction.x > 0)
             {
                 animation->setFlipX(true);

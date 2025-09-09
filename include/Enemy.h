@@ -14,6 +14,7 @@ public:
 
     float getXpDrop() const { return this->xpDrop; }
     int getSpawnWeight() const { return this->spawnWeight; }
+    SpriteAnimation* getSpriteAnimation() { return this->animation.get(); }
 
     void setXpDrop(float xpDrop) { this->xpDrop = xpDrop; }
     void setSpawnWeight(int spawnWeight) { this->spawnWeight = spawnWeight; }

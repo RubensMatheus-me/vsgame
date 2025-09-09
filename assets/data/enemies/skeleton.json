@@ -116,6 +116,84 @@
       "duration": 200
     }
   },
+  "onHitSprite" : "skeleton-hit",
+  "hitFrames": [
+   {
+    "filename": "zombie #hit 0.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 150
+   },
+   {
+    "filename": "zombie #hit 1.aseprite",
+    "frame": { "x": 64, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 150
+   }
+ ],
+ "onDeathSprite" : "skeleton-death",
+ "deathFrames": [
+   {
+    "filename": "esqueleto #morte 0.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 1.aseprite",
+    "frame": { "x": 64, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 2.aseprite",
+    "frame": { "x": 128, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 3.aseprite",
+    "frame": { "x": 192, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 4.aseprite",
+    "frame": { "x": 256, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   },
+   {
+    "filename": "esqueleto #morte 5.aseprite",
+    "frame": { "x": 320, "y": 0, "w": 64, "h": 66 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 66 },
+    "sourceSize": { "w": 64, "h": 66 },
+    "duration": 150
+   }
+ ],
   "meta": {
     "app": "https://www.aseprite.org/",
     "version": "1.3.14.3-x64",

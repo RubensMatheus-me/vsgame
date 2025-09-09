@@ -86,15 +86,15 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
 
     auto anim = std::make_unique<SpriteAnimation>();
     int frameSize = enemyConfig["size"];
-    int numFrames = 4;
 
-    if (enemyConfig.contains("frames"))
-    {
-        numFrames = enemyConfig["frames"].size();
-    }
+    int numFrames = enemyConfig["frames"].size();
+    int numFramesHit = enemyConfig["hitFrames"].size()+1;
+    int numFramesDeath = enemyConfig["deathFrames"].size()+1;
 
-    anim->addAnimation("idle", enemyConfig["sprite"], 0, 0,
-                       frameSize, frameSize, numFrames, true);
+    anim->addAnimation("idle", enemyConfig["sprite"], 0, 0, frameSize, frameSize, numFrames, true);
+    anim->addAnimation("hit", enemyConfig["onHitSprite"], 0, 0, frameSize, frameSize, numFramesHit, false, 150.0f);
+    anim->addAnimation("death", enemyConfig["onDeathSprite"], 0, 0, frameSize, frameSize, numFramesDeath, false, 250.0f);
+
     anim->play("idle");
     auto enemy = std::make_unique<Enemy>(
         Vector(frameSize, frameSize),

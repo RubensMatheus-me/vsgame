@@ -14,7 +14,7 @@ SpriteAnimation::SpriteAnimation(const SpriteAnimation &other)
       frameTime(other.frameTime),
       elapsedTime(other.elapsedTime) {}
 
-void SpriteAnimation::addAnimation(const std::string &name, const std::string &texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop)
+void SpriteAnimation::addAnimation(const std::string &name, const std::string &texture, int startX, int startY, int frameWidth, int frameHeight, int numFrames, bool loop, float frametime)
 {
     std::vector<SDL_Rect> frames;
 
@@ -23,7 +23,7 @@ void SpriteAnimation::addAnimation(const std::string &name, const std::string &t
         SDL_Rect frame = {startX + i * frameWidth, startY, frameWidth, frameHeight};
         frames.push_back(frame);
     }
-    animations[name] = {texture, frames, loop};
+    animations[name] = {texture, frames, loop, frametime};
 }
 
 bool SpriteAnimation::animationEnded()
@@ -39,6 +39,8 @@ void SpriteAnimation::play(const std::string &animationName)
         currentAnimation = animationName;
         currentFrame = 0;
         elapsedTime = 0.0f;
+        AnimationData &anim = animations[currentAnimation];
+        frameTime = anim.frameTime;
     }
 }
 
