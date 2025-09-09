@@ -2,13 +2,15 @@
   "id": "zombie",
   "size": 64,
   "speed": 0,
-  "hp": 20,
+  "hp": 50,
   "attackRate": 1.0,
   "moveSpeed": 60.0,
   "xpDrop": 150,
   "spawnWeight": 2,
   "baseAtk": 30,
   "sprite": "zombie",
+  "deathSprite": "zombie-morte",
+  "deathFrames": 3,
   "frames": {
     "zombie 0.aseprite": {
       "frame": {

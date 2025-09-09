@@ -2,13 +2,15 @@
   "id": "slime",
   "size": 32,
   "speed": 0,
-  "hp": 20,
+  "hp": 50,
   "attackRate": 1.0,
   "moveSpeed": 50.0,
   "xpDrop": 20,
   "spawnWeight": 5,
   "baseAtk": 10,
   "sprite": "slime",
+  "deathSprite": "slime-morte",
+  "deathFrames": 4,
   "frames": {
     "slime 0.aseprite": {
       "frame": {

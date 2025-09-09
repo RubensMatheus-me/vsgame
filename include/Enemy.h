@@ -3,6 +3,9 @@
 #include "Character.h"
 #include "Player.h"
 #include "SpriteAnimation.h"
+#include "DamagePopup.h"
+
+class Player;
 
 class Enemy : public Character
 {
@@ -10,7 +13,10 @@ public:
     Enemy(const Vector &size, SpriteAnimation *spriteAnimation, std::unique_ptr<SpriteAnimation> anim, const Vector &pos, const Vector &speed,
           float hp, float currentHp, float atkRate, float movSpeed, float xpDrop, int spawnWeigh, float baseAtk, float expectedHp);
 
-    void setTarget(const Player *newTarget) { this->target = newTarget; }
+    void setTarget(const Player *newTarget) { target = newTarget; }
+    const Player *getTarget() const { return target; }
+
+    void takeDamage(float damage, std::vector<std::unique_ptr<DamagePopup>> &popups, SDL_Renderer *renderer, TTF_Font *font);
 
     float getXpDrop() const { return this->xpDrop; }
     int getSpawnWeight() const { return this->spawnWeight; }
@@ -35,7 +41,7 @@ private:
     bool alive = true;
     SpriteAnimation *spriteAnimation;
     std::unique_ptr<SpriteAnimation> animation;
-    const Player *target;
+    const Player *target = nullptr;
     float xpDrop;
     int spawnWeight;
     float baseAtk;

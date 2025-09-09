@@ -26,8 +26,9 @@ void Axe::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy
     Vector enemyPos = resolveClosestTarget(enemies, player->getPosition());
     Vector direction = enemyPos - player->getPosition();
     direction.normalize();
-    
-    for(int i = 0; i <=level/2; i++) {
+
+    for (int i = 0; i <= level / 2; i++)
+    {
         auto anim = std::make_unique<SpriteAnimation>();
         anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
         anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);
@@ -36,7 +37,7 @@ void Axe::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy
 
         auto p = std::make_unique<Attack>(
             Vector(50.0f, 50.0f),
-            position + Vector(10.0f*(i+1), 0.0f),
+            position + Vector(10.0f * (i + 1), 0.0f),
             5.0f,
             std::move(anim),
             std::make_unique<StraightLineMotion>(
@@ -65,7 +66,8 @@ void Axe::levelUp(int levelUp)
     level++;
 }
 
-Vector Axe::resolveClosestTarget(const std::vector<std::unique_ptr<Enemy>> &enemies, Vector playerPosition) {
+Vector Axe::resolveClosestTarget(const std::vector<std::unique_ptr<Enemy>> &enemies, Vector playerPosition)
+{
     Enemy *target = nullptr;
     float closestDistanceSq = std::numeric_limits<float>::max();
 

@@ -95,6 +95,12 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
 
     anim->addAnimation("idle", enemyConfig["sprite"], 0, 0,
                        frameSize, frameSize, numFrames, true);
+    if (enemyConfig.contains("deathSprite"))
+    {
+        int deathFrames = enemyConfig["deathFrames"];
+        anim->addAnimation("death", enemyConfig["deathSprite"], 0, 0,
+                           frameSize, frameSize, deathFrames, false);
+    }
     anim->play("idle");
     auto enemy = std::make_unique<Enemy>(
         Vector(frameSize, frameSize),
@@ -109,8 +115,7 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
         enemyConfig["xpDrop"],
         enemyConfig["spawnWeight"],
         enemyConfig["baseAtk"],
-		enemyConfig["hp"]
-    );
+        enemyConfig["hp"]);
     enemy->setCurrentHp(enemyConfig["hp"]);
     enemy->setTarget(player);
     enemies.push_back(std::move(enemy));

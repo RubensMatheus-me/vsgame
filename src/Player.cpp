@@ -1,3 +1,4 @@
+
 #include "Player.h"
 #include "TextureManager.h"
 #include "Keyboard.h"
@@ -7,6 +8,8 @@
 #include "Rect.h"
 #include "Config.h"
 #include "AudioManager.h"
+#include "Enemy.h"
+#include "Weapon.h"
 
 Player::Player(const Vector &size, SpriteAnimation *spriteAnimation, const Vector &pos, const Vector &speed,
                float hp, float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
@@ -67,6 +70,34 @@ void Player::setAnimationState(PlayerAnimationState newState)
 Rect Player::getCollider() const
 {
     return Rect({getPosition().x, getPosition().y}, {getSize().x, getSize().y});
+}
+
+void Player::attack(std::vector<std::unique_ptr<Enemy>> &enemies,
+                    std::vector<std::unique_ptr<DamagePopup>> &popups,
+                    SDL_Renderer *renderer,
+                    TTF_Font *font)
+{
+    if (damageCooldown > 0.0f)
+        return;
+
+    float baseDamage = 0.0f;
+    for (auto &weapon : weapons)
+    {
+        baseDamage += weapon->getFlatDamage();
+    }
+
+    for (auto &enemy : enemies)
+    {
+        if (!enemy->isAlive())
+            continue;
+
+        if (getCollider().intersects(enemy->getCollider()))
+        {
+            enemy->takeDamage(baseDamage, popups, renderer, font);
+            damageCooldown = atkRate;
+            break;
+        }
+    }
 }
 
 void Player::update(float deltaTime)

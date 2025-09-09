@@ -49,6 +49,25 @@ void Enemy::update(float deltaTime)
         animation->update(deltaTime);
 }
 
+void Enemy::takeDamage(float dmg, std::vector<std::unique_ptr<DamagePopup>> &popups, SDL_Renderer *renderer, TTF_Font *font)
+{
+
+    setCurrentHp(getCurrentHp() - dmg);
+
+    Vector popupPos = getPosition();
+    popupPos.x += getSize().x / 2.0f;
+    popupPos.y -= getSize().y / 4.0f;
+
+    popups.push_back(std::make_unique<DamagePopup>(renderer, font, popupPos, static_cast<int>(dmg)));
+
+    if (getCurrentHp() <= 0)
+    {
+        setAlive(false);
+        if (animation)
+            animation->play("deathSprite");
+    }
+}
+
 void Enemy::applyKnockback(const Vector &direction, float force)
 {
     Vector dir = direction;

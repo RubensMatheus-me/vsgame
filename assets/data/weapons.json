@@ -3,42 +3,49 @@
 		"id": 1,
 		"name": "Machado",
 		"description": "Arremessa um machado na direção do inimigo mais próximo",
-		"spriteName": "Axe"
+		"spriteName": "Axe",
+		"damage": 15
 	},
 	{
 		"id": 2,
 		"name": "Soco-inglês",
 		"description": "Desfere um soco-ingles magico gigante na direção que o personagem esta virado",
-		"spriteName": "brassKnuckles"
+		"spriteName": "brassKnuckles",
+		"damage": 10
 	},
 	{
 		"id": 3,
 		"name": "Chakram",
 		"description": "Cria chakrams em volta do jogador que ocasionalmente dão dano aos inimigos",
-		"spriteName": "Chakram"
+		"spriteName": "Chakram",
+		"damage": 12
 	},
 	{
 		"id": 4,
 		"name": "Raio do Julgamento",
 		"description": "Acerta um inimigo aleatorio em um área inicial de 200px com um raio",
-		"spriteName": "judgmentRay"
+		"spriteName": "judgmentRay",
+		"damage": 20
 	},
 	{
 		"id": 5,
 		"name": "Chamas de Ifrit",
 		"description": "Lança uma bola de fogo na direção que o jogador esta virado",
-		"spriteName": "ifritFlames"
+		"spriteName": "ifritFlames",
+		"damage": 18
 	},
 	{
 		"id": 6,
 		"name": "Atoleiro",
 		"description": "Cria uma área com águas lamacentas por onde o jogador anda desacelerando os inimigos",
-		"spriteName": "mudPool"
+		"spriteName": "mudPool",
+		"damage": 5
 	},
 	{
 		"id": 7,
 		"name": "Boomerang",
 		"description": "Lança um bumerangue que volta para o jogador, causando dano aos inimigos no caminho",
-		"spriteName": "Boomerang"
+		"spriteName": "Boomerang",
+		"damage": 14
 	}
 ]

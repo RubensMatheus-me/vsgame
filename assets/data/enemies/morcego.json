@@ -2,13 +2,15 @@
   "id": "morcego",
   "size": 33,
   "speed": 0,
-  "hp": 15,
+  "hp": 50,
   "attackRate": 1.0,
   "moveSpeed": 70.0,
   "xpDrop": 15,
   "spawnWeight": 2,
   "baseAtk": 5,
   "sprite": "morcego",
+  "deathSprite": "morcego-morte",
+  "deathFrames": 4,
   "frames": {
     "morcego 0.aseprite 150": {
       "frame": {

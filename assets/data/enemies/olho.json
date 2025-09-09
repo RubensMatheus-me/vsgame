@@ -2,13 +2,15 @@
   "id": "olho",
   "size": 32,
   "speed": 0,
-  "hp": 20,
+  "hp": 50,
   "attackRate": 1.0,
   "moveSpeed": 60.0,
   "xpDrop": 50,
   "spawnWeight": 2,
   "baseAtk": 20,
   "sprite": "olho",
+  "deathSprite": "olho-morte",
+  "deathFrames": 3,
   "frames": {
     "olho 0.aseprite": {
       "frame": {

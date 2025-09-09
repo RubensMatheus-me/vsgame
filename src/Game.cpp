@@ -1,3 +1,4 @@
+
 #include "Game.h"
 #include "iostream"
 #include "TextureManager.h"
@@ -24,6 +25,7 @@
 #include "BrassKnuckles.h"
 #include "Chakram.h"
 #include "Lightning.h"
+#include "DamagePopup.h"
 
 using namespace Config;
 
@@ -108,6 +110,17 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		levelUpMenu->init("assets/data/upgrades.json", "assets/data/weapons.json");
 
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
+
+		if (TTF_Init() == -1)
+		{
+			std::cout << "Erro ao inicializar SDL_ttf: " << TTF_GetError() << std::endl;
+		}
+
+		font = TTF_OpenFont("assets/fonts/dogica.ttf", 24);
+		if (!font)
+		{
+			std::cout << "Erro ao carregar fonte: " << TTF_GetError() << std::endl;
+		}
 
 		initializeEntities();
 
@@ -218,6 +231,9 @@ void Game::render()
 		}
 	}
 
+	for (auto &popup : popups)
+		popup->render(renderer);
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -286,9 +302,30 @@ void Game::update()
 		e->setSpeed(toPlayer * e->getMovSpeed());
 		e->update(dt);
 	}
+
+	for (auto &popup : popups)
+		popup->update(dt);
+
+	popups.erase(
+		std::remove_if(popups.begin(), popups.end(),
+					   [](const std::unique_ptr<DamagePopup> &p)
+					   { return !p->isAlive(); }),
+		popups.end());
+
+	player->attack(enemies, popups, renderer, font);
+
 	for (auto &weapon : player->getWeapons())
 	{
 		weapon->update(dt);
+	}
+
+	for (auto &weapon : player->getWeapons())
+	{
+		for (auto &attack : weapon->getAttacks())
+		{
+			attack->update(dt);
+			attack->checkCollisions(enemies, popups, renderer, font);
+		}
 	}
 
 	removeDeadEntities();
@@ -314,6 +351,12 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/enemies/morcego.png", "morcego");
 	TextureManager::loadTexture("assets/sprites/enemies/olho.png", "olho");
 	TextureManager::loadTexture("assets/sprites/enemies/zombie.png", "zombie");
+	// enemie-deaths
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/slime-morte.png", "slime-morte");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/esqueleto-morte.png", "esqueleto-morte");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/morcego-morte.png", "morcego-morte");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/olho-morte.png", "olho-morte");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/zombie-morte.png", "zombie-morte");
 
 	// tiles
 	TextureManager::loadTexture("assets/sprites/tiles/flor.png", "flor");
@@ -328,7 +371,6 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/gui/upgradeMenu.png", "upgradeMenu");
 	TextureManager::loadTexture("assets/sprites/gui/xpBar.png", "xpBar");
 	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
-
 	// Upgrades
 	TextureManager::loadTexture("assets/sprites/upgrades/AttackBoost.png", "Força Bruta");
 	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "Benção Titânica");
@@ -344,7 +386,6 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "ifritFlames");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "judgmentRay");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/Atoleiro.png", "mudPool");
-
 	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/axe-spritesheet.png", "axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "Chakram-spin");
