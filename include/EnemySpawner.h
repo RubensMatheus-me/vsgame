@@ -7,13 +7,17 @@
 #include <nlohmann/json.hpp>
 #include "Player.h"
 #include "Enemy.h"
+#include "Timer.h"
 
 class EnemySpawner {
 public:
     EnemySpawner(int maxEnemies, int spawnIntervalMs, int windowWidth, int windowHeight);
 
-    void update(float currentTime, Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
+    void update(float deltaTime, Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
     bool loadAllEnemiesFromFolder(const std::string& folderPath);
+
+    void clearPool();
+    void addEnemyType(const std::string& id, int weight);
 
 private:
     struct EnemyData {
@@ -25,9 +29,9 @@ private:
     std::vector<std::string> weightedEnemyPool;
 
     int maxEnemies;
-    int spawnIntervalMs;
+    int spawnIntervalSeconds;
     int windowWidth, windowHeight;
-    float lastSpawnTime = 0.0f;
+    Timer spawnTimer;
 
     void spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
 };

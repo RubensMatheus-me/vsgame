@@ -21,6 +21,7 @@
 #include "Weapon.h"
 #include "Axe.h"
 #include "BrassKnuckles.h"
+#include "WaveManager.h"
 #include "Chakram.h"
 
 using namespace Config;
@@ -40,6 +41,7 @@ std::unique_ptr<SpriteAnimation> playerAnimation;
 std::unique_ptr<LevelUpMenu> levelUpMenu;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
 std::unique_ptr<EnemySpawner> enemySpawner;
+std::unique_ptr<WaveManager> waveManager;
 
 std::string lastFpsText;
 std::string lastTimeText;
@@ -101,12 +103,11 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 		TextureManager::init(renderer);
 		loadResources();
-		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, windowWidth, windowHeight);
-		enemySpawner->loadAllEnemiesFromFolder("assets/data/enemies");
+
 		levelUpMenu->init("assets/data/upgrades.json", "assets/data/weapons.json");
 
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
-
+		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", windowWidth, windowHeight);
 		initializeEntities();
 
 		setIsRunning(true);
@@ -276,7 +277,10 @@ void Game::update()
 		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
 
-	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
+	if (waveManager) {
+		waveManager->update(tickRate->getDeltaTime(), player.get(), enemies);
+	}
+
 	for (auto &e : enemies)
 	{
 		Vector toPlayer = player->getPosition() - e->getPosition();
@@ -333,7 +337,6 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "Surto de Saúde");
 	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneração Vital");
 	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
-	TextureManager::loadTexture("assets/sprites/upgrades/SpeedAttack.png", "Impulso de Ataque");
 	// Weapons Icons
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/axe.png", "Axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");

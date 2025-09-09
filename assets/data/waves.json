@@ -1,0 +1,165 @@
+[
+    {
+        "wave" : 1,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "slime",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 2,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "morcego",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 3,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "slime",
+                "spawnWeight" : 1
+            },
+            {
+                "enemy" : "morcego",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 4,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "olho",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 5,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "skeleton",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 6,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "skeleton",
+                "spawnWeight" : 3
+            },
+            {
+                "enemy" : "olho",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 7,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "zombie",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 8,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "zombie",
+                "spawnWeight" : 1
+            },
+            {
+                "enemy" : "skeleton",
+                "spawnWeight" : 1
+            }
+        ]
+        
+    },
+    {
+        "wave" : 9,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "zombie",
+                "spawnWeight" : 2
+            },
+            {
+                "enemy" : "olho",
+                "spawnWeight" : 1
+            },
+            {
+                "enemy" : "morcego",
+                "spawnWeight" : 3
+            }
+        ]
+        
+    },
+    {
+        "wave" : 10,
+        "spawnRate" : 3,
+        "maxEnemies" : 30,
+        "enemies" :
+        [
+            {
+                "enemy" : "zombie",
+                "spawnWeight" : 3
+            },
+            {
+                "enemy" : "skeleton",
+                "spawnWeight" : 4
+            },
+            {
+                "enemy" : "olho",
+                "spawnWeight" : 3
+            },
+            {
+                "enemy" : "morcego",
+                "spawnWeight" : 3
+            }
+        ]
+        
+    }
+]
+

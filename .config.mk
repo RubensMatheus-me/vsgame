@@ -1,1 +1,1 @@
-MY_LIB_PATH = ../my-lib/include
+MY_LIB_PATH = ../../libs/my-lib/include
