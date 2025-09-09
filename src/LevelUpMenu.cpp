@@ -15,16 +15,18 @@
 #include "BrassKnuckles.h"
 #include "Config.h"
 #include "Chakram.h"
+#include "Lightning.h"
 
 using namespace Config;
 
 void LevelUpMenu::init(const std::string &upgradePath, const std::string &weaponPath)
 {
-	initUpgrades(upgradePath);
-	initWeapons(weaponPath);
+    initUpgrades(upgradePath);
+    initWeapons(weaponPath);
 }
 
-void LevelUpMenu::initUpgrades(const std::string &jsonPath) {
+void LevelUpMenu::initUpgrades(const std::string &jsonPath)
+{
     using json = nlohmann::json;
     std::ifstream file(jsonPath);
     if (!file.is_open())
@@ -48,8 +50,9 @@ void LevelUpMenu::initUpgrades(const std::string &jsonPath) {
     }
 }
 
-void LevelUpMenu::initWeapons(const std::string &jsonPath) {
-	using json = nlohmann::json;
+void LevelUpMenu::initWeapons(const std::string &jsonPath)
+{
+    using json = nlohmann::json;
     std::ifstream file(jsonPath);
     if (!file.is_open())
         return;
@@ -59,7 +62,7 @@ void LevelUpMenu::initWeapons(const std::string &jsonPath) {
 
     for (auto &entry : jsonData)
     {
-		int id = entry.value("id", 0);
+        int id = entry.value("id", 0);
         std::string name = entry.value("name", "");
         std::string desc = entry.value("description", "");
         std::string spriteName = entry.value("spriteName", "");
@@ -73,25 +76,25 @@ void LevelUpMenu::initWeapons(const std::string &jsonPath) {
 
 std::vector<std::unique_ptr<ChoiceItem>> LevelUpMenu::pickRandom(int count)
 {
-	std::vector<std::unique_ptr<ChoiceItem>> choices;
+    std::vector<std::unique_ptr<ChoiceItem>> choices;
 
-	for (int i = 0; i < 3; ++i)
-	{
-		bool pickUpgrade = rand() % 2;
+    for (int i = 0; i < 3; ++i)
+    {
+        bool pickUpgrade = rand() % 2;
 
-		if (pickUpgrade && !allUpgrades.empty())
-		{
-			int idx = rand() % allUpgrades.size();
-			choices.push_back(std::make_unique<UpgradeChoiceItem>(allUpgrades[idx]));
-		}
-		else if (!allWeapons.empty())
-		{
-			int idx = rand() % allWeapons.size();
-			choices.push_back(std::make_unique<WeaponChoiceItem>(allWeapons[idx]));
-		}
-	}
+        if (pickUpgrade && !allUpgrades.empty())
+        {
+            int idx = rand() % allUpgrades.size();
+            choices.push_back(std::make_unique<UpgradeChoiceItem>(allUpgrades[idx]));
+        }
+        else if (!allWeapons.empty())
+        {
+            int idx = rand() % allWeapons.size();
+            choices.push_back(std::make_unique<WeaponChoiceItem>(allWeapons[idx]));
+        }
+    }
 
-	return choices;
+    return choices;
 }
 
 void LevelUpMenu::show(SDL_Renderer *renderer, TTF_Font *font, Player &player, int screenWidth, int screenHeight)
@@ -104,67 +107,86 @@ void LevelUpMenu::show(SDL_Renderer *renderer, TTF_Font *font, Player &player, i
     }
 }
 
-void LevelUpMenu::applyToPlayer(Player &player, ChoiceItem &choice) {
+void LevelUpMenu::applyToPlayer(Player &player, ChoiceItem &choice)
+{
 
-	if (choice.isWeapon()) {
-		auto* weaponItem = dynamic_cast<WeaponChoiceItem*>(&choice);
-		resolveWeapon(player, weaponItem->getWeapon());
-
-	} else {
-		auto* upgradeItem = dynamic_cast<UpgradeChoiceItem*>(&choice);
-		Upgrade* upgrade = upgradeItem->getUpgrade();
-		applyUpgradeToPlayer(player, *upgrade);
-	}
+    if (choice.isWeapon())
+    {
+        auto *weaponItem = dynamic_cast<WeaponChoiceItem *>(&choice);
+        resolveWeapon(player, weaponItem->getWeapon());
+    }
+    else
+    {
+        auto *upgradeItem = dynamic_cast<UpgradeChoiceItem *>(&choice);
+        Upgrade *upgrade = upgradeItem->getUpgrade();
+        applyUpgradeToPlayer(player, *upgrade);
+    }
 }
 
-void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice* weaponChoice) {
+void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice *weaponChoice)
+{
     int idWeapon = weaponChoice->id;
 
-    for (auto& weapon : player.getWeapons()) {
-        if (idWeapon == weapon->getId()) {
+    for (auto &weapon : player.getWeapons())
+    {
+        if (idWeapon == weapon->getId())
+        {
             weapon->levelUp(1);
             return;
         }
     }
 
-    switch (weaponChoice->id) {
-        case 1: {
-            auto anim = std::make_unique<SpriteAnimation>();
-            anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-            anim->play("axe-idle");
-            std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
-                Config::PLAYER_SIZE,
-                anim.get(),
-                "Machado"
-            );
-            player.getWeapons().push_back(std::move(weapon));
-            break;
-        }
+    switch (weaponChoice->id)
+    {
+    case 1:
+    {
+        auto anim = std::make_unique<SpriteAnimation>();
+        anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+        anim->play("axe-idle");
+        std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
+            Config::PLAYER_SIZE,
+            anim.get(),
+            "Machado");
+        player.getWeapons().push_back(std::move(weapon));
+        break;
+    }
 
-        case 2: {
-            auto anim = std::make_unique<SpriteAnimation>();
-            anim->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
-            anim->play("idle");
-            std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
-                Config::PLAYER_SIZE,
-                anim.get(),
-                "soco-inglês"
-            );
-            player.getWeapons().push_back(std::move(weapon));
-            break;
-        }
-        case 3: {
-            auto anim = std::make_unique<SpriteAnimation>();
-            anim->addAnimation("chakram-idle", "Chakram", 0, 0, 32, 32, 1, false);
-            anim->play("chakram-idle");
-            std::unique_ptr<Weapon> weapon = std::make_unique<Chakram>(
-                Config::PLAYER_SIZE,
-                anim.get(),
-                "Chakram"
-            );
-            player.getWeapons().push_back(std::move(weapon));
-            break;
-        }
+    case 2:
+    {
+        auto anim = std::make_unique<SpriteAnimation>();
+        anim->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
+        anim->play("idle");
+        std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
+            Config::PLAYER_SIZE,
+            anim.get(),
+            "soco-inglês");
+        player.getWeapons().push_back(std::move(weapon));
+        break;
+    }
+    case 3:
+    {
+        auto anim = std::make_unique<SpriteAnimation>();
+        anim->addAnimation("chakram-attack", "chakram", 0, 0, 32, 32, 1, false);
+        anim->play("chakram-attack");
+        std::unique_ptr<Weapon> weapon = std::make_unique<Chakram>(
+            Config::PLAYER_SIZE,
+            anim.get(),
+            "Chakram");
+        player.getWeapons().push_back(std::move(weapon));
+        break;
+    }
+    case 4:
+    {
+        auto anim = std::make_unique<SpriteAnimation>();
+        anim->addAnimation("lightning-attack", "lightning", 0, 0, 64, 64, 1, false);
+        anim->play("lightning-attack");
+        std::unique_ptr<Weapon> weapon = std::make_unique<Lightning>(
+            Config::PLAYER_SIZE,
+            anim.get(),
+            "Raio do Julgamento");
+        player.getWeapons().push_back(std::move(weapon));
+        break;
+    }
     }
 }
 
@@ -176,14 +198,15 @@ void LevelUpMenu::applyUpgradeToPlayer(Player &player, const Upgrade &upgrade)
     player.getUpgrades().push_back(std::make_unique<Upgrade>(upgrade));
 }
 
-int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, const std::vector<std::unique_ptr<ChoiceItem>>& choices, int screenWidth, int screenHeight)
+int LevelUpMenu::showUpgradeSelection(SDL_Renderer *renderer, TTF_Font *font, const std::vector<std::unique_ptr<ChoiceItem>> &choices, int screenWidth, int screenHeight)
 {
-    if (choices.empty()) return -1;
+    if (choices.empty())
+        return -1;
     bool running = true;
     int selected = 0;
     SDL_Event e;
 
-    SDL_Texture* menuTexture = TextureManager::getTexture("upgradeMenu");
+    SDL_Texture *menuTexture = TextureManager::getTexture("upgradeMenu");
 
     const int menuWidth = 407;
     const int menuHeight = 520;
@@ -226,7 +249,7 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, co
             }
         }
 
-        SDL_Rect menuRect = { menuX, menuY, menuWidth, menuHeight };
+        SDL_Rect menuRect = {menuX, menuY, menuWidth, menuHeight};
         SDL_RenderCopy(renderer, menuTexture, nullptr, &menuRect);
 
         for (int i = 0; i < itemCount; ++i)
@@ -239,16 +262,16 @@ int LevelUpMenu::showUpgradeSelection(SDL_Renderer* renderer, TTF_Font* font, co
             std::string text = choices[i]->getDescription();
             SDL_Color color = (i == selected) ? SDL_Color{255, 255, 0} : SDL_Color{255, 255, 255};
 
-            SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 300);
+            SDL_Surface *surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 300);
             if (surface)
             {
-                SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+                SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
                 if (texture)
                 {
                     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
                     int textY = itemY - surface->h / 2;
-                    SDL_Rect dst = { menuX + TEXT_X, textY + HORIZONTAL_TEXT_OFFSET, surface->w, surface->h };
+                    SDL_Rect dst = {menuX + TEXT_X, textY + HORIZONTAL_TEXT_OFFSET, surface->w, surface->h};
                     SDL_RenderCopy(renderer, texture, nullptr, &dst);
 
                     SDL_DestroyTexture(texture);

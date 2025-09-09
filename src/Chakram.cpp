@@ -28,7 +28,7 @@ void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<E
     {
 
         auto anim = std::make_unique<SpriteAnimation>();
-        anim->addAnimation("chakram-spin", "Chakram-spin", 0, 0, 32, 32, 4, true);
+        anim->addAnimation("chakram-spin", "chakram", 0, 0, 32, 32, 4, true);
         anim->play("chakram-spin");
 
         auto attack = std::make_unique<Attack>(

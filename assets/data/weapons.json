@@ -15,7 +15,7 @@
 		"id": 3,
 		"name": "Chakram",
 		"description": "Cria chakrams em volta do jogador que ocasionalmente dão dano aos inimigos",
-		"spriteName": "Chakram"
+		"spriteName": "ChakramIcon"
 	},
 	{
 		"id": 4,

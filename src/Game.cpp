@@ -308,26 +308,24 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/death/dwarven-death.png", "death-player");
 	TextureManager::loadTexture("assets/sprites/classes/spriteSheets/warrior/hurt/dwarven-hurt.png", "dwarven-hit");
 
-	// enemies
+	// enemies walk
 	TextureManager::loadTexture("assets/sprites/enemies/slime.png", "slime");
-	TextureManager::loadTexture("assets/sprites/enemies/Hit/slime-hit.png", "slime-hit");
-	TextureManager::loadTexture("assets/sprites/enemies/deaths/slime-morte.png", "slime-death");
-
 	TextureManager::loadTexture("assets/sprites/enemies/esqueleto.png", "skeleton");
-	TextureManager::loadTexture("assets/sprites/enemies/Hit/zombie-hit.png", "skeleton-hit");
-	TextureManager::loadTexture("assets/sprites/enemies/deaths/esqueleto-morte.png", "skeleton-death");
-
 	TextureManager::loadTexture("assets/sprites/enemies/morcego.png", "morcego");
-	TextureManager::loadTexture("assets/sprites/enemies/Hit/morcego-hit.png", "morcego-hit");
-	TextureManager::loadTexture("assets/sprites/enemies/deaths/morcego-morte.png", "morcego-death");
-
 	TextureManager::loadTexture("assets/sprites/enemies/olho.png", "olho");
-	TextureManager::loadTexture("assets/sprites/enemies/Hit/olho-hit.png", "olho-hit");
-	TextureManager::loadTexture("assets/sprites/enemies/deaths/olho-morte.png", "olho-death");
-
 	TextureManager::loadTexture("assets/sprites/enemies/zombie.png", "zombie");
-	TextureManager::loadTexture("assets/sprites/enemies/Hit/zombie-hit.png", "zombie-hit");
+	// enemies death
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/slime-morte.png", "slime-death");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/esqueleto-morte.png", "skeleton-death");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/morcego-morte.png", "morcego-death");
+	TextureManager::loadTexture("assets/sprites/enemies/deaths/olho-morte.png", "olho-death");
 	TextureManager::loadTexture("assets/sprites/enemies/deaths/zombie-morte.png", "zombie-death");
+	// enemies hit
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/slime-hit.png", "slime-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/esqueleto-hit.png", "skeleton-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/morcego-hit.png", "morcego-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/olho-hit.png", "olho-hit");
+	TextureManager::loadTexture("assets/sprites/enemies/Hit/zombie-hit.png", "zombie-hit");
 
 	// tiles
 	TextureManager::loadTexture("assets/sprites/tiles/flor.png", "flor");
@@ -353,7 +351,7 @@ void Game::loadResources()
 	// Weapons Icons
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/axe.png", "Axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");
-	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/chakram.png", "Chakram");
+	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/chakram-icon.png", "ChakramIcon");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/brassKnuckles.png", "brassKnuckles");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/IfritsFire.png", "ifritFlames");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Magic/LightningJudgment.png", "judgmentRay");
@@ -361,7 +359,7 @@ void Game::loadResources()
 
 	// Weapons Effects
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/axe-spritesheet.png", "axe");
-	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "Chakram-spin");
+	TextureManager::loadTexture("assets/sprites/Weapons/Animations/chakram.png", "chakram");
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/brassKnuckles-2.png", "brassKnuckles-attack");
 	TextureManager::loadTexture("assets/sprites/Weapons/Animations/lightning.png", "lightning");
 }
