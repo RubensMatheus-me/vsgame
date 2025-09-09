@@ -39,6 +39,11 @@ void WaveManager::startWave(int index) {
         spawner->addEnemyType(id, weight);
     }
 
+    std::cout << "Wave " << wave.waveNumber
+          << " iniciada! spawnRate=" << wave.spawnRate
+          << " poolSize=" << spawner->getWeightedPoolSize()
+          << " maxEnemies=" << wave.maxEnemies << std::endl;
+
     waveTimer.reset();
 
     std::cout << "Wave " << wave.waveNumber << " iniciada!" << std::endl;
@@ -55,11 +60,25 @@ void WaveManager::update(float deltaTime, Player* player, std::vector<std::uniqu
 
     waveTimer.update(deltaTime);
 
-    if (waveTimer.hasElapsed() && enemies.empty()) {
-        if(currentWaveIndex + 1 < (int)waves.size()) {
+
+    if (waveTimer.hasElapsed()) {
+        if (currentWaveIndex + 1 < (int)waves.size()) {
             startWave(currentWaveIndex + 1);
+            return;
         } else {
             std::cout << "All waves completed!" << std::endl;
+            return;
         }
     }
+
+    if (enemies.empty() && spawner && spawner->getTotalSpawned() > 0) {
+        if(currentWaveIndex + 1 < (int)waves.size()) {
+            startWave(currentWaveIndex + 1);
+
+        } else {
+            std::cout << "All waves completed!" << std::endl;
+
+        }
+    }
+
 }

@@ -6,12 +6,14 @@
 #include <filesystem>
 #include <fstream>
 #include <cstdlib>
+#include <random>
 #include "CameraManager.h"
 
 namespace fs = std::filesystem;
 
 EnemySpawner::EnemySpawner(int maxEnemies, int spawnIntervalSeconds, int width, int height)
-    : maxEnemies(maxEnemies), spawnIntervalSeconds(spawnIntervalSeconds), windowWidth(width), windowHeight(height), spawnTimer(spawnIntervalSeconds) {}
+    : maxEnemies(maxEnemies), spawnIntervalSeconds(spawnIntervalSeconds), windowWidth(width), windowHeight(height), spawnTimer(spawnIntervalSeconds), totalSpawned(0),
+    rng(std::random_device{}()) {}
 
 
 void EnemySpawner::update(float deltaTime, Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
@@ -30,11 +32,21 @@ void EnemySpawner::update(float deltaTime, Player *player, std::vector<std::uniq
 
 void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
 {
-    std::string chosenId = weightedEnemyPool[rand() % weightedEnemyPool.size()];
+
+    if (weightedEnemyPool.empty())
+    {
+        std::cerr << "EnemySpawner::spawnEnemy é chamada, mas weightedEnemyPool é vazia!" << std::endl;
+        return;
+    }
+
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(weightedEnemyPool.size()) - 1);
+    
+
+    std::string chosenId = weightedEnemyPool[dist(rng)];
     const nlohmann::json &enemyConfig = enemyTypes[chosenId].config;
 
     CameraManager *camera = CameraManager::getCameraManager();
-    Vector cameraOffset = camera->getOffSet();
+    Vector cameraOffset = camera->getOffSet();  
 
     const int margin = 100;
     int spawnDistance = margin + (rand() % margin);
@@ -90,6 +102,7 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
     );
     enemy->setCurrentHp(enemyConfig["hp"]);
     enemy->setTarget(player);
+    totalSpawned++;
     enemies.push_back(std::move(enemy));
 }
 
@@ -97,6 +110,7 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
 void EnemySpawner::clearPool() {
     weightedEnemyPool.clear();
     enemyTypes.clear();
+    totalSpawned = 0;
 }
 
 void EnemySpawner::addEnemyType(const std::string& id, int weight) {
@@ -115,4 +129,13 @@ void EnemySpawner::addEnemyType(const std::string& id, int weight) {
     for(int i = 0; i < weight; ++i) {
         weightedEnemyPool.push_back(id);
     }
+    std::cerr << "addEnemyType: " << id << " weight=" << weight << std::endl;
+}
+
+int EnemySpawner::getWeightedPoolSize() const {
+    return static_cast<int>(weightedEnemyPool.size());
+}
+
+int EnemySpawner::getTotalSpawned() const {
+    return totalSpawned;
 }

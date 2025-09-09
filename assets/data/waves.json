@@ -1,21 +1,21 @@
 [
     {
         "wave" : 1,
-        "spawnRate" : 3,
+        "spawnRate" : 1,
         "maxEnemies" : 30,
         "enemies" :
         [
             {
                 "enemy" : "slime",
-                "spawnWeight" : 1
+                "spawnWeight" : 100
             }
         ]
         
     },
     {
         "wave" : 2,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 10,
         "enemies" :
         [
             {

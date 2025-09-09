@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <random>
 #include <nlohmann/json.hpp>
 #include "Player.h"
 #include "Enemy.h"
@@ -18,6 +19,8 @@ public:
 
     void clearPool();
     void addEnemyType(const std::string& id, int weight);
+    int getWeightedPoolSize() const;
+    int getTotalSpawned() const;
 
 private:
     struct EnemyData {
@@ -34,4 +37,7 @@ private:
     Timer spawnTimer;
 
     void spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
+
+    int totalSpawned = 0;
+    std::mt19937 rng;
 };

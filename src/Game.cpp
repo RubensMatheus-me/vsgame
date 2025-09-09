@@ -277,9 +277,6 @@ void Game::update()
 		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
 
-	if (waveManager) {
-		waveManager->update(tickRate->getDeltaTime(), player.get(), enemies);
-	}
 
 	for (auto &e : enemies)
 	{
@@ -294,6 +291,11 @@ void Game::update()
 	}
 
 	removeDeadEntities();
+
+	if (waveManager) {
+		waveManager->update(dt, player.get(), enemies);
+	}
+
 	updateFpsDisplay();
 	updateClockDisplay();
 	updateXp();
