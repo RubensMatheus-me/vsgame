@@ -14,7 +14,7 @@ class Player : public Character {
     ~Player();
     Player(const Vector& size, SpriteAnimation* spriteAnimation, const Vector& pos, const Vector& speed,
         float hp, float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
-        bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime);
+        bool isMoving, const Vector& direction, float damageCooldown, float invulnerabilityTime, float damageMultiplier);
     
         float getXp() const { return this->xp; }
         int getLevel() const { return this->level; }
@@ -24,6 +24,7 @@ class Player : public Character {
         float getInvunerabilityTime() const { return this->invulnerabilityTime; }
         float getMovSpeed() const { return this->movSpeed; }
         float getXpNextLevel() const { return this->xpNextLevel; }
+        float getDamageMultiplier() const { return this->damageMultiplier; }
         PlayerAnimationState getAnimationState() const { return this->currentAnimationState; }
 		Vector getPlayerFacingDirection();
 
@@ -37,6 +38,7 @@ class Player : public Character {
         void setAnimations(SpriteAnimation* anim) {this->spriteAnimation = anim;}
         void setDamageCooldown(float damageCooldown) { this->damageCooldown = damageCooldown; }
         void setMovSpeed(float movSpeed) { this->movSpeed = movSpeed; }
+        void setDamageMultiplier(float damageMultiplier) { this->damageMultiplier = damageMultiplier; }
 
 		void setAnimationState(PlayerAnimationState newState);
         void render(SDL_Renderer* renderer) override;
@@ -57,7 +59,8 @@ class Player : public Character {
         int level;
         float xpNextLevel;
         float atkSpeed;
-        float attackRate;  
+        float attackRate;
+        float damageMultiplier;
 		PlayerAnimationState currentAnimationState; 
         std::vector<std::unique_ptr<Weapon>> weapons;
         bool dead = false;

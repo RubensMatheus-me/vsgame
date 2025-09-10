@@ -10,7 +10,7 @@
 
 Player::Player(const Vector &size, SpriteAnimation *spriteAnimation, const Vector &pos, const Vector &speed,
                float hp, float currentHp, float atkRate, float movSpeed, float xp, int level, float xpNextLevel, float atkSpeed,
-               bool isMoving, const Vector &direction, float damageCooldown, float invulnerabilityTime)
+               bool isMoving, const Vector &direction, float damageCooldown, float invulnerabilityTime, float damageMultiplier)
     : Character(size, pos, speed, hp, currentHp, atkRate, movSpeed, spriteAnimation),
       xp(xp),
       level(level),
@@ -21,7 +21,8 @@ Player::Player(const Vector &size, SpriteAnimation *spriteAnimation, const Vecto
       facingRight(true),
       damageCooldown(damageCooldown),
       invulnerabilityTime(invulnerabilityTime),
-      lastHp(hp) {}
+      lastHp(hp),
+      damageMultiplier(damageMultiplier) {}
 
 Player::~Player() = default;
 

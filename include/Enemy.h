@@ -19,9 +19,11 @@ public:
     void setXpDrop(float xpDrop) { this->xpDrop = xpDrop; }
     void setSpawnWeight(int spawnWeight) { this->spawnWeight = spawnWeight; }
     void setExpectedHp(float expectedHp) { this->expectedHp = expectedHp; }
+    void setBaseAtk(float baseAtk) { this->baseAtk = baseAtk; }
 
     float getBaseAtk() { return this->baseAtk; }
     float getExpectedHp() const { return this->expectedHp; }
+
     void render(SDL_Renderer *renderer) override;
     void update(float deltaTime) override;
 

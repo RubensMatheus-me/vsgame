@@ -17,7 +17,7 @@ Axe::Axe(const Vector &size, SpriteAnimation *spriteAnim, const std::string &des
 Axe::Axe(const Vector &size,
          SpriteAnimation *spriteAnimation,
          const std::string &description)
-    : Axe(size, spriteAnimation, description, 100.0f, 10.0f, 10.0f, 10.0f, 4, 150.0f, 10.0f, 1, 1, 200.0f)
+    : Axe(size, spriteAnimation, description, 100.0f, 10.0f, 10.0f, 10.0f, 1, 150.0f, 10.0f, 1, 1, 100.0f)
 {
 }
 
@@ -37,7 +37,7 @@ void Axe::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy
         auto p = std::make_unique<Attack>(
             Vector(50.0f, 50.0f),
             position + Vector(10.0f*(i+1), 0.0f),
-            5.0f,
+            resolveDamage(player),
             std::move(anim),
             std::make_unique<StraightLineMotion>(
                 direction,

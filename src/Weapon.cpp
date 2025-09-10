@@ -20,3 +20,7 @@ void Weapon::update(float deltaTime) {
         attack->update(deltaTime);
     }
 }
+
+float Weapon::resolveDamage(Player* player) {
+    return flatDamage * player->getDamageMultiplier();
+}

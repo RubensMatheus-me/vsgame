@@ -18,7 +18,7 @@ Lightning::Lightning(const Vector &size, SpriteAnimation *spriteAnim, const std:
 Lightning::Lightning(const Vector &size,
                      SpriteAnimation *spriteAnimation,
                      const std::string &description)
-    : Lightning(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 2.0f, 3, 100.0f)
+    : Lightning(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 1, 2.0f, 4, 100.0f)
 {
 }
 
@@ -57,7 +57,7 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
     auto p = std::make_unique<Attack>(
         Vector(32.0f, 64.0f),
         target->getPosition() - Vector(0.0f, 60.0f),
-        5.0f,
+        resolveDamage(player),
         std::move(anim),
         std::make_unique<StraightLineMotion>(
             direction,
