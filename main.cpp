@@ -4,7 +4,7 @@
 
 Game *game = nullptr;
 
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
