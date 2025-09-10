@@ -16,6 +16,7 @@
 #include "Config.h"
 #include "Chakram.h"
 #include "Lightning.h"
+#include <random>
 
 using namespace Config;
 
@@ -75,29 +76,46 @@ void LevelUpMenu::initWeapons(const std::string &jsonPath)
     }
 }
 
+
 std::vector<std::unique_ptr<ChoiceItem>> LevelUpMenu::pickRandom(int count)
 {
     std::vector<std::unique_ptr<ChoiceItem>> choices;
+    std::vector<int> upgradeIndices(allUpgrades.size());
+    std::iota(upgradeIndices.begin(), upgradeIndices.end(), 0);
 
-    for (int i = 0; i < 3; ++i)
+    std::vector<int> weaponIndices(allWeapons.size());
+    std::iota(weaponIndices.begin(), weaponIndices.end(), 0);
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(upgradeIndices.begin(), upgradeIndices.end(), g);
+    std::shuffle(weaponIndices.begin(), weaponIndices.end(), g);
+
+    for (int i = 0; i < count; ++i)
     {
         bool pickUpgrade = rand() % 2;
-
-        if (pickUpgrade && !allUpgrades.empty())
+        if (pickUpgrade && !upgradeIndices.empty())
         {
-            int idx = rand() % allUpgrades.size();
+            int idx = upgradeIndices.back();
+            upgradeIndices.pop_back();
             choices.push_back(std::make_unique<UpgradeChoiceItem>(allUpgrades[idx]));
         }
-        else if (!allWeapons.empty())
+        else if (!weaponIndices.empty())
         {
-            int idx = rand() % allWeapons.size();
+            int idx = weaponIndices.back();
+            weaponIndices.pop_back();
             choices.push_back(std::make_unique<WeaponChoiceItem>(allWeapons[idx]));
+        }
+        else if (!upgradeIndices.empty()) 
+        {
+            int idx = upgradeIndices.back();
+            upgradeIndices.pop_back();
+            choices.push_back(std::make_unique<UpgradeChoiceItem>(allUpgrades[idx]));
         }
     }
 
     return choices;
 }
-
 void LevelUpMenu::show(SDL_Renderer *renderer, TTF_Font *font, Player &player, int screenWidth, int screenHeight)
 {
     std::vector<std::unique_ptr<ChoiceItem>> choices = pickRandom(3);

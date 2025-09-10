@@ -21,7 +21,7 @@ BrassKnuckles::BrassKnuckles(
 BrassKnuckles::BrassKnuckles(const Vector &size,
                  SpriteAnimation *spriteAnimation,
                  const std::string &description)
-    : BrassKnuckles(size, spriteAnimation, description, 40.0f, 10.0f, 10.0f, 10.0f, 1, 8.0f, 2, 600.0f){}
+    : BrassKnuckles(size, spriteAnimation, description, 40.0f, 10.0f, 10.0f, 10.0f, 1, 5.0f, 2, 600.0f){}
 void BrassKnuckles::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player)
 {
     auto animation = std::make_unique<SpriteAnimation>();

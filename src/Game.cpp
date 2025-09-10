@@ -436,18 +436,13 @@ void Game::initializeEntities()
 		anim.get(),
 		"Axe");
 
+	auto anim2 = std::make_unique<SpriteAnimation>();
+	anim2->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
+	anim2->play("idle");
 	std::unique_ptr<Weapon> weapon2 = std::make_unique<BrassKnuckles>(
 		Config::PLAYER_SIZE,
-		anim.get(),
-		"BrassKnuckles",
-		50.0f,
-		50.0f,
-		1.0f,
-		1.0f,
-		1,
-		3.0f,
-		2,
-		600.0f);
+		anim2.get(),
+		"soco-inglês");
 
 	std::unique_ptr<Weapon> weapon3 = std::make_unique<Chakram>(
 		Config::PLAYER_SIZE,

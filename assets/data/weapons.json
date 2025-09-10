@@ -2,7 +2,7 @@
 	{
 		"id": 1,
 		"name": "Machado",
-		"description": "Arremessa um machado na direcao do inimigo mais próximo",
+		"description": "Arremessa um machado na direcao do inimigo mais proximo",
 		"spriteName": "Axe"
 	},
 	{
@@ -13,9 +13,9 @@
 	},
 	{
 		"id": 3,
-		"name": "Chakram",
-		"description": "Cria chakrams em volta do jogador que ocasionalmente causam dano aos inimigos",
-		"spriteName": "Chakram"
+        "name": "Chakram",
+        "description": "Cria chakrams em volta do jogador que ocasionalmente causam dano aos inimigos",
+        "spriteName": "ChakramIcon"
 	},
 	{
 		"id": 4,
