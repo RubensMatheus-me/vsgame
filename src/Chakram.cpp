@@ -14,13 +14,12 @@ Chakram::Chakram(const Vector &size, SpriteAnimation *spriteAnim, const std::str
 Chakram::Chakram(const Vector &size,
                  SpriteAnimation *spriteAnimation,
                  const std::string &description)
-    : Chakram(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 10.0f, 3, 400.0f)
+    : Chakram(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 1, 10.0f, 3, 400.0f)
 {
 }
 
 void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<Enemy>> &enemies, Player *player)
 {
-
     int lifeTime = 6.0f + level;
     float angle = 360.0f / (level + 1);
 

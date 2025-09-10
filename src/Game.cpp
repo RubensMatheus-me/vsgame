@@ -427,12 +427,12 @@ void Game::initializeEntities()
 	std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
 		Config::PLAYER_SIZE,
 		anim.get(),
-		desc);
+		"Axe");
 
 	std::unique_ptr<Weapon> weapon2 = std::make_unique<BrassKnuckles>(
 		Config::PLAYER_SIZE,
 		anim.get(),
-		desc,
+		"BrassKnuckles",
 		50.0f,
 		50.0f,
 		1.0f,
@@ -445,17 +445,17 @@ void Game::initializeEntities()
 	std::unique_ptr<Weapon> weapon3 = std::make_unique<Chakram>(
 		Config::PLAYER_SIZE,
 		anim.get(),
-		desc);
+		"Chakram");
 
 	std::unique_ptr<Weapon> weapon4 = std::make_unique<Lightning>(
 		Config::PLAYER_SIZE,
 		anim.get(),
-		desc);
+		"Lightning");
 
-	// player->getWeapons().push_back(std::move(weapon));
-	player->getWeapons().push_back(std::move(weapon2));
-	// player->getWeapons().push_back(std::move(weapon3));
-	player->getWeapons().push_back(std::move(weapon4));
+	player->getWeapons().push_back(std::move(weapon));
+	//player->getWeapons().push_back(std::move(weapon2));
+	//player->getWeapons().push_back(std::move(weapon3));
+	//player->getWeapons().push_back(std::move(weapon4));
 	player->setAnimations(playerAnimation.get());
 }
 

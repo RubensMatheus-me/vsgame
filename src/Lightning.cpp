@@ -18,7 +18,7 @@ Lightning::Lightning(const Vector &size, SpriteAnimation *spriteAnim, const std:
 Lightning::Lightning(const Vector &size,
                      SpriteAnimation *spriteAnimation,
                      const std::string &description)
-    : Lightning(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 3, 2.0f, 3, 100.0f)
+    : Lightning(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 1, 2.0f, 4, 100.0f)
 {
 }
 

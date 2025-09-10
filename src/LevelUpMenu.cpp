@@ -138,55 +138,55 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice *weaponChoice)
 
     switch (weaponChoice->id)
     {
-    case 1:
-    {
-        auto anim = std::make_unique<SpriteAnimation>();
-        anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
-        anim->play("axe-idle");
-        std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
-            Config::PLAYER_SIZE,
-            anim.get(),
-            "Machado");
-        player.getWeapons().push_back(std::move(weapon));
-        break;
-    }
+        case 1:
+        {
+            auto anim = std::make_unique<SpriteAnimation>();
+            anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
+            anim->play("axe-idle");
+            std::unique_ptr<Weapon> weapon = std::make_unique<Axe>(
+                Config::PLAYER_SIZE,
+                anim.get(),
+                "Machado");
+            player.getWeapons().push_back(std::move(weapon));
+            break;
+        }
 
-    case 2:
-    {
-        auto anim = std::make_unique<SpriteAnimation>();
-        anim->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
-        anim->play("idle");
-        std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
-            Config::PLAYER_SIZE,
-            anim.get(),
-            "soco-inglês");
-        player.getWeapons().push_back(std::move(weapon));
-        break;
-    }
-    case 3:
-    {
-        auto anim = std::make_unique<SpriteAnimation>();
-        anim->addAnimation("chakram-attack", "chakram", 0, 0, 32, 32, 1, false);
-        anim->play("chakram-attack");
-        std::unique_ptr<Weapon> weapon = std::make_unique<Chakram>(
-            Config::PLAYER_SIZE,
-            anim.get(),
-            "Chakram");
-        player.getWeapons().push_back(std::move(weapon));
-        break;
-    }
-    case 4:
-    {
-        auto anim = std::make_unique<SpriteAnimation>();
-        anim->addAnimation("lightning-attack", "lightning", 0, 0, 64, 64, 1, false);
-        anim->play("lightning-attack");
-        std::unique_ptr<Weapon> weapon = std::make_unique<Lightning>(
-            Config::PLAYER_SIZE,
-            anim.get(),
-            "Raio do Julgamento");
-        player.getWeapons().push_back(std::move(weapon));
-        break;
-    }
+        case 2:
+        {
+            auto anim = std::make_unique<SpriteAnimation>();
+            anim->addAnimation("idle", "brassKnuckles-attack", 0, 0, 64, 64, 1, false);
+            anim->play("idle");
+            std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
+                Config::PLAYER_SIZE,
+                anim.get(),
+                "soco-inglês");
+            player.getWeapons().push_back(std::move(weapon));
+            break;
+        }
+        case 3:
+        {
+            auto anim = std::make_unique<SpriteAnimation>();
+            anim->addAnimation("chakram-attack", "chakram", 0, 0, 32, 32, 1, false);
+            anim->play("chakram-attack");
+            std::unique_ptr<Weapon> weapon = std::make_unique<Chakram>(
+                Config::PLAYER_SIZE,
+                anim.get(),
+                "Chakram");
+            player.getWeapons().push_back(std::move(weapon));
+            break;
+        }
+        case 4:
+        {
+            auto anim = std::make_unique<SpriteAnimation>();
+            anim->addAnimation("lightning-attack", "lightning", 0, 0, 64, 64, 1, false);
+            anim->play("lightning-attack");
+            std::unique_ptr<Weapon> weapon = std::make_unique<Lightning>(
+                Config::PLAYER_SIZE,
+                anim.get(),
+                "Raio do Julgamento");
+            player.getWeapons().push_back(std::move(weapon));
+            break;
+        }
     }
 }
 
