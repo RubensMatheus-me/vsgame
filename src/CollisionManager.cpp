@@ -51,7 +51,7 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
             for (size_t j = 0; j < enemies.size(); ++j) {
                 Enemy* enemy = enemies[j].get();
                 Rect enemyRect = enemy->getCollider();
-                if (attackRect.intersects(enemyRect)) {
+                if (attackRect.intersects(enemyRect) && enemy->isAlive()) {
                     Vector direction = enemy->getPosition() - attack->getPosition();
                     enemy->applyKnockback(direction, weapon->getknockback());
                     enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());

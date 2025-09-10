@@ -14,7 +14,7 @@ Chakram::Chakram(const Vector &size, SpriteAnimation *spriteAnim, const std::str
 Chakram::Chakram(const Vector &size,
                  SpriteAnimation *spriteAnimation,
                  const std::string &description)
-    : Chakram(size, spriteAnimation, description, 0.5f, 10.0f, 10.0f, 10.0f, 1, 10.0f, 3, 400.0f)
+    : Chakram(size, spriteAnimation, description, 5.0f, 10.0f, 10.0f, 10.0f, 1, 10.0f, 3, 400.0f)
 {
 }
 
@@ -25,7 +25,9 @@ void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<E
 
     for (int i = 0; i <= level; i++)
     {
-
+        if(i >= 5) {
+            return;
+        }
         auto anim = std::make_unique<SpriteAnimation>();
         anim->addAnimation("chakram-spin", "chakram", 0, 0, 32, 32, 4, true);
         anim->play("chakram-spin");

@@ -17,7 +17,7 @@ Axe::Axe(const Vector &size, SpriteAnimation *spriteAnim, const std::string &des
 Axe::Axe(const Vector &size,
          SpriteAnimation *spriteAnimation,
          const std::string &description)
-    : Axe(size, spriteAnimation, description, 100.0f, 10.0f, 10.0f, 10.0f, 1, 150.0f, 10.0f, 1, 1, 100.0f)
+    : Axe(size, spriteAnimation, description, 10.0f, 10.0f, 10.0f, 10.0f, 1, 150.0f, 1, 3, 1, 100.0f)
 {
 }
 

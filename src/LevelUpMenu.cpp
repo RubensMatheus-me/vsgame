@@ -42,11 +42,12 @@ void LevelUpMenu::initUpgrades(const std::string &jsonPath)
         float hpMult = entry.value("hpMultiplier", 1.0f);
         float dmgMult = entry.value("damageMultiplier", 1.0f);
         float movMult = entry.value("movSpeedMultiplier", 1.0f);
+        float attackRateMultiplier = entry.value("attackRateMultiplier", 1.0f);
 
         SpriteAnimation *anim = new SpriteAnimation();
         anim->addAnimation("idle", name, 0, 0, 32, 32, 1, true);
         anim->play("idle");
-        allUpgrades.push_back(new Upgrade({64, 64}, anim, name, desc, hpMult, dmgMult, movMult));
+        allUpgrades.push_back(new Upgrade({64, 64}, anim, name, desc, hpMult, dmgMult, movMult, attackRateMultiplier));
     }
 }
 
@@ -193,9 +194,10 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice *weaponChoice)
 void LevelUpMenu::applyUpgradeToPlayer(Player &player, const Upgrade &upgrade)
 {
     player.setHp(player.getHp() * upgrade.getHpMultiplier());
-    player.setAtkSpeed(player.getAtkSpeed() * upgrade.getDamageMultiplier());
+    player.setAtkRate(player.getAtkRate() * upgrade.getAttackRateMultiplier());
     player.setMovSpeed(player.getMovSpeed() * upgrade.getMovSpeedMultiplier());
     player.setDamageMultiplier(player.getDamageMultiplier() * upgrade.getDamageMultiplier());
+
 
     player.getUpgrades().push_back(std::make_unique<Upgrade>(upgrade));
 }

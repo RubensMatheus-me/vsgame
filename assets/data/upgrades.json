@@ -1,8 +1,8 @@
 [
 	{
 		"name": "Impulso de Ataque",
-		"description": "Aumenta a velocidade de ataque em 8%",
-		"attackSpeedMultiplier": 1.08
+		"description": "Aumenta a velocidade de ataque em 10%",
+		"attackRateMultiplier": 1.10
 	},
 	{
 		"name": "Força Bruta",
@@ -22,12 +22,7 @@
 	},
 	{
 		"name": "Aceleração de Movimento",
-		"description": "Aumenta a velocidade de movimento em 5%",
-		"movSpeedMultiplier": 1.05
-	},
-	{
-		"name": "Regeneração Vital",
-		"description": "Regenera 5 pontos de vida a cada 20 segundos",
-		"hpRegenMultiplier": 5.0
+		"description": "Aumenta a velocidade de movimento em 15%",
+		"movSpeedMultiplier": 1.15
 	}
 ]

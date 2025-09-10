@@ -2,7 +2,7 @@
   "id": "zombie",
   "size": 64,
   "speed": 0,
-  "hp": 20,
+  "hp": 35,
   "attackRate": 1.0,
   "moveSpeed": 60.0,
   "xpDrop": 150,

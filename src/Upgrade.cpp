@@ -3,9 +3,9 @@
 #include "SpriteAnimation.h"
 
 Upgrade::Upgrade(const Vector &size, SpriteAnimation *spriteAnimation, const std::string &name, const std::string &description,
-                 float hpMultiplier, float damageMultiplier, float movSpeedMultiplier)
+                 float hpMultiplier, float damageMultiplier, float movSpeedMultiplier, float attackRateMultiplier)
     : Item(size, spriteAnimation, description),
-      hpMultiplier(hpMultiplier), damageMultiplier(damageMultiplier), movSpeedMultiplier(movSpeedMultiplier) {}
+      hpMultiplier(hpMultiplier), damageMultiplier(damageMultiplier), movSpeedMultiplier(movSpeedMultiplier), attackRateMultiplier(attackRateMultiplier) {}
 
 void Upgrade::render(SDL_Renderer *renderer, const Vector &position)
 {

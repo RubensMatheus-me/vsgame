@@ -22,23 +22,5 @@
 		"name": "Raio do Julgamento",
 		"description": "Acerta um inimigo aleatorio em um área inicial de 200px com um raio",
 		"spriteName": "judgmentRay"
-	},
-	{
-		"id": 5,
-		"name": "Chamas de Ifrit",
-		"description": "Lança uma bola de fogo na direção que o jogador esta virado",
-		"spriteName": "ifritFlames"
-	},
-	{
-		"id": 6,
-		"name": "Atoleiro",
-		"description": "Cria uma área com águas lamacentas por onde o jogador anda desacelerando os inimigos",
-		"spriteName": "mudPool"
-	},
-	{
-		"id": 7,
-		"name": "Boomerang",
-		"description": "Lança um bumerangue que volta para o jogador, causando dano aos inimigos no caminho",
-		"spriteName": "Boomerang"
 	}
 ]
