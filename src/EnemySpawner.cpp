@@ -6,58 +6,47 @@
 #include <filesystem>
 #include <fstream>
 #include <cstdlib>
+#include <random>
 #include "CameraManager.h"
 
 namespace fs = std::filesystem;
 
-EnemySpawner::EnemySpawner(int maxEnemies, int spawnIntervalMs, int width, int height)
-    : maxEnemies(maxEnemies), spawnIntervalMs(spawnIntervalMs), windowWidth(width), windowHeight(height) {}
+EnemySpawner::EnemySpawner(int maxEnemies, int spawnIntervalSeconds, int width, int height)
+    : maxEnemies(maxEnemies), spawnIntervalSeconds(spawnIntervalSeconds), windowWidth(width), windowHeight(height), spawnTimer(spawnIntervalSeconds), totalSpawned(0),
+    rng(std::random_device{}()) {}
 
-bool EnemySpawner::loadAllEnemiesFromFolder(const std::string &folderPath)
-{
-    std::cout << "loadAllEnemiesFromFolder" << std::endl;
-    for (const auto &file : fs::directory_iterator(folderPath))
-    {
-        std::cout << folderPath << std::endl;
-        if (file.path().extension() == ".json")
-        {
-            std::ifstream in(file.path());
-            if (!in.is_open())
-                continue;
-            nlohmann::json config;
-            in >> config;
-            std::string id = config["id"];
-            int weight = config["spawnWeight"];
 
-            enemyTypes[id] = {config, weight};
-            for (int i = 0; i < weight; ++i)
-            {
-                weightedEnemyPool.push_back(id);
-            }
-        }
-    }
-    return !enemyTypes.empty();
-}
-
-void EnemySpawner::update(float currentTime, Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
+void EnemySpawner::update(float deltaTime, Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
 {
     if (enemies.size() >= maxEnemies)
         return;
 
-    if (currentTime - lastSpawnTime >= static_cast<float>(spawnIntervalMs))
+    spawnTimer.update(deltaTime);
+
+    if (spawnTimer.hasElapsed())
     {
         spawnEnemy(player, enemies);
-        lastSpawnTime = currentTime;
+        spawnTimer.reset();
     }
 }
 
 void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies)
 {
-    std::string chosenId = weightedEnemyPool[rand() % weightedEnemyPool.size()];
+
+    if (weightedEnemyPool.empty())
+    {
+        std::cerr << "EnemySpawner::spawnEnemy é chamada, mas weightedEnemyPool é vazia!" << std::endl;
+        return;
+    }
+
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(weightedEnemyPool.size()) - 1);
+    
+
+    std::string chosenId = weightedEnemyPool[dist(rng)];
     const nlohmann::json &enemyConfig = enemyTypes[chosenId].config;
 
     CameraManager *camera = CameraManager::getCameraManager();
-    Vector cameraOffset = camera->getOffSet();
+    Vector cameraOffset = camera->getOffSet();  
 
     const int margin = 100;
     int spawnDistance = margin + (rand() % margin);
@@ -113,5 +102,40 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
     );
     enemy->setCurrentHp(enemyConfig["hp"]);
     enemy->setTarget(player);
+    totalSpawned++;
     enemies.push_back(std::move(enemy));
+}
+
+
+void EnemySpawner::clearPool() {
+    weightedEnemyPool.clear();
+    enemyTypes.clear();
+    totalSpawned = 0;
+}
+
+void EnemySpawner::addEnemyType(const std::string& id, int weight) {
+    std::ifstream in ("assets/data/enemies/" + id + ".json");
+
+    if(!in.is_open()) {
+        std::cerr << "Erro: não consegui abrir o json de: " << id << std::endl;
+        return;
+    }
+
+    nlohmann::json config;
+    in >> config;
+
+    enemyTypes[id] = {config, weight};
+
+    for(int i = 0; i < weight; ++i) {
+        weightedEnemyPool.push_back(id);
+    }
+    std::cerr << "addEnemyType: " << id << " weight=" << weight << std::endl;
+}
+
+int EnemySpawner::getWeightedPoolSize() const {
+    return static_cast<int>(weightedEnemyPool.size());
+}
+
+int EnemySpawner::getTotalSpawned() const {
+    return totalSpawned;
 }
