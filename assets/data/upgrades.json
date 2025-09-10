@@ -5,7 +5,7 @@
 		"attackRateMultiplier": 1.10
 	},
 	{
-		"name": "Força Bruta",
+		"name": "Forca Bruta",
 		"description": "Aumenta seu ataque base em 15%",
 		"damageMultiplier": 1.15
 	},
@@ -21,7 +21,7 @@
 		"damageMultiplier": 1.07
 	},
 	{
-		"name": "Aceleração de Movimento",
+		"name": "Aceleracao de Movimento",
 		"description": "Aumenta a velocidade de movimento em 15%",
 		"movSpeedMultiplier": 1.15
 	}

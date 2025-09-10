@@ -194,6 +194,7 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice *weaponChoice)
 void LevelUpMenu::applyUpgradeToPlayer(Player &player, const Upgrade &upgrade)
 {
     player.setHp(player.getHp() * upgrade.getHpMultiplier());
+    player.setCurrentHp(player.getCurrentHp() * upgrade.getHpMultiplier());
     player.setAtkRate(player.getAtkRate() * upgrade.getAttackRateMultiplier());
     player.setMovSpeed(player.getMovSpeed() * upgrade.getMovSpeedMultiplier());
     player.setDamageMultiplier(player.getDamageMultiplier() * upgrade.getDamageMultiplier());

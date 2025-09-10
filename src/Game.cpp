@@ -348,13 +348,14 @@ void Game::loadResources()
 	TextureManager::loadTexture("assets/sprites/gui/infoJogador.png", "infoJogador");
 
 	// Upgrades
-	TextureManager::loadTexture("assets/sprites/upgrades/AttackBoost.png", "Força Bruta");
-	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "Benção Titânica");
-	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "Surto de Saúde");
-	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneração Vital");
-	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleração de Movimento");
+	TextureManager::loadTexture("assets/sprites/upgrades/AttackBoost.png", "Forca Bruta");
+	TextureManager::loadTexture("assets/sprites/upgrades/TitanBlessing.png", "Bencao Titanica");
+	TextureManager::loadTexture("assets/sprites/upgrades/HealthSurge.png", "Surto de Saude");
+	TextureManager::loadTexture("assets/sprites/upgrades/regen.png", "Regeneracao Vital");
+	TextureManager::loadTexture("assets/sprites/upgrades/MovimentSpeed.png", "Aceleracao de Movimento");
 	TextureManager::loadTexture("assets/sprites/upgrades/AttackSpeed.png", "Impulso de Ataque");
 	// Weapons Icons
+
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/axe.png", "Axe");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/boomerang.png", "Boomerang");
 	TextureManager::loadTexture("assets/sprites/Weapons/Icons/Fisic/chakram-icon.png", "ChakramIcon");
