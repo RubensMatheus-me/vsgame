@@ -27,8 +27,8 @@
     },
     {
         "wave" : 3,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.8,
+        "maxEnemies" : 60,
         "enemies" :
         [
             {
@@ -44,8 +44,8 @@
     },
     {
         "wave" : 4,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 40,
         "enemies" :
         [
             {
@@ -57,8 +57,8 @@
     },
     {
         "wave" : 5,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.7,
+        "maxEnemies" : 100,
         "enemies" :
         [
             {
@@ -70,8 +70,8 @@
     },
     {
         "wave" : 6,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 150,
         "enemies" :
         [
             {
@@ -87,8 +87,8 @@
     },
     {
         "wave" : 7,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 200,
         "enemies" :
         [
             {
@@ -100,8 +100,8 @@
     },
     {
         "wave" : 8,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 300,
         "enemies" :
         [
             {
@@ -117,8 +117,8 @@
     },
     {
         "wave" : 9,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 500,
         "enemies" :
         [
             {
@@ -138,8 +138,8 @@
     },
     {
         "wave" : 10,
-        "spawnRate" : 3,
-        "maxEnemies" : 30,
+        "spawnRate" : 0.6,
+        "maxEnemies" : 1000,
         "enemies" :
         [
             {
