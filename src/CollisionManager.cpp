@@ -58,6 +58,7 @@ void CollisionManager::handleProjectileCollisions(Player* player, std::vector<st
                     enemy->getSpriteAnimation()->play("hit");
                     if (enemy->getCurrentHp() <= 0.0f) {
                         enemy->setAlive(false);
+                        enemy->setBaseAtk(0.0f);
                         enemy->setMovSpeed(0.0f);
                         enemy->getSpriteAnimation()->play("death");
                         player->setXp(player->getXp() + enemy->getXpDrop());
