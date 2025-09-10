@@ -8,18 +8,24 @@
 #include "Player.h"
 #include "Enemy.h"
 
-class EnemySpawner {
+class EnemySpawner
+{
 public:
     EnemySpawner(int maxEnemies, int spawnIntervalMs, int windowWidth, int windowHeight);
 
-    void update(float currentTime, Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
-    bool loadAllEnemiesFromFolder(const std::string& folderPath);
+    void update(float currentTime, Player *player, std::vector<std::unique_ptr<Enemy>> &enemies);
+    bool loadAllEnemiesFromFolder(const std::string &folderPath);
+
+    void reset();
 
 private:
-    struct EnemyData {
+    struct EnemyData
+    {
         nlohmann::json config;
         int spawnWeight;
     };
+
+    int enemiesSpawned = 0;
 
     std::unordered_map<std::string, EnemyData> enemyTypes;
     std::vector<std::string> weightedEnemyPool;
@@ -29,5 +35,5 @@ private:
     int windowWidth, windowHeight;
     float lastSpawnTime = 0.0f;
 
-    void spawnEnemy(Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
+    void spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>> &enemies);
 };

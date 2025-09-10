@@ -128,7 +128,15 @@ void Game::events()
 	{
 		if (event.type == SDL_QUIT)
 		{
-			GameStateManager::getInstance().setState(GameState::InLose);
+			setIsRunning(false);
+		}
+
+		if (GameStateManager::getInstance().isInLose())
+		{
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
+			{
+				reset();
+			}
 		}
 	}
 }
@@ -218,14 +226,72 @@ void Game::render()
 		}
 	}
 
+	if (GameStateManager::getInstance().isInLose())
+	{
+		TTF_Font *font = TTF_OpenFont(pathFont, 24);
+		if (font)
+		{
+			SDL_Color red = {255, 0, 0, 255};
+			SDL_Texture *gameOverText = TextureManager::renderText("GAME OVER", pathFont, red, 24);
+			SDL_Texture *hintText = TextureManager::renderText("Pressione ENTER para reiniciar", pathFont, red, 16);
+
+			if (gameOverText)
+			{
+				int w, h;
+				SDL_QueryTexture(gameOverText, nullptr, nullptr, &w, &h);
+				SDL_Rect rect = {(windowWidth - w) / 2, windowHeight / 2 - h, w, h};
+				SDL_RenderCopy(renderer, gameOverText, nullptr, &rect);
+				SDL_DestroyTexture(gameOverText);
+			}
+
+			if (hintText)
+			{
+				int w, h;
+				SDL_QueryTexture(hintText, nullptr, nullptr, &w, &h);
+				SDL_Rect rect = {(windowWidth - w) / 2, windowHeight / 2 + 20, w, h};
+				SDL_RenderCopy(renderer, hintText, nullptr, &rect);
+				SDL_DestroyTexture(hintText);
+			}
+
+			TTF_CloseFont(font);
+		}
+	}
+
 	SDL_RenderPresent(renderer);
+}
+
+void Game::reset()
+{
+	enemies.clear();
+	initializeEntities();
+
+	timerEvents.reset();
+	gameTime.reset();
+
+	if (enemySpawner)
+	{
+		enemySpawner->reset();
+	}
+
+	levelUpMenu->lastUpgradedLevel = player->getLevel();
+
+	player->setCurrentHp(player->getHp());
+	player->setAlive(true);
+	player->setPosition({400, 300});
+
+	AudioManager &audio = AudioManager::getInstance();
+	audio.playMusic("backgroundMusic");
+
+	GameStateManager::getInstance().setState(GameState::InGame);
+	setIsRunning(true);
+
+	std::cout << "Jogo reiniciado!" << std::endl;
 }
 
 void Game::update()
 {
 	if (GameStateManager::getInstance().isInLose())
 	{
-		setIsRunning(false);
 		return;
 	}
 
@@ -258,10 +324,22 @@ void Game::update()
 		}
 
 		player->update(dt);
+		if (player->getCurrentHp() <= 0)
+		{
+			if (!GameStateManager::getInstance().isInLose())
+			{
+				GameStateManager::getInstance().setState(GameState::InLose);
+				AudioManager::getInstance().playSound("gameOver");
+			}
+		}
+		if (GameStateManager::getInstance().isInLose())
+			return;
+
 		keyboard->update(*player, dt);
 		CameraManager::getCameraManager()->follow(player->getPosition());
 		keyboard->update(*player, dt);
 	}
+
 	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
 
 	// if (!allElements.empty()) {
@@ -416,7 +494,7 @@ void Game::initializeEntities()
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME,	
+		Config::PLAYER_INVULNERABILITY_TIME,
 		Config::DAMAGE_MULTIPLIER);
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
@@ -453,9 +531,9 @@ void Game::initializeEntities()
 		"Lightning");
 
 	player->getWeapons().push_back(std::move(weapon));
-	//player->getWeapons().push_back(std::move(weapon2));
-	//player->getWeapons().push_back(std::move(weapon3));
-	//player->getWeapons().push_back(std::move(weapon4));
+	// player->getWeapons().push_back(std::move(weapon2));
+	// player->getWeapons().push_back(std::move(weapon3));
+	// player->getWeapons().push_back(std::move(weapon4));
 	player->setAnimations(playerAnimation.get());
 }
 

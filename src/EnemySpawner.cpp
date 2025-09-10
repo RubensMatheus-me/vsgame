@@ -88,8 +88,8 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
     int frameSize = enemyConfig["size"];
 
     int numFrames = enemyConfig["frames"].size();
-    int numFramesHit = enemyConfig["hitFrames"].size()+1;
-    int numFramesDeath = enemyConfig["deathFrames"].size()+1;
+    int numFramesHit = enemyConfig["hitFrames"].size() + 1;
+    int numFramesDeath = enemyConfig["deathFrames"].size() + 1;
 
     anim->addAnimation("idle", enemyConfig["sprite"], 0, 0, frameSize, frameSize, numFrames, true);
     anim->addAnimation("hit", enemyConfig["onHitSprite"], 0, 0, frameSize, frameSize, numFramesHit, false, 150.0f);
@@ -109,9 +109,15 @@ void EnemySpawner::spawnEnemy(Player *player, std::vector<std::unique_ptr<Enemy>
         enemyConfig["xpDrop"],
         enemyConfig["spawnWeight"],
         enemyConfig["baseAtk"],
-		enemyConfig["hp"]
-    );
+        enemyConfig["hp"]);
     enemy->setCurrentHp(enemyConfig["hp"]);
     enemy->setTarget(player);
     enemies.push_back(std::move(enemy));
+    enemiesSpawned++;
+}
+
+void EnemySpawner::reset()
+{
+    lastSpawnTime = 0.0f;
+    enemiesSpawned = 0;
 }
