@@ -50,7 +50,7 @@ void BrassKnuckles::attack(const Vector &position, const std::vector<std::unique
     auto p = std::make_unique<Attack>(
         Vector(64.0f, 64.0f),
         newPosition - Vector(0.0f, playerHeight),
-        5.0f,
+        resolveDamage(player),
         std::move(animation),
         std::make_unique<StraightLineMotion>(direction, 300.0f),
         std::make_unique<AnimationLifeTime>(),

@@ -44,6 +44,8 @@ public:
     void setAtkSpeedMultiplier(float atkSpeedMultiplier) { this->atkSpeedMultiplier = atkSpeedMultiplier; }
     void setLevel(int level) { this->level = level; }
 
+    float resolveDamage(Player* player); 
+
 protected:
     float flatDamage;
     float flatAtkSpeed;

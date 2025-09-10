@@ -416,7 +416,8 @@ void Game::initializeEntities()
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME);
+		Config::PLAYER_INVULNERABILITY_TIME,	
+		Config::DAMAGE_MULTIPLIER);
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
 	anim->addAnimation("axe-right", "axe", 0, 0, 32, 32, 5, true);

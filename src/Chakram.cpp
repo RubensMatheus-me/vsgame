@@ -34,7 +34,7 @@ void Chakram::attack(const Vector &position, const std::vector<std::unique_ptr<E
         auto attack = std::make_unique<Attack>(
             Vector(32.0f, 32.0f),
             position + Vector(10.0f, 0.0f),
-            10.0f,
+            resolveDamage(player),
             std::move(anim),
             std::make_unique<OrbitMotion>(
                 player,

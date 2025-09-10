@@ -57,7 +57,7 @@ void Lightning::attack(const Vector &position, const std::vector<std::unique_ptr
     auto p = std::make_unique<Attack>(
         Vector(32.0f, 64.0f),
         target->getPosition() - Vector(0.0f, 60.0f),
-        5.0f,
+        resolveDamage(player),
         std::move(anim),
         std::make_unique<StraightLineMotion>(
             direction,

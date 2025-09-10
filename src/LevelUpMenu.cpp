@@ -195,6 +195,8 @@ void LevelUpMenu::applyUpgradeToPlayer(Player &player, const Upgrade &upgrade)
     player.setHp(player.getHp() * upgrade.getHpMultiplier());
     player.setAtkSpeed(player.getAtkSpeed() * upgrade.getDamageMultiplier());
     player.setMovSpeed(player.getMovSpeed() * upgrade.getMovSpeedMultiplier());
+    player.setDamageMultiplier(player.getDamageMultiplier() * upgrade.getDamageMultiplier());
+
     player.getUpgrades().push_back(std::make_unique<Upgrade>(upgrade));
 }
 
