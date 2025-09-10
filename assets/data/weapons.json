@@ -2,25 +2,25 @@
 	{
 		"id": 1,
 		"name": "Machado",
-		"description": "Arremessa um machado na direção do inimigo mais próximo",
+		"description": "Arremessa um machado na direcao do inimigo mais próximo",
 		"spriteName": "Axe"
 	},
 	{
 		"id": 2,
 		"name": "Soco-inglês",
-		"description": "Desfere um soco-ingles magico gigante na direção que o personagem esta virado",
+		"description": "Desfere um soco-ingles magico gigante na direcao que o personagem esta virado",
 		"spriteName": "brassKnuckles"
 	},
 	{
 		"id": 3,
 		"name": "Chakram",
-		"description": "Cria chakrams em volta do jogador que ocasionalmente dão dano aos inimigos",
-		"spriteName": "ChakramIcon"
+		"description": "Cria chakrams em volta do jogador que ocasionalmente causam dano aos inimigos",
+		"spriteName": "Chakram"
 	},
 	{
 		"id": 4,
 		"name": "Raio do Julgamento",
-		"description": "Acerta um inimigo aleatorio em um área inicial de 200px com um raio",
+		"description": "Acerta um inimigo aleatorio em um area inicial de 200px com um raio",
 		"spriteName": "judgmentRay"
 	}
 ]
