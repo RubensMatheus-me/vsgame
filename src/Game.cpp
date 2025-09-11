@@ -25,6 +25,7 @@
 #include "WaveManager.h"
 #include "Chakram.h"
 #include "Lightning.h"
+#include "DamagePopupManager.h"
 
 using namespace Config;
 
@@ -112,6 +113,8 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", windowWidth, windowHeight);
 		initializeEntities();
 
+		damagePopupManager = std::make_unique<DamagePopupManager>("assets/fonts/dogica.ttf", 12, 5, 1);
+
 		setIsRunning(true);
 		GameStateManager::getInstance().setState(GameState::InGame);
 	}
@@ -155,13 +158,16 @@ void Game::clean()
 
 void Game::render()
 {
-
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
 
 	tileManager->renderMap(renderer, player->getCollider());
-
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+	for (auto &e : enemies)
+	{
+		e->render(renderer);
+	}
 
 	if (player != nullptr)
 	{
@@ -172,11 +178,17 @@ void Game::render()
 		std::cout << "Player não está inicializado!" << std::endl;
 	}
 
-	for (auto &e : enemies)
+	for (auto &weapon : player->getWeapons())
 	{
-		e->render(renderer);
+		for (auto &attack : weapon->getAttacks())
+		{
+			attack->render(renderer);
+		}
 	}
 
+	damagePopupManager->render(renderer, CameraManager::getCameraManager()->getOffSet());
+
+	// UI
 	if (fpsTexture == nullptr)
 	{
 		std::cerr << "Falha ao criar textura de FPS!" << std::endl;
@@ -210,14 +222,6 @@ void Game::render()
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
 	GUIRenderer::renderPlayerInfo(renderer, player.get());
-
-	for (auto &weapon : player->getWeapons())
-	{
-		for (auto &attack : weapon->getAttacks())
-		{
-			attack->render(renderer);
-		}
-	}
 
 	SDL_RenderPresent(renderer);
 }
@@ -265,6 +269,8 @@ void Game::update()
 	}
 	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
 
+	damagePopupManager->update(dt);
+
 	// if (!allElements.empty()) {
 	//     CollisionManager::handleCollisions(allElements);
 	// } else {
@@ -278,7 +284,6 @@ void Game::update()
 	{
 		CollisionManager::handleProjectileCollisions(player.get(), enemies);
 	}
-
 
 	for (auto &e : enemies)
 	{
@@ -294,7 +299,8 @@ void Game::update()
 
 	removeDeadEntities();
 
-	if (waveManager) {
+	if (waveManager)
+	{
 		waveManager->update(dt, player.get(), enemies);
 	}
 
@@ -423,7 +429,7 @@ void Game::initializeEntities()
 		Config::PLAYER_IS_MOVING,
 		Config::PLAYER_INITIAL_DIRECTION,
 		Config::PLAYER_DAMAGE_COOLDOWN,
-		Config::PLAYER_INVULNERABILITY_TIME,	
+		Config::PLAYER_INVULNERABILITY_TIME,
 		Config::DAMAGE_MULTIPLIER);
 	auto anim = std::make_unique<SpriteAnimation>();
 	anim->addAnimation("axe-idle", "axe", 0, 0, 32, 32, 1, false);
@@ -455,9 +461,9 @@ void Game::initializeEntities()
 		"Lightning");
 
 	player->getWeapons().push_back(std::move(weapon));
-	//player->getWeapons().push_back(std::move(weapon2));
-	//player->getWeapons().push_back(std::move(weapon3));
-	//player->getWeapons().push_back(std::move(weapon4));
+	// player->getWeapons().push_back(std::move(weapon2));
+	// player->getWeapons().push_back(std::move(weapon3));
+	// player->getWeapons().push_back(std::move(weapon4));
 	player->setAnimations(playerAnimation.get());
 }
 
