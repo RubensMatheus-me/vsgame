@@ -113,7 +113,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", windowWidth, windowHeight);
 		initializeEntities();
 
-		damagePopupManager = std::make_unique<DamagePopupManager>("assets/fonts/dogica.ttf", 12, 5, 1);
+		damagePopupManager = std::make_unique<DamagePopupManager>(renderer, "assets/fonts/dogica.ttf", 12, 50);
 
 		setIsRunning(true);
 		GameStateManager::getInstance().setState(GameState::InGame);
@@ -186,7 +186,7 @@ void Game::render()
 		}
 	}
 
-	damagePopupManager->render(renderer, CameraManager::getCameraManager()->getOffSet());
+	damagePopupManager->render(CameraManager::getCameraManager()->getOffSet());
 
 	// UI
 	if (fpsTexture == nullptr)
@@ -228,6 +228,7 @@ void Game::render()
 
 void Game::update()
 {
+
 	if (GameStateManager::getInstance().isInLose())
 	{
 		setIsRunning(false);

@@ -2,20 +2,31 @@
 #include <SDL.h>
 #include <string>
 #include "Vector.h"
-#include "TextureManager.h"
+#include "FontCache.h"
 
 class DamagePopup
 {
 public:
-    DamagePopup(const std::string &text, const Vector &worldPos, SDL_Color color,
-                int enemyId = -1, float duration = 1.0f)
-        : text(text), worldPos(worldPos), color(color),
-          duration(duration), elapsed(0.0f), alive(true), enemyId(enemyId)
+    DamagePopup() : alive(false), texture(nullptr) {}
+
+    void init(const std::string &txt, const Vector &pos, SDL_Color col,
+              SDL_Renderer *renderer, const char *fontPath, int fontSize,
+              int enemyId = -1, float duration = 1.0f)
     {
-        regenerateTexture();
+        text = txt;
+        worldPos = pos;
+        color = col;
+        this->duration = duration;
+        elapsed = 0;
+        alive = true;
+        this->enemyId = enemyId;
+        regenerateTexture(renderer, fontPath, fontSize);
     }
+
     void update(float dt)
     {
+        if (!alive)
+            return;
         elapsed += dt;
         worldPos.y -= 20.0f * dt;
         if (elapsed >= duration)
@@ -26,22 +37,24 @@ public:
     {
         if (!alive || !texture)
             return;
+
         SDL_Rect dstRect = {
             static_cast<int>(worldPos.x - cameraOffset.x),
             static_cast<int>(worldPos.y - cameraOffset.y),
             textW, textH};
         SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
+        std::cout << "Popup pos: " << worldPos.x << "," << worldPos.y << "\n";
     }
 
     bool isAlive() const { return alive; }
     int getEnemyId() const { return enemyId; }
 
-    void appendDamage(int dmg)
+    void appendDamage(int dmg, SDL_Renderer *renderer, const char *fontPath, int fontSize)
     {
         int oldVal = std::stoi(text);
         int newVal = oldVal + dmg;
         text = std::to_string(newVal);
-        regenerateTexture();
+        regenerateTexture(renderer, fontPath, fontSize);
     }
 
 private:
@@ -53,14 +66,14 @@ private:
     bool alive;
     int enemyId;
 
-    SDL_Texture *texture = nullptr;
+    SDL_Texture *texture;
     int textW = 0, textH = 0;
 
-    void regenerateTexture()
+    void regenerateTexture(SDL_Renderer *renderer = nullptr, const char *fontPath = nullptr, int fontSize = 12)
     {
-        if (texture)
-            SDL_DestroyTexture(texture);
-        texture = TextureManager::renderText(text, "assets/fonts/dogica.ttf", color, 12);
+        if (!renderer || !fontPath)
+            return;
+        texture = FontCache::getTextTexture(renderer, text, fontPath, color, fontSize);
         SDL_QueryTexture(texture, nullptr, nullptr, &textW, &textH);
     }
 };

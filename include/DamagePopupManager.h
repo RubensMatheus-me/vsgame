@@ -2,54 +2,46 @@
 #include <vector>
 #include <deque>
 #include <memory>
+#include <algorithm>
 #include "DamagePopup.h"
 
 class DamagePopupManager
 {
 public:
-    DamagePopupManager(const char *fontPath, int fontSize,
-                       size_t maxPopups = 5, size_t maxPerEnemy = 1)
-        : fontPath(fontPath), fontSize(fontSize),
-          MAX_POPUPS(maxPopups), MAX_PER_ENEMY(maxPerEnemy) {}
+    DamagePopupManager(SDL_Renderer *renderer, const char *fontPath, int fontSize,
+                       size_t poolSize = 50, size_t maxPopups = 10, size_t maxPerEnemy = 1)
+        : renderer(renderer), fontPath(fontPath), fontSize(fontSize),
+          MAX_POPUPS(maxPopups), MAX_PER_ENEMY(maxPerEnemy)
+    {
+        pool.resize(poolSize);
+        for (auto &popup : pool)
+            popup = std::make_unique<DamagePopup>();
+    }
 
     void addPopup(const std::string &text, const Vector &pos, SDL_Color color, int enemyId = -1)
     {
-        if (active.size() >= MAX_POPUPS)
+        if (countActive() >= MAX_POPUPS)
         {
-            active.pop_front();
+            removeOldest();
         }
 
         if (enemyId != -1 && countActiveByEnemy(enemyId) >= MAX_PER_ENEMY)
-        {
             return;
-        }
 
-        active.push_back(std::make_unique<DamagePopup>(text, pos, color, enemyId));
-    }
-
-    void update(float dt)
-    {
-        for (auto &popup : active)
-            popup->update(dt);
-
-        auto it = std::remove_if(active.begin(), active.end(),
-                                 [](const std::unique_ptr<DamagePopup> &p)
-                                 {
-                                     return !p->isAlive();
-                                 });
-        active.erase(it, active.end());
-    }
-
-    void render(SDL_Renderer *renderer, const Vector &cameraOffset)
-    {
-        size_t rendered = 0;
-        for (auto &popup : active)
+        for (auto &popup : pool)
         {
-            if (rendered >= MAX_RENDER_PER_FRAME)
-                break;
-            popup->render(renderer, cameraOffset);
-            rendered++;
+            if (!popup->isAlive())
+            {
+                popup->init(text, pos, color, renderer, fontPath, fontSize, enemyId);
+                active.push_back(popup.get());
+                lastPopup = popup.get();
+                return;
+            }
         }
+
+        pool[0]->init(text, pos, color, renderer, fontPath, fontSize, enemyId);
+        active.push_back(pool[0].get());
+        lastPopup = pool[0].get();
     }
 
     void addGroupedPopup(int damage, const Vector &pos, SDL_Color color, int enemyId = -1)
@@ -57,30 +49,57 @@ public:
         if (!lastPopup || lastPopup->getEnemyId() != enemyId || !lastPopup->isAlive())
         {
             addPopup(std::to_string(damage), pos, color, enemyId);
-            lastPopup = active.back().get();
         }
         else
         {
-            lastPopup->appendDamage(damage);
+            lastPopup->appendDamage(damage, renderer, fontPath, fontSize);
         }
     }
 
+    void update(float dt)
+    {
+        for (auto &popup : pool)
+            popup->update(dt);
+
+        active.erase(std::remove_if(active.begin(), active.end(),
+                                    [](DamagePopup *p)
+                                    { return !p->isAlive(); }),
+                     active.end());
+    }
+
+    void render(const Vector &cameraOffset)
+    {
+        for (auto &popup : active)
+            popup->render(renderer, cameraOffset);
+    }
+
 private:
+    SDL_Renderer *renderer;
     const char *fontPath;
     int fontSize;
-    std::deque<std::unique_ptr<DamagePopup>> active;
-    size_t MAX_POPUPS;
-    size_t MAX_PER_ENEMY;
-    size_t MAX_RENDER_PER_FRAME = 5;
 
+    std::vector<std::unique_ptr<DamagePopup>> pool;
+    std::deque<DamagePopup *> active;
     DamagePopup *lastPopup = nullptr;
 
-    size_t countActiveByEnemy(int enemyId)
+    size_t MAX_POPUPS;
+    size_t MAX_PER_ENEMY;
+
+    size_t countActive() const
+    {
+        return active.size();
+    }
+
+    size_t countActiveByEnemy(int enemyId) const
     {
         return std::count_if(active.begin(), active.end(),
-                             [enemyId](const std::unique_ptr<DamagePopup> &p)
-                             {
-                                 return p->getEnemyId() == enemyId;
-                             });
+                             [enemyId](DamagePopup *p)
+                             { return p->getEnemyId() == enemyId; });
+    }
+
+    void removeOldest()
+    {
+        if (!active.empty())
+            active.pop_front();
     }
 };
