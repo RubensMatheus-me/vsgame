@@ -13,3 +13,5 @@ src/*.o
 ### Readme ###
 *.md
 .config.mk
+
+Makefile
