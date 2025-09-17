@@ -69,6 +69,8 @@ void LevelUpMenu::initWeapons(const std::string &jsonPath)
         std::string desc = entry.value("description", "");
         std::string spriteName = entry.value("spriteName", "");
 
+		std::cout << spriteName << std::endl;
+
         SpriteAnimation *anim = new SpriteAnimation();
         anim->addAnimation("idle", spriteName, 0, 0, 32, 32, 1, true);
         anim->play("idle");
@@ -178,7 +180,7 @@ void LevelUpMenu::resolveWeapon(Player &player, WeaponChoice *weaponChoice)
             std::unique_ptr<Weapon> weapon = std::make_unique<BrassKnuckles>(
                 Config::PLAYER_SIZE,
                 anim.get(),
-                "soco-inglês");
+                "soco-ingles");
             player.getWeapons().push_back(std::move(weapon));
             break;
         }

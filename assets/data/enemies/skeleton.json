@@ -4,7 +4,7 @@
   "speed": 0,
   "hp": 25,
   "attackRate": 1.0,
-  "moveSpeed": 55.0,
+  "moveSpeed": 30.0,
   "xpDrop": 100,
   "spawnWeight": 2,
   "baseAtk": 25,

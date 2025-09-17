@@ -3,13 +3,13 @@
 		"id": 1,
 		"name": "Machado",
 		"description": "Arremessa um machado na direcao do inimigo mais proximo",
-		"spriteName": "Axe"
+		"spriteName": "AxeIcon"
 	},
 	{
 		"id": 2,
 		"name": "Soco-ingles",
 		"description": "Desfere um soco-ingles magico gigante na direcao que o personagem esta virado",
-		"spriteName": "brassKnuckles"
+		"spriteName": "BrassKnucklesIcon"
 	},
 	{
 		"id": 3,
@@ -21,6 +21,6 @@
 		"id": 4,
 		"name": "Raio do Julgamento",
 		"description": "Acerta um inimigo aleatorio em um area inicial de 200px com um raio",
-		"spriteName": "judgmentRay"
+		"spriteName": "JudgmentRayIcon"
 	}
 ]
