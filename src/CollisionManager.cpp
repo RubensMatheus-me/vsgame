@@ -41,6 +41,35 @@ void CollisionManager::handlePlayerCollisions(Player *player, std::vector<std::u
     }
 }
 
+void CollisionManager::handleEnemyCollisions(std::vector<std::unique_ptr<Enemy>> &enemies, Player* player) {
+	Rect playerRect = player->getCollider();
+
+	Vector playerPos = player->getPosition();
+	
+	for (size_t i = 0; i < enemies.size(); i++) {
+		for (size_t j = i + 1; j < enemies.size(); j++ ) {
+			Enemy* enemyA = enemies[i].get();
+			Enemy* enemyB = enemies[j].get();
+
+			Rect rectA = enemyA->getCollider();
+			Rect rectB = enemyB->getCollider();
+
+			if (rectA.intersects(rectB)) {
+				Vector positionA = enemyA->getPosition();
+    			Vector positionB = enemyB->getPosition();
+
+				Vector separation = positionA - positionB;
+				separation.normalize();
+				
+				enemyA->setPosition(positionA + separation);
+				enemyB->setPosition(positionB - separation);
+
+			}
+		}
+	}	
+}
+
+
 void CollisionManager::handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies) {
     for (auto& weapon : player->getWeapons()) {
         for(auto& attack : weapon->getAttacks()) {

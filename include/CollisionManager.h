@@ -14,8 +14,8 @@ class CollisionManager {
 
         static void handlePlayerCollisions(Player* player, std::vector<std::unique_ptr<Enemy>> &enemies);
         static void handleProjectileCollisions(Player* player, std::vector<std::unique_ptr<Enemy>>  &enemies);
-        
-        static void handleCollisions(const std::vector<GraphicalElement*> &elements);
+
+		static void handleEnemyCollisions(std::vector<std::unique_ptr<Enemy>> &enemies, Player* player);
 
 		static void handleCollisionMap(Player* player, TileManager &tileManager, int mapWidth, int mapHeight);
 

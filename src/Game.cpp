@@ -264,7 +264,6 @@ void Game::update()
 		keyboard->update(*player, dt);
 	}
 	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
-
 	// if (!allElements.empty()) {
 	//     CollisionManager::handleCollisions(allElements);
 	// } else {
@@ -273,11 +272,10 @@ void Game::update()
 	if (!enemies.empty())
 	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
-	}
-	if (!enemies.empty())
-	{
 		CollisionManager::handleProjectileCollisions(player.get(), enemies);
+		CollisionManager::handleEnemyCollisions(enemies, player.get());
 	}
+
 
 
 	for (auto &e : enemies)
