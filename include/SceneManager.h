@@ -3,18 +3,29 @@
 #include "Scene.h"
 
 class SceneManager {
-	public:
-		SceneManager();
-		~SceneManager();
+public:
+    static SceneManager& getInstance() {
+        static SceneManager instance;
+        return instance;
+    }
 
-		void pushScene(Scene* scene);
-		void popScene();
-		void changeScene(Scene* scene);
-		void handleInput(SDL_Event& event);
-		void update(float dt);
-		void render();
-		void cleanUp();
+	~SceneManager();
 
-	private:
-		std::stack<Scene*> sceneStack;
+    void pushScene(Scene* scene);
+    void popScene();
+    void changeScene(Scene* scene);
+    void handleInput(SDL_Event& event);
+    void update(float dt);
+    void render();
+    void cleanUp();
+
+	Scene* getCurrentScene();
+
+private:
+    SceneManager() = default;
+
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator=(const SceneManager&) = delete;
+
+    std::stack<Scene*> sceneStack;
 };

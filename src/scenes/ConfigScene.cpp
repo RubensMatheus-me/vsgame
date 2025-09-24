@@ -1,24 +1,22 @@
-#include "scenes/MenuScene.h"
-#include "SceneManager.h"
 #include "scenes/ConfigScene.h"
-#include "GameStateManager.h"
-#include "enums/GameState.h"
+#include "SceneManager.h"
+#include "scenes/MenuScene.h"
 #include <iostream>
+#include <SDL.h>
 
-MenuScene::MenuScene(Game* game) : game(game) {}
-
-MenuScene::~MenuScene() {
-    cleanUp(); 
+ConfigScene::ConfigScene(Game* game) : game(game), font(nullptr) {}
+ConfigScene::~ConfigScene() {
+    cleanUp();
 }
 
-void MenuScene::init() {
+void ConfigScene::init() {
     font = TTF_OpenFont("assets/fonts/dogica.ttf", 24);
     if (!font) {
-        std::cerr << "Erro ao carregar a fonte: " << TTF_GetError() << std::endl;
+        std::cerr << "Erro ao carregar fonte: " << TTF_GetError() << std::endl;
     }
 }
 
-void MenuScene::handleInput(SDL_Event& event) {
+void ConfigScene::handleInput(SDL_Event& event) {
     if (event.type == SDL_QUIT) {
         game->clean();
     } 
@@ -30,26 +28,29 @@ void MenuScene::handleInput(SDL_Event& event) {
             case SDLK_DOWN:
                 selectedIndex = (selectedIndex + 1) % options.size();
                 break;
-            case SDLK_RETURN:
-                if (options[selectedIndex] == "Iniciar Jogo") {
-                    game->initializeGameEntities();
-                    GameStateManager::getInstance().setState(GameState::InGame);
-                } else if (options[selectedIndex] == "Configurações") {
-                    SceneManager::getInstance().changeScene(new ConfigScene(game));
-                } else if (options[selectedIndex] == "Sair") {
-                    game->clean();
+           case SDLK_RETURN:
+                if (options[selectedIndex] == "Fullscreen") {
+                    Uint32 flags = SDL_GetWindowFlags(game->getWindow());
+                    if (flags & SDL_WINDOW_FULLSCREEN) {
+                        SDL_SetWindowFullscreen(game->getWindow(), 0); // voltar a windowed
+                    } else {
+                        SDL_SetWindowFullscreen(game->getWindow(), SDL_WINDOW_FULLSCREEN);
+                    }
+                }
+                else if (options[selectedIndex] == "Voltar ao Menu") {
+                    SceneManager::getInstance().pushScene(new MenuScene(game));
                 }
                 break;
             case SDLK_ESCAPE:
-                game->clean();
+                SceneManager::getInstance().changeScene(new MenuScene(game));
                 break;
         }
     }
 }
 
-void MenuScene::update(float dt) {}
+void ConfigScene::update(float dt) {}
 
-void MenuScene::renderText(const std::string& text, int x, int y, bool selected) {
+void ConfigScene::renderText(const std::string& text, int x, int y, bool selected) {
     SDL_Color color = selected ? SDL_Color{255, 255, 0, 255} : SDL_Color{255, 255, 255, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(game->getRenderer(), surface);
@@ -61,7 +62,7 @@ void MenuScene::renderText(const std::string& text, int x, int y, bool selected)
     SDL_DestroyTexture(texture);
 }
 
-void MenuScene::render() {
+void ConfigScene::render() {
     SDL_RenderClear(game->getRenderer());
 
     int startY = game->getHeight() / 2 - (int)options.size() * 30;
@@ -72,7 +73,7 @@ void MenuScene::render() {
     SDL_RenderPresent(game->getRenderer());
 }
 
-void MenuScene::cleanUp() {
+void ConfigScene::cleanUp() {
     if (font) {
         TTF_CloseFont(font);
         font = nullptr;

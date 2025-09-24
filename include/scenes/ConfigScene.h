@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 
-class MenuScene : public Scene {
+class ConfigScene : public Scene {
 public:
-    MenuScene(Game* game);
-    ~MenuScene();
+    ConfigScene(Game* game);
+    ~ConfigScene() override;
 
     void init() override;
     void handleInput(SDL_Event& event) override;
@@ -16,10 +16,13 @@ public:
     void cleanUp() override;
 
 private:
-    void renderText(const std::string& text, int x, int y, bool selected);
-
     Game* game;
-    std::vector<std::string> options = {"Iniciar Jogo", "Configurações", "Sair"};
-    int selectedIndex = 0;
     TTF_Font* font = nullptr;
+    int selectedIndex = 0;
+    std::vector<std::string> options = {
+        "Fullscreen",
+        "Voltar ao Menu"
+    };
+
+    void renderText(const std::string& text, int x, int y, bool selected);
 };

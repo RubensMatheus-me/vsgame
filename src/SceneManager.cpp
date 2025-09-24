@@ -1,7 +1,5 @@
 #include "SceneManager.h"
 
-SceneManager::SceneManager() {}
-
 SceneManager::~SceneManager() {
 	cleanUp();
 }
@@ -50,4 +48,11 @@ void SceneManager::cleanUp() {
 		delete sceneStack.top();
 		sceneStack.pop();
 	}
+}
+
+Scene* SceneManager::getCurrentScene() {
+    if (!sceneStack.empty()) {
+        return sceneStack.top();
+    }
+    return nullptr;
 }
