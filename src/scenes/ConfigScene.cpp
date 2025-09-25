@@ -9,7 +9,8 @@ ConfigScene::~ConfigScene() {
     cleanUp();
 }
 
-void ConfigScene::init() {
+void ConfigScene::init(SDL_Renderer *render) {
+	renderer = render;
     font = TTF_OpenFont("assets/fonts/dogica.ttf", 24);
     if (!font) {
         std::cerr << "Erro ao carregar fonte: " << TTF_GetError() << std::endl;
@@ -18,7 +19,6 @@ void ConfigScene::init() {
 
 void ConfigScene::handleInput(SDL_Event& event) {
     if (event.type == SDL_QUIT) {
-        game->clean();
     } 
     else if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
@@ -29,15 +29,7 @@ void ConfigScene::handleInput(SDL_Event& event) {
                 selectedIndex = (selectedIndex + 1) % options.size();
                 break;
            case SDLK_RETURN:
-                if (options[selectedIndex] == "Fullscreen") {
-                    Uint32 flags = SDL_GetWindowFlags(game->getWindow());
-                    if (flags & SDL_WINDOW_FULLSCREEN) {
-                        SDL_SetWindowFullscreen(game->getWindow(), 0); // voltar a windowed
-                    } else {
-                        SDL_SetWindowFullscreen(game->getWindow(), SDL_WINDOW_FULLSCREEN);
-                    }
-                }
-                else if (options[selectedIndex] == "Voltar ao Menu") {
+                if (options[selectedIndex] == "Voltar ao Menu") {
                     SceneManager::getInstance().pushScene(new MenuScene(game));
                 }
                 break;

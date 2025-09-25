@@ -11,10 +11,11 @@
 #include "Timer.h"
 #include "TileManager.h"
 #include "CameraManager.h"
+#include "Scene.h"
 
 // const float MAX_FPS = 60.0f;
 
-class Game
+class Game : public Scene
 {
 	public:
 		Game();
@@ -24,12 +25,12 @@ class Game
 		void setPaused(bool value) { isPaused = value; }
 		bool getIsPaused() const { return isPaused; }
 
-		void init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen);
+		void init() override;
 
 		void events();
-		void update();
-		void render();
-		void clean();
+		void update(float dt) override;
+		void render() override;
+		void cleanUp() override;
 
 		void loadResources();
 		void limitFPS(float targetFPS);
@@ -51,7 +52,7 @@ class Game
 		void shootProjectile();
 		void removeDeadEntities();
 
-		void handleInput(SDL_Event& event);
+		void handleInput(SDL_Event& event) override;
 
 		void spawnEnemy();
 		SDL_Renderer* getRenderer() const {return this->renderer;}

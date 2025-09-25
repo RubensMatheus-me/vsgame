@@ -18,6 +18,7 @@
 #include "AudioManager.h"
 #include <SDL2/SDL.h>
 #include "GameStateManager.h"
+#include "SceneManager.h"
 
 using namespace Config;
 
@@ -52,41 +53,23 @@ Game::~Game() {};
 
 int Game::width = 800; 
 int Game::height = 600;
-
-void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
+void Game::init(SDL_Renderer *render)
 {
-
+	renderer = render;
 	keyboard = std::make_unique<Keyboard>();
 	tickRate = std::make_unique<TickRate>();
 	collision = std::make_unique<CollisionManager>();
 	tileManager = std::make_unique<TileManager>();
 	playerAnimation = std::make_unique<SpriteAnimation>();
 	levelUpMenu = std::make_unique<LevelUpMenu>();
-	int flags = 0;
 
-	if (fullscreen)
-	{
-		flags = SDL_WINDOW_FULLSCREEN;
-	}
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
-		if (TTF_Init() == -1)
-		{
-			setIsRunning(false);
-			return;
-		}
-
 		if (!AudioManager::getInstance().init())
 		{
 			setIsRunning(false);
 			return;
 		}
-
-		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
-		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
-
-		renderer = SDL_CreateRenderer(window, -1, 0);
 
 		AudioManager &audio = AudioManager::getInstance();
 		audio.init();
@@ -97,15 +80,13 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		// Musics
 		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
 		audio.playMusic("backgroundMusic");
-
-		TextureManager::init(renderer);
+		TextureManager::init(sceneManager.getRenderer());
 		loadResources();
 		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, windowWidth, windowHeight);
 		enemySpawner->loadAllEnemiesFromFolder("assets/data/enemies");
 		levelUpMenu->init("assets/data/upgrades.json");
 
-		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
-
+		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", sceneManager.getRenderer());
 		initializeEntities();
 
 		setIsRunning(true);
@@ -130,7 +111,7 @@ void Game::events()
 	}
 }
 
-void Game::clean()
+void Game::cleanUp()
 {
 
 	SDL_DestroyWindow(window);
@@ -219,7 +200,7 @@ void Game::render()
 	SDL_RenderPresent(renderer);
 }
 
-void Game::update()
+void Game::update(float dt)
 {
 	if (GameStateManager::getInstance().isInLose())
 	{
@@ -231,7 +212,6 @@ void Game::update()
 		return;
 
 	tickRate->update();
-	float dt = tickRate->getDeltaTime();
 
 	timerEvents.update(dt);
 	gameTime.update(dt);
@@ -590,4 +570,8 @@ void Game::removeDeadEntities()
 		allElements.push_back(e.get());
 	for (auto &p : projectiles)
 		allElements.push_back(p.get());
+}
+
+void Game::handleInput(SDL_Event& event) {
+
 }

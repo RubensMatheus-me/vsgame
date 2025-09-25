@@ -11,7 +11,8 @@ MenuScene::~MenuScene() {
     cleanUp(); 
 }
 
-void MenuScene::init() {
+void MenuScene::init(SDL_Renderer *render) {
+	renderer = render;
     font = TTF_OpenFont("assets/fonts/dogica.ttf", 24);
     if (!font) {
         std::cerr << "Erro ao carregar a fonte: " << TTF_GetError() << std::endl;
@@ -19,11 +20,14 @@ void MenuScene::init() {
 }
 
 void MenuScene::handleInput(SDL_Event& event) {
+	std::cout << "PRINTE" << std::endl;
+	SceneManager& sceneManager = SceneManager::getInstance();
     if (event.type == SDL_QUIT) {
-        game->clean();
+
     } 
     else if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
+			std::cout << event.key.keysym.sym << std::endl;
             case SDLK_UP:
                 selectedIndex = (selectedIndex - 1 + options.size()) % options.size();
                 break;
@@ -32,16 +36,16 @@ void MenuScene::handleInput(SDL_Event& event) {
                 break;
             case SDLK_RETURN:
                 if (options[selectedIndex] == "Iniciar Jogo") {
-                    game->initializeGameEntities();
-                    GameStateManager::getInstance().setState(GameState::InGame);
-                } else if (options[selectedIndex] == "Configurações") {
-                    SceneManager::getInstance().changeScene(new ConfigScene(game));
+					Game* game = new Game();
+					sceneManager.pushScene(game);
+                } else if (options[selectedIndex] == "Configuracoes") {
+
                 } else if (options[selectedIndex] == "Sair") {
-                    game->clean();
+                    sceneManager.cleanUp();
+					sceneManager.destroyWindow();
                 }
                 break;
             case SDLK_ESCAPE:
-                game->clean();
                 break;
         }
     }
@@ -50,26 +54,24 @@ void MenuScene::handleInput(SDL_Event& event) {
 void MenuScene::update(float dt) {}
 
 void MenuScene::renderText(const std::string& text, int x, int y, bool selected) {
+	SceneManager& sceneManager = SceneManager::getInstance();
     SDL_Color color = selected ? SDL_Color{255, 255, 0, 255} : SDL_Color{255, 255, 255, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(game->getRenderer(), surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(sceneManager.getRenderer(), surface);
 
     SDL_Rect renderQuad = {x, y, surface->w, surface->h};
-    SDL_RenderCopy(game->getRenderer(), texture, nullptr, &renderQuad);
+    SDL_RenderCopy(sceneManager.getRenderer(), texture, nullptr, &renderQuad);
 
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 }
 
 void MenuScene::render() {
-    SDL_RenderClear(game->getRenderer());
-
     int startY = game->getHeight() / 2 - (int)options.size() * 30;
     for (size_t i = 0; i < options.size(); ++i) {
         renderText(options[i], game->getWidth() / 4, startY + i * 40, i == selectedIndex);
     }
 
-    SDL_RenderPresent(game->getRenderer());
 }
 
 void MenuScene::cleanUp() {

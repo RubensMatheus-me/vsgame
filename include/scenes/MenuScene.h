@@ -14,12 +14,11 @@ public:
     void update(float dt) override;
     void render() override;
     void cleanUp() override;
-
 private:
     void renderText(const std::string& text, int x, int y, bool selected);
 
     Game* game;
-    std::vector<std::string> options = {"Iniciar Jogo", "Configurações", "Sair"};
+    std::vector<std::string> options = {"Iniciar Jogo", "Configuracoes", "Sair"};
     int selectedIndex = 0;
     TTF_Font* font = nullptr;
 };
