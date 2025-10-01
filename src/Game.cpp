@@ -80,13 +80,13 @@ void Game::init(SDL_Renderer *render)
 		// Musics
 		audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
 		audio.playMusic("backgroundMusic");
-		TextureManager::init(sceneManager.getRenderer());
+		TextureManager::init(renderer);
 		loadResources();
-		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, windowWidth, windowHeight);
+		enemySpawner = std::make_unique<EnemySpawner>(Config::MAX_ENEMIES, Config::SPAWN_INTERVAL, width, height);
 		enemySpawner->loadAllEnemiesFromFolder("assets/data/enemies");
 		levelUpMenu->init("assets/data/upgrades.json");
 
-		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", sceneManager.getRenderer());
+		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
 		initializeEntities();
 
 		setIsRunning(true);
@@ -182,7 +182,7 @@ void Game::render()
 		SDL_Rect xpRect = {10, 25, textW, textH};
 		SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
 	}
-
+	
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
@@ -242,11 +242,6 @@ void Game::update(float dt)
 	}
 	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
 
-	// if (!allElements.empty()) {
-	//     CollisionManager::handleCollisions(allElements);
-	// } else {
-	//     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
-	// }
 	if (!enemies.empty())
 	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
@@ -256,24 +251,24 @@ void Game::update(float dt)
 		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	}
 
-		enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
+	enemySpawner->update(gameTime.getElapsedTime(), player.get(), enemies);
 
-		for (auto &e : enemies)
-		{
-			Vector toPlayer = player->getPosition() - e->getPosition();
-			toPlayer.normalize();
-			e->setSpeed(toPlayer * e->getMovSpeed());
-			e->update(dt);
-		}
+	for (auto &e : enemies)
+	{
+		Vector toPlayer = player->getPosition() - e->getPosition();
+		toPlayer.normalize();
+		e->setSpeed(toPlayer * e->getMovSpeed());
+		e->update(dt);
+	}
 
-		for (auto &proj : projectiles)
-			proj->update(dt);
+	for (auto &proj : projectiles)
+		proj->update(dt);
 
-		if (!enemies.empty())
-			CollisionManager::handlePlayerCollisions(player.get(), enemies);
+	if (!enemies.empty())
+		CollisionManager::handlePlayerCollisions(player.get(), enemies);
 
-		if (!enemies.empty() && !projectiles.empty())
-			CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
+	if (!enemies.empty() && !projectiles.empty())
+		CollisionManager::handleProjectileCollisions(player.get(), enemies, projectiles);
 	
 
 	removeDeadEntities();

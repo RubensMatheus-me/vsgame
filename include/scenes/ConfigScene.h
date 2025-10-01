@@ -9,7 +9,7 @@ public:
     ConfigScene(Game* game);
     ~ConfigScene() override;
 
-    void init() override;
+    void init(SDL_Renderer *renderer) override;
     void handleInput(SDL_Event& event) override;
     void update(float dt) override;
     void render() override;

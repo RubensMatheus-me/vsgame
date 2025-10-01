@@ -25,7 +25,7 @@ class Game : public Scene
 		void setPaused(bool value) { isPaused = value; }
 		bool getIsPaused() const { return isPaused; }
 
-		void init() override;
+		void init(SDL_Renderer *renderer) override;
 
 		void events();
 		void update(float dt) override;
@@ -69,7 +69,6 @@ class Game : public Scene
         bool isRunning;
 		static bool debugMode;
         SDL_Window *window;
-        SDL_Renderer *renderer;
 		Timer timerEvents;
 		Timer gameTime;
 };
