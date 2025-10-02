@@ -4,21 +4,24 @@
 #include <vector>
 #include <string>
 
-class MenuScene : public Scene {
+class PlacarScene : public Scene {
 public:
-    MenuScene();
-    ~MenuScene();
+    PlacarScene();
+    ~PlacarScene() override;
 
     void init(SDL_Renderer *renderer) override;
     void handleInput(SDL_Event& event) override;
     void update(float dt) override;
     void render() override;
     void cleanUp() override;
-private:
-    void renderText(const std::string& text, int x, int y, bool selected);
 
+private:
     Game* game;
-    std::vector<std::string> options = {"Iniciar Jogo", "Configuracoes", "Placar","Sair"};
-    int selectedIndex = 0;
     TTF_Font* font = nullptr;
+    int selectedIndex = 0;
+    std::vector<std::string> options = {
+        "Voltar ao Menu"
+    };
+
+    void renderText(const std::string& text, int x, int y, bool selected);
 };

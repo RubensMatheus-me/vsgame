@@ -6,7 +6,7 @@
 
 class ConfigScene : public Scene {
 public:
-    ConfigScene(Game* game);
+    ConfigScene();
     ~ConfigScene() override;
 
     void init(SDL_Renderer *renderer) override;
@@ -21,6 +21,7 @@ private:
     int selectedIndex = 0;
     std::vector<std::string> options = {
         "Fullscreen",
+		"Volume",
         "Voltar ao Menu"
     };
 

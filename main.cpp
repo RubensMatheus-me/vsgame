@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
 
     SceneManager& sceneManager = SceneManager::getInstance();
     sceneManager.createWindow("Vsgame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, false);
-    sceneManager.pushScene(new MenuScene(game));
+    sceneManager.pushScene(new MenuScene());
 
     SDL_Event event;
     while (sceneManager.getIsRunning()) {

@@ -51,6 +51,7 @@ class Game : public Scene
 		static void setDebugMode(const bool newDebugMode) {debugMode = newDebugMode;}
 		void shootProjectile();
 		void removeDeadEntities();
+		void isDead();
 
 		void handleInput(SDL_Event& event) override;
 
