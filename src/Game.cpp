@@ -26,11 +26,13 @@
 #include "Chakram.h"
 #include "Lightning.h"
 #include "DamagePopupManager.h"
+#include "GameStateManager.h"
+#include "SceneManager.h"
+#include "scenes/MenuScene.h"
 
 using namespace Config;
 
 const char *pathFont = "assets/fonts/dogica.ttf";
-int windowWidth, windowHeight;
 
 bool Game::debugMode = true;
 
@@ -45,39 +47,59 @@ std::unique_ptr<LevelUpMenu> levelUpMenu;
 std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
 std::unique_ptr<EnemySpawner> enemySpawner;
 std::unique_ptr<WaveManager> waveManager;
+SceneManager& sceneManager = SceneManager::getInstance();
 
-std::string lastFpsText;
-std::string lastTimeText;
-std::string lastXpText;
-SDL_Texture *fpsTexture = nullptr;
-SDL_Texture *timeTexture = nullptr;
-SDL_Texture *xpTexture = nullptr;
-SDL_DisplayMode displayMode;
+	std::string lastFpsText;
+	std::string lastTimeText;
+	std::string lastXpText;
+	SDL_Texture *fpsTexture = nullptr;
+	SDL_Texture *timeTexture = nullptr;
+	SDL_Texture *xpTexture = nullptr;
+	SDL_DisplayMode displayMode;
 
-Game::Game() : timerEvents(1.0f), gameTime(1.0f) {};
-Game::~Game() {};
-
-int Game::width = 800;
-int Game::height = 600;
-
-void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
-{
-
-	keyboard = std::make_unique<Keyboard>();
-	tickRate = std::make_unique<TickRate>();
-	collision = std::make_unique<CollisionManager>();
-	tileManager = std::make_unique<TileManager>();
-	playerAnimation = std::make_unique<SpriteAnimation>();
-	levelUpMenu = std::make_unique<LevelUpMenu>();
-	int flags = 0;
-
-	if (fullscreen)
+	Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
+	Game::~Game() {};
+	
+	void Game::init(SDL_Renderer *render)
 	{
-		flags = SDL_WINDOW_FULLSCREEN;
-	}
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
-	{
-		if (TTF_Init() == -1)
+		renderer = render;
+		keyboard = std::make_unique<Keyboard>();
+		tickRate = std::make_unique<TickRate>();
+		collision = std::make_unique<CollisionManager>();
+		tileManager = std::make_unique<TileManager>();
+		playerAnimation = std::make_unique<SpriteAnimation>();
+		levelUpMenu = std::make_unique<LevelUpMenu>();
+
+		if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+		{
+			if (!AudioManager::getInstance().init())
+			{
+				setIsRunning(false);
+				return;
+			}
+
+			//enemies.clear();
+
+			AudioManager &audio = AudioManager::getInstance();
+			audio.init();
+			// Sound Effects
+			audio.loadSound("playerHit", "assets/Audios/effects/playerDamage.ogg");
+			audio.loadSound("gameOver", "assets/Audios/effects/gameover.mp3");
+			audio.loadSound("AxeThrow", "assets/Audios/effects/AxeThrow.mp3");
+			// Musics
+			audio.loadMusic("backgroundMusic", "assets/Audios/Music/testTheme.ogg");
+			audio.playMusic("backgroundMusic");
+			TextureManager::init(renderer);
+			loadResources();
+			levelUpMenu->init("assets/data/upgrades.json", "assets/data/weapons.json");
+
+			tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
+			initializeEntities();
+
+			setIsRunning(true);
+			GameStateManager::getInstance().setState(GameState::InGame);
+		}
+		else
 		{
 			setIsRunning(false);
 			return;
@@ -89,10 +111,6 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 			return;
 		}
 
-		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
-		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
-		renderer = SDL_CreateRenderer(window, -1, 0);
 
 		AudioManager &audio = AudioManager::getInstance();
 		audio.init();
@@ -110,50 +128,13 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 		levelUpMenu->init("assets/data/upgrades.json", "assets/data/weapons.json");
 
 		tileManager->loadMap("assets/map/tileset.json", "assets/data/tiles.json", renderer);
-		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", windowWidth, windowHeight);
+		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", sceneManager.getWidth(), sceneManager.getHeight());
 		initializeEntities();
 
 		damagePopupManager = std::make_unique<DamagePopupManager>(renderer, "assets/fonts/dogica.ttf", 12, 50);
 
 		setIsRunning(true);
 		GameStateManager::getInstance().setState(GameState::InGame);
-	}
-	else
-	{
-		setIsRunning(false);
-		GameStateManager::getInstance().setState(GameState::InLose);
-	}
-}
-
-void Game::events()
-{
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		if (event.type == SDL_QUIT)
-		{
-			GameStateManager::getInstance().setState(GameState::InLose);
-		}
-	}
-}
-
-void Game::clean()
-{
-
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
-	TextureManager::cleanTexture();
-
-	SDL_DestroyTexture(fpsTexture);
-	SDL_DestroyTexture(timeTexture);
-	SDL_DestroyTexture(xpTexture);
-
-	AudioManager::getInstance().clean();
-
-	TTF_Quit();
-	SDL_Quit();
-
-	std::cout << "Jogo limpo" << std::endl;
 }
 
 void Game::render()
@@ -162,7 +143,6 @@ void Game::render()
 	SDL_RenderClear(renderer);
 
 	tileManager->renderMap(renderer, player->getCollider());
-	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
 	for (auto &e : enemies)
 	{
@@ -206,7 +186,7 @@ void Game::render()
 	{
 		int textW = 0, textH = 0;
 		SDL_QueryTexture(timeTexture, nullptr, nullptr, &textW, &textH);
-		SDL_Rect timeRect = {(windowWidth - textW) / 2, 10, textW, textH};
+		SDL_Rect timeRect = {(sceneManager.getWidth() - textW) / 2, 10, textW, textH};
 		SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
 	}
 
@@ -226,7 +206,7 @@ void Game::render()
 	SDL_RenderPresent(renderer);
 }
 
-void Game::update()
+void Game::update(float dt)
 {
 
 	if (GameStateManager::getInstance().isInLose())
@@ -238,8 +218,6 @@ void Game::update()
 	if (!GameStateManager::getInstance().isInGame())
 		return;
 
-	tickRate->update();
-	float dt = tickRate->getDeltaTime();
 
 	timerEvents.update(dt);
 	gameTime.update(dt);
@@ -248,7 +226,7 @@ void Game::update()
 	{
 		GameStateManager::getInstance().setState(GameState::InUpgrade);
 		TTF_Font *font = TTF_OpenFont(pathFont, 10);
-		levelUpMenu->show(renderer, font, *player, windowWidth, windowHeight);
+		levelUpMenu->show(renderer, font, *player, sceneManager.getWidth(), sceneManager.getHeight());
 		TTF_CloseFont(font);
 		levelUpMenu->lastUpgradedLevel++;
 		tickRate->reset();
@@ -271,11 +249,7 @@ void Game::update()
 	collision->handleCollisionMap(player.get(), *tileManager, tileManager->getMapWidth(), tileManager->getMapHeight());
 
 	damagePopupManager->update(dt);
-	// if (!allElements.empty()) {
-	//     CollisionManager::handleCollisions(allElements);
-	// } else {
-	//     std::cerr << "allElements vazio para gerenciar a colisão" << std::endl;
-	// }
+
 	if (!enemies.empty())
 	{
 		CollisionManager::handlePlayerCollisions(player.get(), enemies);
@@ -306,6 +280,20 @@ void Game::update()
 	updateFpsDisplay();
 	updateClockDisplay();
 	updateXp();
+}
+
+void Game::cleanUp()
+{
+	TextureManager::cleanTexture();
+
+	SDL_DestroyTexture(fpsTexture);
+	SDL_DestroyTexture(timeTexture);
+	SDL_DestroyTexture(xpTexture);
+
+	player.get_deleter();
+	AudioManager::getInstance().clean();
+
+	std::cout << "Jogo limpo" << std::endl;
 }
 
 void Game::loadResources()
@@ -623,4 +611,14 @@ void Game::removeDeadEntities()
 						   return !e->isAlive() && e->getSpriteAnimation()->animationEnded();
 					   }),
 		enemies.end());
+}
+
+
+void Game::handleInput(SDL_Event& event) {
+
+}
+
+void Game::isDead() {
+	sceneManager.pushScene(new MenuScene());
+	std::cout << "trocar cenas" << std::endl;
 }

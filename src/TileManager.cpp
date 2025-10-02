@@ -3,6 +3,7 @@
 #include "Vector.h"
 #include "Game.h"
 #include "CameraManager.h"
+#include "SceneManager.h"
 
 TileManager::TileManager() {}
 
@@ -26,8 +27,8 @@ bool TileManager::loadMap(const std::string &tileMapPath, const std::string &til
     tileHeight = mapJson["tileheight"];
 
 	CameraManager::getCameraManager()->init(
-		Game::getWidth(), 
-		Game::getHeight(), 
+		SceneManager::getInstance().getWidth(), 
+		SceneManager::getInstance().getHeight(), 
 		mapWidth, 
 		mapHeight, 
 		tileWidth, 

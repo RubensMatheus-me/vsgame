@@ -4,23 +4,19 @@
 class GameStateManager
 {
 public:
-    static GameStateManager &getInstance()
-    {
-        static GameStateManager instance;
-        return instance;
-    }
+    static GameStateManager &getInstance();
 
-    void setState(GameState state) { currentState = state; }
-    GameState getState() const { return currentState; }
+    void setState(GameState state);
+    GameState getState() const;
 
-    bool isInGame() const { return currentState == GameState::InGame; }
-    bool isInUpgrade() const { return currentState == GameState::InUpgrade; }
-    bool isInLose() const { return currentState == GameState::InLose; }
+    bool isInGame() const;
+    bool isInUpgrade() const;
+    bool isInLose() const;
 
 private:
     GameState currentState = GameState::InGame;
 
-    GameStateManager() = default;
+    GameStateManager();
     GameStateManager(const GameStateManager &) = delete;
     void operator=(const GameStateManager &) = delete;
 };
