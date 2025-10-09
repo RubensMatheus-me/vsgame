@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "Player.h"
@@ -13,6 +14,20 @@
 #include "CameraManager.h"
 #include "DamagePopupManager.h"
 #include "Scene.h"
+
+#include "Enemy.h"
+#include "TextureManager.h"
+#include "CollisionManager.h"
+#include "SpriteAnimation.h"
+#include "LevelUpMenu.h"
+#include "Timer.h"
+#include "EnemySpawner.h"
+#include "AudioManager.h"
+#include "GameStateManager.h"
+#include "WaveManager.h"
+#include "DamagePopupManager.h"
+#include "TextDisplayManager.h"
+
 
 // const float MAX_FPS = 60.0f;
 
@@ -60,13 +75,21 @@ class Game : public Scene
 		SDL_Renderer* getRenderer() const {return this->renderer;}
 		
 		std::unique_ptr<Player> player;
-		std::unique_ptr<Enemy> enemy;
 		std::unique_ptr<Keyboard> keyboard;
 		std::unique_ptr<TileManager> tileManager;
 		std::unique_ptr<CameraManager> camera;
 		std::unique_ptr<DamagePopupManager> damagePopupManager;
 
-		
+		std::vector<std::unique_ptr<Enemy>> enemies;
+		std::unique_ptr<CollisionManager> collision;
+		std::unique_ptr<TickRate> tickRate;
+		std::unique_ptr<SpriteAnimation> playerAnimation;
+		std::unique_ptr<LevelUpMenu> levelUpMenu;
+		std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
+		std::unique_ptr<EnemySpawner> enemySpawner;
+		std::unique_ptr<WaveManager> waveManager;
+		std::unique_ptr<TextDisplayManager> textDisplay;
+			
 	private:
 		static int width;
 		static int height;

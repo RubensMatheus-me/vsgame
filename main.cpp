@@ -4,9 +4,6 @@
 #include "scenes/MenuScene.h"
 #include "SceneManager.h"
 
-Game *game = nullptr;
-
-
 int main(int argc, const char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL não pode ser inicializado! SDL_Error: %s\n", SDL_GetError());
@@ -21,8 +18,8 @@ int main(int argc, const char *argv[]) {
 
     int screenWidth = 800;
     int screenHeight = 600;
-    game = new Game();
 
+	
     SceneManager& sceneManager = SceneManager::getInstance();
     sceneManager.createWindow("Vsgame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, false);
     sceneManager.pushScene(new MenuScene());

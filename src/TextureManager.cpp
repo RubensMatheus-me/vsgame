@@ -11,11 +11,11 @@ void TextureManager::init(SDL_Renderer *ren)
 }
 void TextureManager::loadTexture(const char *filename, std::string textureName)
 {
-    if (textures[textureName] != NULL)
-    {
-        std::cout << "Já existe essa textura, tente outra!" << std::endl;
-        return;
-    };
+    auto it = textures.find(textureName);
+	if (it != textures.end() && it->second != nullptr) {
+		std::cout << "Textura '" << textureName << "' já está carregada." << std::endl;
+		return;
+	}
 
     SDL_Surface *tempSurface = NULL;
     tempSurface = IMG_Load(filename);

@@ -1,6 +1,7 @@
 #include "scenes/MenuScene.h"
 #include "SceneManager.h"
 #include "scenes/ConfigScene.h"
+#include "scenes/ScoreboardScene.h"
 #include "GameStateManager.h"
 #include "enums/GameState.h"
 #include <iostream>
@@ -37,13 +38,11 @@ void MenuScene::handleInput(SDL_Event& event) {
                 break;
             case SDLK_RETURN:
                 if (options[selectedIndex] == "Iniciar Jogo") {
-					Game* game = new Game();
-					sceneManager.changeScene(game);
+					sceneManager.changeScene(new Game());
                 } else if (options[selectedIndex] == "Configuracoes") {
-					ConfigScene* scene = new ConfigScene();
-					sceneManager.changeScene(scene);
+					sceneManager.changeScene(new ConfigScene());
                 }else if (options[selectedIndex] == "Placar") {
-
+					sceneManager.changeScene(new ScoreboardScene());
 				}else if (options[selectedIndex] == "Sair") {
                     sceneManager.cleanUp();
 					sceneManager.destroyWindow();

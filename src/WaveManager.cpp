@@ -82,3 +82,7 @@ void WaveManager::update(float deltaTime, Player* player, std::vector<std::uniqu
     }
 
 }
+
+void WaveManager::cleanUp() {
+	waves.clear();
+}

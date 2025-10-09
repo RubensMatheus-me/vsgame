@@ -20,8 +20,10 @@ public:
 
     void addPopup(const std::string &text, const Vector &pos, SDL_Color color, int enemyId = -1)
     {
+		std::cout << "addpopup" << std::endl;
         if (countActive() >= MAX_POPUPS)
         {
+			std::cout << "adiciona pop up" << std::endl;
             removeOldest();
         }
 
@@ -32,6 +34,7 @@ public:
         {
             if (!popup->isAlive())
             {
+				std::cout << "acabo o popup" << std::endl;
                 popup->init(text, pos, color, renderer, fontPath, fontSize, enemyId);
                 active.push_back(popup.get());
                 lastPopup = popup.get();
@@ -46,20 +49,25 @@ public:
 
     void addGroupedPopup(int damage, const Vector &pos, SDL_Color color, int enemyId = -1)
     {
+		std::cout << "grupo popup" << std::endl;
         if (!lastPopup || lastPopup->getEnemyId() != enemyId || !lastPopup->isAlive())
         {
+			std::cout << "add popup grupo" << std::endl;
             addPopup(std::to_string(damage), pos, color, enemyId);
         }
         else
         {
+			std::cout << "add pertencente popup" << std::endl;
             lastPopup->appendDamage(damage, renderer, fontPath, fontSize);
         }
     }
 
     void update(float dt)
     {
+		std::cout << "atualiza popup" << std::endl;
         for (auto &popup : pool)
             popup->update(dt);
+
 
         active.erase(std::remove_if(active.begin(), active.end(),
                                     [](DamagePopup *p)
@@ -69,6 +77,7 @@ public:
 
     void render(const Vector &cameraOffset)
     {
+		std::cout << "renderiza popup" << std::endl;
         for (auto &popup : active)
             popup->render(renderer, cameraOffset);
     }

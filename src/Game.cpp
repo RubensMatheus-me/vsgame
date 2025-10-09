@@ -29,6 +29,8 @@
 #include "GameStateManager.h"
 #include "SceneManager.h"
 #include "scenes/MenuScene.h"
+#include "scenes/GameOverScene.h"
+#include "TextDisplayManager.h"
 
 using namespace Config;
 
@@ -36,25 +38,11 @@ const char *pathFont = "assets/fonts/dogica.ttf";
 
 bool Game::debugMode = true;
 
-std::unique_ptr<Player> player;
-std::unique_ptr<Enemy> enemy;
-std::vector<std::unique_ptr<Enemy>> enemies;
-std::unique_ptr<CollisionManager> collision;
-std::unique_ptr<Keyboard> keyboard;
-std::unique_ptr<TickRate> tickRate;
-std::unique_ptr<SpriteAnimation> playerAnimation;
-std::unique_ptr<LevelUpMenu> levelUpMenu;
-std::vector<std::unique_ptr<SpriteAnimation>> ownedAnimations;
-std::unique_ptr<EnemySpawner> enemySpawner;
-std::unique_ptr<WaveManager> waveManager;
 SceneManager& sceneManager = SceneManager::getInstance();
 
 	std::string lastFpsText;
 	std::string lastTimeText;
 	std::string lastXpText;
-	SDL_Texture *fpsTexture = nullptr;
-	SDL_Texture *timeTexture = nullptr;
-	SDL_Texture *xpTexture = nullptr;
 	SDL_DisplayMode displayMode;
 
 	Game::Game() : timerEvents(2.0f), gameTime(1.0f) {};
@@ -69,6 +57,7 @@ SceneManager& sceneManager = SceneManager::getInstance();
 		tileManager = std::make_unique<TileManager>();
 		playerAnimation = std::make_unique<SpriteAnimation>();
 		levelUpMenu = std::make_unique<LevelUpMenu>();
+		textDisplay = std::make_unique<TextDisplayManager>(renderer, pathFont);
 
 		if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 		{
@@ -79,6 +68,7 @@ SceneManager& sceneManager = SceneManager::getInstance();
 			}
 
 			//enemies.clear();
+			TextureManager::cleanTexture();
 
 			AudioManager &audio = AudioManager::getInstance();
 			audio.init();
@@ -131,7 +121,9 @@ SceneManager& sceneManager = SceneManager::getInstance();
 		waveManager = std::make_unique<WaveManager>("assets/data/waves.json", sceneManager.getWidth(), sceneManager.getHeight());
 		initializeEntities();
 
+		
 		damagePopupManager = std::make_unique<DamagePopupManager>(renderer, "assets/fonts/dogica.ttf", 12, 50);
+		collision->setDamagePopupManager(damagePopupManager.get());
 
 		setIsRunning(true);
 		GameStateManager::getInstance().setState(GameState::InGame);
@@ -143,6 +135,10 @@ void Game::render()
 	SDL_RenderClear(renderer);
 
 	tileManager->renderMap(renderer, player->getCollider());
+
+	textDisplay->renderText("fps", 10, 10);
+	textDisplay->renderText("clock", 10, 25);
+	textDisplay->renderText("xp", 10, 40);
 
 	for (auto &e : enemies)
 	{
@@ -168,40 +164,11 @@ void Game::render()
 
 	damagePopupManager->render(CameraManager::getCameraManager()->getOffSet());
 
-	// UI
-	if (fpsTexture == nullptr)
-	{
-		std::cerr << "Falha ao criar textura de FPS!" << std::endl;
-	}
-
-	if (fpsTexture != nullptr)
-	{
-		int textW = 0, textH = 0;
-		SDL_QueryTexture(fpsTexture, nullptr, nullptr, &textW, &textH);
-		SDL_Rect fpsRect = {10, 10, textW, textH};
-		SDL_RenderCopy(renderer, fpsTexture, nullptr, &fpsRect);
-	}
-
-	if (timeTexture != nullptr)
-	{
-		int textW = 0, textH = 0;
-		SDL_QueryTexture(timeTexture, nullptr, nullptr, &textW, &textH);
-		SDL_Rect timeRect = {(sceneManager.getWidth() - textW) / 2, 10, textW, textH};
-		SDL_RenderCopy(renderer, timeTexture, nullptr, &timeRect);
-	}
-
-	if (xpTexture != nullptr)
-	{
-		int textW = 0, textH = 0;
-		SDL_QueryTexture(xpTexture, nullptr, nullptr, &textW, &textH);
-		SDL_Rect xpRect = {10, 25, textW, textH};
-		SDL_RenderCopy(renderer, xpTexture, nullptr, &xpRect);
-	}
-
 	GUIRenderer::renderPlayerHpBar(renderer, player.get());
 	GUIRenderer::renderXpBar(renderer, player.get());
 	GUIRenderer::renderItems(renderer, player.get());
 	GUIRenderer::renderPlayerInfo(renderer, player.get());
+	
 
 	SDL_RenderPresent(renderer);
 }
@@ -212,6 +179,12 @@ void Game::update(float dt)
 	if (GameStateManager::getInstance().isInLose())
 	{
 		setIsRunning(false);
+		cleanUp();
+
+		std::cout << "perdeu" << std::endl;
+		std::string finalTime = gameTime.clock();
+		SceneManager::getInstance().changeScene(new GameOverScene(finalTime));
+		GameStateManager::getInstance().setState(GameState::InMenu);
 		return;
 	}
 
@@ -250,11 +223,17 @@ void Game::update(float dt)
 
 	damagePopupManager->update(dt);
 
+	if (player->getCurrentHp() <= 0.0f) {
+		std::cout << "morreu" << std::endl;
+		GameStateManager::getInstance().setState(GameState::InLose);
+		std::cout << "morreu inLose" << std::endl;
+	}
+
 	if (!enemies.empty())
 	{
-		CollisionManager::handlePlayerCollisions(player.get(), enemies);
-		CollisionManager::handleProjectileCollisions(player.get(), enemies);
-		CollisionManager::handleEnemyCollisions(enemies, player.get());
+		collision->handlePlayerCollisions(player.get(), enemies);
+		collision->handleProjectileCollisions(player.get(), enemies);
+		collision->handleEnemyCollisions(enemies, player.get());
 	}
 
 
@@ -285,12 +264,10 @@ void Game::update(float dt)
 void Game::cleanUp()
 {
 	TextureManager::cleanTexture();
+	textDisplay->clear();
 
-	SDL_DestroyTexture(fpsTexture);
-	SDL_DestroyTexture(timeTexture);
-	SDL_DestroyTexture(xpTexture);
+	waveManager->cleanUp();
 
-	player.get_deleter();
 	AudioManager::getInstance().clean();
 
 	std::cout << "Jogo limpo" << std::endl;
@@ -457,116 +434,28 @@ void Game::initializeEntities()
 
 void Game::updateFpsDisplay()
 {
-	int textW, textH;
-	std::string currentFpsText = std::to_string(tickRate->getFPS());
-
-	std::string fullText = "FPS: " + currentFpsText;
-
+	std::string currentFpsText = "FPS: " + std::to_string(sceneManager.getTickRate()->getFPS());
 	SDL_Color black = {0, 0, 0, 255};
 
-	if (currentFpsText != lastFpsText)
-	{
-		lastFpsText = currentFpsText;
-
-		if (fpsTexture != nullptr)
-			SDL_DestroyTexture(fpsTexture);
-
-		TTF_Font *font = TTF_OpenFont(pathFont, 10);
-		if (!font)
-		{
-			std::cerr << TTF_GetError() << std::endl;
-			return;
-		}
-
-		textW = 0, textH = 0;
-		if (TTF_SizeText(font, fullText.c_str(), &textW, &textH) != 0)
-		{
-			std::cerr << TTF_GetError() << std::endl;
-			TTF_CloseFont(font);
-			return;
-		}
-
-		fpsTexture = TextureManager::renderText(fullText, pathFont, black, 10);
-		TTF_CloseFont(font);
-	}
+	textDisplay->updateText("fps", currentFpsText, 10, black);
 }
 
 void Game::updateClockDisplay()
 {
 	std::string timeText = gameTime.clock();
-
 	SDL_Color black = {0, 0, 0, 255};
 
-	if (timeText != lastTimeText)
-	{
-		lastTimeText = timeText;
-
-		if (timeTexture != nullptr)
-		{
-			SDL_DestroyTexture(timeTexture);
-			timeTexture = nullptr;
-		}
-
-		TTF_Font *font = TTF_OpenFont(pathFont, 12);
-		if (!font)
-		{
-			std::cerr << "erro: " << TTF_GetError() << std::endl;
-			return;
-		}
-
-		int textW = 0, textH = 0;
-
-		if (TTF_SizeText(font, timeText.c_str(), &textW, &textH) != 0)
-		{
-			std::cerr << TTF_GetError() << std::endl;
-			TTF_CloseFont(font);
-			return;
-		}
-		timeTexture = TextureManager::renderText(timeText, pathFont, black, 12);
-		if (timeTexture == nullptr)
-		{
-			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
-		}
-		TTF_CloseFont(font);
-	}
+	textDisplay->updateText("clock", timeText, 12, black);
 }
 
 void Game::updateXp()
 {
-	std::string xpText = "LEVEL: " + std::to_string(player->getLevel()) + " XP:" + std::to_string(static_cast<int>(player->getXp())) + " / " + std::to_string(static_cast<int>(player->getXpNextLevel()));
-	if (xpText != lastXpText)
-	{
-		SDL_Color black = {0, 0, 0, 255};
-		lastXpText = xpText;
+	std::string xpText = "LEVEL: " + std::to_string(player->getLevel()) +
+                         " XP: " + std::to_string(static_cast<int>(player->getXp())) +
+                         " / " + std::to_string(static_cast<int>(player->getXpNextLevel()));
+	SDL_Color black = {0, 0, 0, 255};
 
-		if (xpTexture != nullptr)
-		{
-			SDL_DestroyTexture(xpTexture);
-			xpTexture = nullptr;
-		}
-
-		TTF_Font *font = TTF_OpenFont(pathFont, 12);
-		if (!font)
-		{
-			std::cerr << "erro: " << TTF_GetError() << std::endl;
-			return;
-		}
-
-		int textW = 0, textH = 0;
-
-		if (TTF_SizeText(font, xpText.c_str(), &textW, &textH) != 0)
-		{
-			std::cerr << TTF_GetError() << std::endl;
-			TTF_CloseFont(font);
-			return;
-		}
-		xpTexture = TextureManager::renderText(xpText, pathFont, black, 12);
-		if (xpTexture == nullptr)
-		{
-			std::cerr << "Erro ao criar a textura de tempo: " << TTF_GetError() << std::endl;
-		}
-		TTF_CloseFont(font);
-	}
+	textDisplay->updateText("xp", xpText, 12, black);
 }
 
 void Game::shootProjectile()
@@ -616,9 +505,4 @@ void Game::removeDeadEntities()
 
 void Game::handleInput(SDL_Event& event) {
 
-}
-
-void Game::isDead() {
-	sceneManager.pushScene(new MenuScene());
-	std::cout << "trocar cenas" << std::endl;
 }

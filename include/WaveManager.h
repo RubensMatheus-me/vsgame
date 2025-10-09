@@ -19,6 +19,7 @@ class WaveManager {
         WaveManager(const std::string& filePath, int screenWidth, int screenHeight);
 
         void update(float deltaTime, Player* player, std::vector<std::unique_ptr<Enemy>>& enemies);
+		void cleanUp();
 
     private:
         std::vector<EnemyWave> waves;

@@ -15,3 +15,5 @@ src/*.o
 .config.mk
 
 Makefile
+
+placar.txt

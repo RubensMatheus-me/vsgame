@@ -9,8 +9,6 @@
 #include "Attack.h"
 #include "DamagePopupManager.h"
 
-extern Game *game;
-
 bool CollisionManager::checkCollision(const Rect &a, const Rect &b)
 {
     return a.intersects(b);
@@ -90,17 +88,25 @@ void CollisionManager::handleProjectileCollisions(Player *player, std::vector<st
                 Rect enemyRect = enemy->getCollider();
                 if (attackRect.intersects(enemyRect) && enemy->isAlive())
                 {
+					std::cout << "bateu" << std::endl;
                     Vector direction = enemy->getPosition() - attack->getPosition();
+					std::cout << "bateu knockback" << std::endl;
                     enemy->applyKnockback(direction, weapon->getknockback());
+					std::cout << "bateu knockback 2 " << std::endl;
                     enemy->setCurrentHp(enemy->getCurrentHp() - attack->getDamage());
-                    game->damagePopupManager->addPopup(
+					std::cout << "bateu - hp" << std::endl;
+
+                    damagePopupManager->addPopup(
                         std::to_string(static_cast<int>(attack->getDamage())),
                         enemy->getPosition(),
                         {255, 0, 0, 255});
+					std::cout << "termina popup e segue e" << std::endl;
+
                     enemy->getSpriteAnimation()->play("hit");
                     if (enemy->getCurrentHp() <= 0.0f)
                     {
                         enemy->setAlive(false);
+						std::cout << "matou" << std::endl;
                         enemy->setBaseAtk(0.0f);
                         enemy->setMovSpeed(0.0f);
                         enemy->getSpriteAnimation()->play("death");
