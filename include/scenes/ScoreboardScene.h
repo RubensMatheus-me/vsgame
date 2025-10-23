@@ -16,11 +16,20 @@ public:
     void render() override;
     void cleanUp() override;
 
+
 private:
+	struct PlayerScore {
+			std::string name;
+			std::string time;
+			std::string level;
+			std::string enemiesKilled;
+		};
+
     void loadScores();
     void renderText(const std::string& text, int x, int y, SDL_Color color);
+	static int timeStringToSeconds(const std::string& timeStr);
 
     SDL_Renderer* renderer = nullptr;
     TTF_Font* font = nullptr;
-    std::vector<std::string> scores;
+    std::vector<PlayerScore> scores;
 };

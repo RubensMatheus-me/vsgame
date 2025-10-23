@@ -183,7 +183,8 @@ void Game::update(float dt)
 
 		std::cout << "perdeu" << std::endl;
 		std::string finalTime = gameTime.clock();
-		SceneManager::getInstance().changeScene(new GameOverScene(finalTime));
+		int level = player->getLevel();
+		SceneManager::getInstance().changeScene(new GameOverScene(finalTime, level, enemiesKilled));
 		GameStateManager::getInstance().setState(GameState::InMenu);
 		return;
 	}
@@ -491,6 +492,11 @@ void Game::removeDeadEntities()
 							   return !p->isAlive();
 						   }),
 			attacks.end());
+	}
+	for (auto& e : enemies) {
+		if(!e->isAlive() && e->getSpriteAnimation()->animationEnded()) {
+			enemiesKilled++;
+		}
 	}
 
 	enemies.erase(

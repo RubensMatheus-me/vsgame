@@ -38,6 +38,7 @@ class Game : public Scene
 		~Game();
 
 		bool isPaused = false;
+		int enemiesKilled = 0;
 		void setPaused(bool value) { isPaused = value; }
 		bool getIsPaused() const { return isPaused; }
 

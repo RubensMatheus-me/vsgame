@@ -4,11 +4,19 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 ScoreboardScene::ScoreboardScene() {}
 
 ScoreboardScene::~ScoreboardScene() {
     cleanUp();
+}
+
+int ScoreboardScene::timeStringToSeconds(const std::string& timeStr) {
+    if (timeStr.size() < 4) return 0;
+    int minutes = std::stoi(timeStr.substr(0, 2));
+    int seconds = std::stoi(timeStr.substr(3, 2));
+    return minutes * 60 + seconds;
 }
 
 void ScoreboardScene::init(SDL_Renderer* renderer_) {
@@ -18,7 +26,7 @@ void ScoreboardScene::init(SDL_Renderer* renderer_) {
         std::cerr << "Erro ao carregar fonte: " << TTF_GetError() << std::endl;
     }
 
-    loadScores();
+    loadScores(); 
 }
 
 void ScoreboardScene::handleInput(SDL_Event& event) {
@@ -29,26 +37,48 @@ void ScoreboardScene::handleInput(SDL_Event& event) {
     }
 }
 
-void ScoreboardScene::update(float dt) {
-    // Nenhuma lógica de atualização necessária
-}
+void ScoreboardScene::update(float dt) {}
 
 void ScoreboardScene::render() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // fundo preto
+    SceneManager& sceneManager = SceneManager::getInstance();
+    int screenWidth = sceneManager.getWidth();
+    int screenHeight = sceneManager.getHeight();
+
+    const float marginX = screenWidth * 0.15f;
+    const float tableWidth = screenWidth * 0.70f;
+    const int columnCount = 4;
+    const float columnWidth = tableWidth / columnCount;
+    const float headerY = screenHeight * 0.2f;
+    const float startY = screenHeight * 0.3f;
+    const int rowSpacing = 25;
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     SDL_Color white = {255, 255, 255, 255};
 
-    renderText("PLACAR", 100, 30, white);
+    renderText("PLACAR", marginX, screenHeight * 0.1f, white);
 
-    int y = 80;
-    for (const auto& line : scores) {
-        renderText(line, 100, y, white);
-        y += 25;
+    std::vector<std::string> headers = {"NOME", "TEMPO", "LEVEL", "ENEMIES"};
+    for (size_t i = 0; i < headers.size(); ++i) {
+        renderText(headers[i], marginX + i * columnWidth, headerY, white);
     }
 
-    renderText("Pressione ENTER ou ESC para voltar", 50, y + 40, white);
+    float y = startY;
+    for (const auto& score : scores) {
+        std::vector<std::string> row = {
+            score.name,
+            score.time,
+            score.level,
+            score.enemiesKilled
+        };
+        for (size_t i = 0; i < row.size(); ++i) {
+            renderText(row[i], marginX + i * columnWidth, y, white);
+        }
+        y += rowSpacing;
+    }
 
+    renderText("Pressione ENTER ou ESC para voltar", marginX, y + 40, white);
     SDL_RenderPresent(renderer);
 }
 
@@ -67,19 +97,41 @@ void ScoreboardScene::renderText(const std::string& text, int x, int y, SDL_Colo
 void ScoreboardScene::loadScores() {
     scores.clear();
 
-    std::ifstream file("placar.txt");
+    std::ifstream file("score.json");
     if (!file.is_open()) {
-        std::cerr << "Não foi possível abrir placar.txt" << std::endl;
+        std::cerr << "Não foi possível abrir score.json" << std::endl;
         return;
     }
 
-    std::string line;
-    while (std::getline(file, line)) {
-        scores.push_back(line);
+    nlohmann::json jsonData;
+    file >> jsonData;
+    file.close();
+
+    for (const auto& record : jsonData) {
+        std::string name = record["nome"].is_string() ? record["nome"].get<std::string>() : "";
+        std::string time = record["tempo"].is_string() ? record["tempo"].get<std::string>() : "";
+        std::string level = std::to_string(record["level"].get<int>());
+
+        int enemiesKilledInt = 0;
+        if (record["enemiesKilled"].is_number_integer()) {
+            enemiesKilledInt = record["enemiesKilled"].get<int>();
+        } else if (record["enemiesKilled"].is_number_float()) {
+            enemiesKilledInt = static_cast<int>(record["enemiesKilled"].get<float>());
+        }
+
+        std::string enemiesKilled = std::to_string(enemiesKilledInt);
+        scores.push_back({name, time, level, enemiesKilled});
     }
 
-    file.close();
+    std::sort(scores.begin(), scores.end(), [](const PlayerScore& a, const PlayerScore& b) {
+        return timeStringToSeconds(a.time) > timeStringToSeconds(b.time);
+    });
+
+    if (scores.size() > 10) {
+        scores.resize(10);
+    }
 }
+
 
 void ScoreboardScene::cleanUp() {
     if (font) {
@@ -87,3 +139,4 @@ void ScoreboardScene::cleanUp() {
         font = nullptr;
     }
 }
+

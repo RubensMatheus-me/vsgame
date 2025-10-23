@@ -7,7 +7,7 @@
 
 class GameOverScene : public Scene {
 public:
-    GameOverScene(const std::string& timeSurvived);
+    GameOverScene(const std::string& timeSurvived, int level, int enemiesKilled);
     ~GameOverScene();
 
     void init(SDL_Renderer *renderer) override;
@@ -25,6 +25,8 @@ private:
 
     std::string nameInput;
     std::string timeSurvived;
+	int level;
+	int enemiesKilled;
 
     bool saved = false;
 };

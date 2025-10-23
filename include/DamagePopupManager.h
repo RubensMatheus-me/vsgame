@@ -64,10 +64,8 @@ public:
 
     void update(float dt)
     {
-		std::cout << "atualiza popup" << std::endl;
         for (auto &popup : pool)
             popup->update(dt);
-
 
         active.erase(std::remove_if(active.begin(), active.end(),
                                     [](DamagePopup *p)
@@ -77,7 +75,6 @@ public:
 
     void render(const Vector &cameraOffset)
     {
-		std::cout << "renderiza popup" << std::endl;
         for (auto &popup : active)
             popup->render(renderer, cameraOffset);
     }

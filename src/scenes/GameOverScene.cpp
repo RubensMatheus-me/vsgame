@@ -5,7 +5,7 @@
 #include <SDL_ttf.h>
 #include <fstream>
 
-GameOverScene::GameOverScene(const std::string& time) : timeSurvived(time) {}
+GameOverScene::GameOverScene(const std::string& time, int level, int enemiesKilled) : timeSurvived(time), level(level), enemiesKilled(enemiesKilled) {}
 
 GameOverScene::~GameOverScene() {
     cleanUp();
@@ -69,10 +69,28 @@ void GameOverScene::renderText(const std::string& text, int x, int y, SDL_Color 
 }
 
 void GameOverScene::saveScore() {
-    std::ofstream file("placar.txt", std::ios::app); // salva em arquivo texto
-    if (file.is_open()) {
-        file << nameInput << " " << timeSurvived << "\n";
-        file.close();
+    nlohmann::json scoreData;
+    scoreData["nome"] = nameInput;
+    scoreData["tempo"] = timeSurvived;
+    scoreData["level"] = level;
+    scoreData["enemiesKilled"] = enemiesKilled;
+
+    std::ifstream inputFile("score.json");
+
+    nlohmann::json existingData;
+    if (inputFile.is_open()) {
+        inputFile >> existingData;
+        inputFile.close();
+    }
+
+    existingData.push_back(scoreData);
+
+    std::ofstream outputFile("score.json");
+    if (outputFile.is_open()) {
+        outputFile << existingData.dump(4);  
+        outputFile.close();
+    } else {
+        std::cerr << "Erro ao abrir score!" << std::endl;
     }
 }
 

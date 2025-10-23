@@ -43,7 +43,6 @@ public:
             static_cast<int>(worldPos.y - cameraOffset.y),
             textW, textH};
         SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
-        std::cout << "Popup pos: " << worldPos.x << "," << worldPos.y << "\n";
     }
 
     bool isAlive() const { return alive; }
