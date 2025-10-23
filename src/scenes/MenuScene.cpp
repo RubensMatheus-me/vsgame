@@ -5,6 +5,7 @@
 #include "GameStateManager.h"
 #include "enums/GameState.h"
 #include <iostream>
+#include <SDL_image.h>
 
 MenuScene::MenuScene() {}
 
@@ -13,11 +14,18 @@ MenuScene::~MenuScene() {
 }
 
 void MenuScene::init(SDL_Renderer *render) {
-	renderer = render;
-	TTF_CloseFont(font);
-    font = TTF_OpenFont("assets/fonts/dogica.ttf", 24);
+    renderer = render;
+    TTF_CloseFont(font);
+    font = TTF_OpenFont("assets/fonts/dogica.ttf", 16);
     if (!font) {
         std::cerr << "Erro ao carregar a fonte: " << TTF_GetError() << std::endl;
+    }
+    SDL_Surface* bgSurface = IMG_Load("assets/cenas/menuPrincipal.png");
+    if (!bgSurface) {
+        std::cerr << "Erro ao carregar imagem de fundo: " << IMG_GetError() << std::endl;
+    } else {
+        backgroundTexture = SDL_CreateTextureFromSurface(renderer, bgSurface);
+        SDL_FreeSurface(bgSurface);
     }
 }
 
@@ -30,10 +38,10 @@ void MenuScene::handleInput(SDL_Event& event) {
     else if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
 			std::cout << event.key.keysym.sym << std::endl;
-            case SDLK_UP:
+            case SDLK_LEFT:
                 selectedIndex = (selectedIndex - 1 + options.size()) % options.size();
                 break;
-            case SDLK_DOWN:
+            case SDLK_RIGHT:
                 selectedIndex = (selectedIndex + 1) % options.size();
                 break;
             case SDLK_RETURN:
@@ -72,17 +80,32 @@ void MenuScene::renderText(const std::string& text, int x, int y, bool selected)
 }
 
 void MenuScene::render() {
-	SceneManager& sceneManager = SceneManager::getInstance();
-    int startY = sceneManager.getHeight() / 2 - (int)options.size() * 30;
-    for (size_t i = 0; i < options.size(); ++i) {
-        renderText(options[i], sceneManager.getWidth() / 4, startY + i * 40, i == selectedIndex);
+    SceneManager& sceneManager = SceneManager::getInstance();
+
+    if (backgroundTexture) {
+    SDL_SetTextureAlphaMod(backgroundTexture, 90); 
+    SDL_Rect destRect = {0, 0, sceneManager.getWidth(), sceneManager.getHeight()};
+    SDL_RenderCopy(sceneManager.getRenderer(), backgroundTexture, nullptr, &destRect);
+	} else {
+        SDL_SetRenderDrawColor(sceneManager.getRenderer(), 0, 0, 0, 255);
+        SDL_RenderClear(sceneManager.getRenderer());
     }
 
+    int startY = sceneManager.getHeight() / 2 - (int)options.size() * 30;
+
+	for (size_t i = 0; i < options.size(); ++i) {
+        renderText(options[i], sceneManager.getWidth() * (i*0.30), sceneManager.getWidth()*0.6, i == selectedIndex);
+    }
+	
 }
 
 void MenuScene::cleanUp() {
     if (font) {
         TTF_CloseFont(font);
         font = nullptr;
+    }
+    if (backgroundTexture) {
+        SDL_DestroyTexture(backgroundTexture);
+        backgroundTexture = nullptr;
     }
 }

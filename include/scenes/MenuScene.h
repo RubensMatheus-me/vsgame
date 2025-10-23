@@ -21,4 +21,5 @@ private:
     std::vector<std::string> options = {"Iniciar Jogo", "Configuracoes", "Placar","Sair"};
     int selectedIndex = 0;
     TTF_Font* font = nullptr;
+	SDL_Texture* backgroundTexture = nullptr;
 };
