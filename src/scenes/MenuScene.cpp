@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "scenes/ConfigScene.h"
 #include "scenes/ScoreboardScene.h"
+#include "scenes/CreditsScene.h"
 #include "GameStateManager.h"
 #include "enums/GameState.h"
 #include <iostream>
@@ -30,7 +31,6 @@ void MenuScene::init(SDL_Renderer *render) {
 }
 
 void MenuScene::handleInput(SDL_Event& event) {
-	std::cout << "PRINTE" << std::endl;
 	SceneManager& sceneManager = SceneManager::getInstance();
     if (event.type == SDL_QUIT) {
 
@@ -51,6 +51,8 @@ void MenuScene::handleInput(SDL_Event& event) {
 					sceneManager.changeScene(new ConfigScene());
                 }else if (options[selectedIndex] == "Placar") {
 					sceneManager.changeScene(new ScoreboardScene());
+				}else if (options[selectedIndex] == "Creditos") {
+					sceneManager.changeScene(new CreditsScene());
 				}else if (options[selectedIndex] == "Sair") {
                     sceneManager.cleanUp();
 					sceneManager.destroyWindow();
@@ -82,21 +84,32 @@ void MenuScene::renderText(const std::string& text, int x, int y, bool selected)
 void MenuScene::render() {
     SceneManager& sceneManager = SceneManager::getInstance();
 
+    // Desenha o fundo
     if (backgroundTexture) {
-    SDL_SetTextureAlphaMod(backgroundTexture, 90); 
-    SDL_Rect destRect = {0, 0, sceneManager.getWidth(), sceneManager.getHeight()};
-    SDL_RenderCopy(sceneManager.getRenderer(), backgroundTexture, nullptr, &destRect);
-	} else {
+        SDL_SetTextureAlphaMod(backgroundTexture, 90);
+        SDL_Rect destRect = {0, 0, sceneManager.getWidth(), sceneManager.getHeight()};
+        SDL_RenderCopy(sceneManager.getRenderer(), backgroundTexture, nullptr, &destRect);
+    } else {
         SDL_SetRenderDrawColor(sceneManager.getRenderer(), 0, 0, 0, 255);
         SDL_RenderClear(sceneManager.getRenderer());
     }
 
-    int startY = sceneManager.getHeight() / 2 - (int)options.size() * 30;
+    const int itemsPerRow = 3;     
+    const int spacingX = 250;   
+    const int spacingY = 60; 
+    const int totalRows = (options.size() + itemsPerRow - 1) / itemsPerRow;
 
-	for (size_t i = 0; i < options.size(); ++i) {
-        renderText(options[i], sceneManager.getWidth() * (i*0.30), sceneManager.getWidth()*0.6, i == selectedIndex);
+    int startY = sceneManager.getHeight() / 2 + 165; 
+    int startX = sceneManager.getWidth() / 2 - spacingX; 
+    for (size_t i = 0; i < options.size(); ++i) {
+        int col = i % itemsPerRow;   
+        int row = i / itemsPerRow;   
+
+        int x = startX + col * spacingX;
+        int y = startY + row * spacingY;
+
+        renderText(options[i], x, y, i == selectedIndex);
     }
-	
 }
 
 void MenuScene::cleanUp() {

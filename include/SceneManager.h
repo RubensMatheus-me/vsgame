@@ -29,6 +29,7 @@ public:
 	bool getIsRunning() const {return this->isRunning;}
 	void setIsRunning(const bool newIsRunning) {this->isRunning = newIsRunning;}
 	void createWindow(const char *title, int xPos, int yPos, int width, int height, bool fullscreen);
+	void toggleFullscreen();
 
 	int getWidth() {return this->width;}
 	int getHeight() {return this->height;}

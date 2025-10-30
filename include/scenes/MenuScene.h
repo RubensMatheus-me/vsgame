@@ -18,7 +18,7 @@ private:
     void renderText(const std::string& text, int x, int y, bool selected);
 
     Game* game;
-    std::vector<std::string> options = {"Iniciar Jogo", "Configuracoes", "Placar","Sair"};
+    std::vector<std::string> options = {"Iniciar Jogo", "Configuracoes", "Placar", "Creditos", "Sair"};
     int selectedIndex = 0;
     TTF_Font* font = nullptr;
 	SDL_Texture* backgroundTexture = nullptr;

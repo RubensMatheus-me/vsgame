@@ -17,3 +17,4 @@ src/*.o
 Makefile
 
 placar.txt
+score.json

@@ -58,10 +58,10 @@
 	}
 
 	void SceneManager::createWindow(const char *title, int xPos, int yPos, int width, int height, bool fullscreen) {
-		int flags = 0;
+		Uint32 flags = SDL_WINDOW_SHOWN;
 		if (fullscreen)
 		{
-			flags = SDL_WINDOW_FULLSCREEN;
+			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 		if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 		{
@@ -80,11 +80,14 @@
 				return;
 			}
 			
-			renderer = SDL_CreateRenderer(window, -1, 0);
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+			SDL_RenderSetLogicalSize(renderer, 800, 600);
 			if (!renderer) {
 				printf("Erro ao criar o renderizador: %s\n", SDL_GetError());
 				return;
 			}
+			this->width = width;
+    		this->height = height;
 
 			setIsRunning(true);
 			GameStateManager::getInstance().setState(GameState::InMenu);
@@ -116,3 +119,13 @@
 		setIsRunning(false);
 		std::cout << "Jogo limpo" << std::endl;
 	}
+
+void SceneManager::toggleFullscreen() {
+	Uint32 fullscreenFlag = SDL_WINDOW_FULLSCREEN_DESKTOP;
+    bool isFullscreen = SDL_GetWindowFlags(window) & fullscreenFlag;
+
+    if (isFullscreen)
+        SDL_SetWindowFullscreen(window, 0);
+    else
+        SDL_SetWindowFullscreen(window, fullscreenFlag);
+}

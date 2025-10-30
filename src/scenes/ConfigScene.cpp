@@ -34,7 +34,7 @@ void ConfigScene::handleInput(SDL_Event& event) {
                     sceneManager.pushScene(new MenuScene());
                 }
 				else if (options[selectedIndex] == "Fullscreen") {
-
+					sceneManager.toggleFullscreen();
                 }
 				else if (options[selectedIndex] == "Volume") {
 
